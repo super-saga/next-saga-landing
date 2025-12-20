@@ -11,7 +11,7 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="font-bold text-xl text-primary flex items-center gap-2">
           <Image 
-            src="/assets/images/logo-text-tp.png" 
+            src="/assets/images/logo-text.png" 
             alt="Sahabat Warga" 
             width={155} 
             height={40} 
