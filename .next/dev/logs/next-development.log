@@ -1,0 +1,64 @@
+[00:00:01.359] Server  LOG     ✓ Ready in 1097ms
+[00:00:12.926] Browser WARN    Image with src "/assets/images/logo-text.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:12.927] Browser WARN    Image with src "/assets/images/logo-text.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:00:35.507] Server  LOG     ✓ Compiled in 765ms
+[00:00:36.117] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:01:01.394] Server  LOG     ✓ Compiled in 491ms
+[00:02:58.091] Server  LOG     ✓ Compiled in 529ms
+[00:03:08.941] Server  LOG     ✓ Compiled in 312ms
+[00:03:51.167] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:03:51.168] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:05:08.608] Server  LOG     ✓ Compiled in 296ms
+[00:05:12.022] Server  LOG     ✓ Compiled in 235ms
+[00:05:18.681] Server  LOG     ✓ Compiled in 432ms
+[00:06:22.660] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:06:22.660] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:08:58.966] Server  LOG     ✓ Compiled in 2.9s
+[00:08:59.190] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:09:03.904] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:09:07.451] Server  LOG     ✓ Compiled in 2.2s
+[00:09:07.507] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:09:11.608] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:09:11.759] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:09:13.993] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:09:14.277] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:09:15.640] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:09:15.945] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:16:08.522] Server  LOG     ✓ Compiled in 1050ms
+[00:16:13.187] Server  LOG     ✓ Compiled in 985ms
+[00:16:15.895] Server  LOG     ✓ Compiled in 341ms
+[00:16:29.889] Server  LOG     ✓ Compiled in 629ms
+[00:16:31.965] Server  LOG     ✓ Compiled in 295ms
+[00:16:56.488] Server  LOG     ✓ Compiled in 721ms
+[00:17:31.062] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:17:49.824] Server  LOG     ✓ Compiled in 2.6s
+[00:17:50.209] Server  LOG     ✓ Compiled in 2ms
+[00:17:50.856] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:17:50.856] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:18:13.279] Server  LOG     ✓ Finished filesystem cache database compaction in 13.9s
+[00:18:13.409] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:18:13.518] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:19:26.583] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:19:26.584] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:19:31.010] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:19:31.010] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:19:34.217] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:19:34.217] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:20:09.231] Server  LOG     ✓ Compiled in 1108ms
+[00:20:23.346] Server  LOG     ✓ Compiled in 1707ms
+[00:20:26.135] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:20:31.088] Browser WARN    Image with src "/assets/images/logo-text-tp.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:20:31.088] Browser WARN    Image with src "/assets/images/logo-text-tp.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:20:42.286] Server  LOG     ✓ Compiled in 1098ms
