@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <div className="mb-4">
               <Image 
-                src="/assets/images/logo-text.png" 
+                src="/assets/images/logo-text-tp.png" 
                 alt="Sahabat Warga" 
                 width={155} 
                 height={40} 
