@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, ShoppingBag, CreditCard, Wallet } from "lucide-react"
+import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, ShoppingBag, CreditCard, Wallet, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
@@ -354,6 +354,96 @@ const Features = () => {
   )
 }
 
+const Integration = () => {
+  return (
+    <section className="py-24 bg-muted/30">
+      <div className="container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <Badge className="mb-4">Integrasi Sistem</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Terhubung dengan Layanan Digital</h2>
+          <p className="text-muted-foreground text-lg">
+            Sistem yang terintegrasi langsung dengan metode pembayaran modern dan layanan pesan instan.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <Card className="h-full hover:shadow-lg transition-all border-primary/20">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400">
+                   <CreditCard className="w-6 h-6" />
+                </div>
+                <CardTitle className="text-2xl">Payment Gateway</CardTitle>
+                <p className="text-muted-foreground">Otomatisasi pembayaran iuran warga.</p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">QRIS (GoPay, OVO, Dana, dll)</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">Virtual Account Bank</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">E-Wallet & Minimarket</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <Card className="h-full hover:shadow-lg transition-all border-primary/20">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400">
+                   <MessageCircle className="w-6 h-6" />
+                </div>
+                <CardTitle className="text-2xl">WhatsApp Integration</CardTitle>
+                <p className="text-muted-foreground">Komunikasi lebih efektif dan cepat.</p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">Notifikasi Tagihan Otomatis</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">Broadcast Pengumuman Warga</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
+                    <span className="font-medium">Laporan Pembayaran Real-time</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 const MobileApp = () => (
   <section className="py-24 bg-background overflow-hidden">
     <div className="container">
@@ -496,7 +586,7 @@ const Pricing = () => {
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 10 Member</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Manajemen Data Warga</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Digital</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pengingat Whatsapp</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Smart Reminder</li>
                 </ul>
               </CardContent>
               <div className="p-6 pt-0">
@@ -522,11 +612,11 @@ const Pricing = () => {
                 <CardTitle className="text-2xl">Pro</CardTitle>
                 <div className="mt-4 space-y-1">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="line-through decoration-red-500/50">Rp 499rb</span>
+                    <span className="line-through decoration-red-500/50">Rp 629rb</span>
                     <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">HEMAT 40%</span>
                   </div>
                   <div>
-                    <span className="text-4xl font-bold">Rp 299rb</span>
+                    <span className="text-4xl font-bold">Rp 399rb</span>
                     <span className="text-muted-foreground"> / bulan</span>
                   </div>
                 </div>
@@ -534,10 +624,10 @@ const Pricing = () => {
               </CardHeader>
               <CardContent className="flex-1">
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 300 Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Digital</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 100 Member</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Starter</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Laporan Keuangan Lengkap</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis hingga 10x per bulan</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis hingga 6 per bulan</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Broadcast WhatsApp</li>
                 </ul>
               </CardContent>
@@ -564,11 +654,11 @@ const Pricing = () => {
                 <CardTitle className="text-2xl">Business</CardTitle>
                 <div className="mt-4 space-y-1">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="line-through decoration-red-500/50">Rp 829rb</span>
+                    <span className="line-through decoration-red-500/50">Rp 1129rb</span>
                     <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">HEMAT 40%</span>
                   </div>
                   <div>
-                    <span className="text-4xl font-bold">Rp 499rb</span>
+                    <span className="text-4xl font-bold">Rp 699rb</span>
                     <span className="text-muted-foreground"> / bulan</span>
                   </div>
                 </div>
@@ -576,10 +666,10 @@ const Pricing = () => {
               </CardHeader>
               <CardContent className="flex-1">
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 1.000 Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Prioritas Support</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis tak terbatas</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 500 Member</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Pro</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Prioritas Support</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis hingga 32 per bulan</li>
                 </ul>
               </CardContent>
               <div className="p-6 pt-0">
@@ -611,6 +701,7 @@ const Pricing = () => {
               <CardContent className="flex-1">
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Unlimited Member</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Business</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Custom Domain</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> API Access</li>
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Dedicated Support</li>
@@ -715,11 +806,30 @@ const FAQ = () => {
               ))}
           </div>
 
-          <div className="mt-12 text-center">
-              <p className="text-muted-foreground mb-4">Masih punya pertanyaan lain?</p>
-              <Button variant="outline" asChild>
-                  <Link href="/request-demo">Hubungi Tim Support</Link>
-              </Button>
+          <div className="mt-16">
+            <div className="bg-muted/30 border border-primary/10 rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32" />
+                
+                <h3 className="text-2xl md:text-3xl font-bold mb-4 relative z-10">Masih ragu atau butuh bantuan?</h3>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8 relative z-10">
+                    Tim support kami siap membantu menjelaskan detail fitur dan memandu Anda menggunakan aplikasi.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+                    <Button size="lg" className="h-12 px-8 min-w-[160px] text-base" asChild>
+                        <Link href="https://app.saga.co.id/sahabat-warga">
+                            Daftar Gratis
+                        </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" className="h-12 px-8 min-w-[160px] text-base" asChild>
+                        <Link href="https://wa.me/6281234567890">
+                            <MessageCircle className="mr-2 h-5 w-5" />
+                            Hubungi Sales
+                        </Link>
+                    </Button>
+                </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -734,6 +844,7 @@ export default function Home() {
         <Hero />
         {/* <Metrics /> */}
         <Features />
+        <Integration />
         <MobileApp />
         <Pricing />
         <Promotion />

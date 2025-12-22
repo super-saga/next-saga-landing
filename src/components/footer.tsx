@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="bg-background border-t py-12">
       <div className="container">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-5 gap-8">
           <div>
             <div className="mb-4">
               <Image 
@@ -43,6 +43,15 @@ export function Footer() {
               <li><Link href="/terms" className="hover:text-primary">Terms & Conditions</Link></li>
               <li><Link href="/security" className="hover:text-primary">Security</Link></li>
             </ul>
+          </div>
+          <div className="pt-1 mt-1">
+            <Image 
+              src="/assets/images/buatan-indo.webp" 
+              alt="Bangga Buatan Indonesia" 
+              width={200} 
+              height={200}
+              className="w-30 h-auto opacity-80 hover:opacity-100 transition-opacity"
+            />
           </div>
         </div>
         <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
