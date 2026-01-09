@@ -22,9 +22,36 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Sahabat Warga by Saga",
+    "url": "https://saga.co.id",
+    "logo": "https://saga.co.id/assets/images/icon.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+62-851-2807-0019",
+      "contactType": "customer service",
+      "areaServed": "ID",
+      "availableLanguage": "Indonesian"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Bukit Mampang Residence Blok E 12B",
+      "addressLocality": "Grogol, Limo",
+      "addressRegion": "Depok",
+      "addressCountry": "ID"
+    },
+    "email": "hello@saga.co.id"
+  }
+
   return (
     <html lang="id" suppressHydrationWarning>
       <body className={inter.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

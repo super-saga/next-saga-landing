@@ -16,9 +16,15 @@ export function Footer() {
                 className="h-10 w-auto object-contain"
               />
             </div>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm mb-6">
               Platform manajemen lingkungan terpercaya untuk Indonesia yang lebih baik.
             </p>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground">Hubungi Kami</p>
+              <p>Email: <a href="mailto:hello@saga.co.id" className="hover:text-primary">hello@saga.co.id</a></p>
+              <p>WhatsApp: <a href="https://wa.me/6285128070019" target="_blank" rel="noopener noreferrer" className="hover:text-primary">+62 851-2807-0019</a></p>
+              <p>Alamat: Bukit Mampang Residence Blok E 12B, Grogol, Limo, Depok</p>
+            </div>
           </div>
           <div>
             <h4 className="font-bold mb-4">Produk</h4>
