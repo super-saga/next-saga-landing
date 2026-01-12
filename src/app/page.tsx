@@ -287,7 +287,7 @@ const Features = () => {
       badges: ["Pro", "Soon"],
     },
     {
-      title: "Digital Koperasi",
+      title: "Digital Product",
       description: "Bayar tagihan listrik, air, pulsa, dan lainnya langsung dari aplikasi. Praktis dan menguntungkan kas RT.",
       icon: CreditCard,
       badges: ["Pro", "Soon"],
@@ -591,7 +591,7 @@ const Pricing = () => {
               </CardContent>
               <div className="p-6 pt-0">
                 <Button className="w-full" variant="outline" asChild>
-                  <Link href="https://app.saga.co.id/sahabat-warga?tier=starter">Mulai Gratis</Link>
+                  <Link href="https://app.saga.co.id/register?tier=starter">Mulai Gratis</Link>
                 </Button>
               </div>
             </Card>
@@ -633,7 +633,7 @@ const Pricing = () => {
               </CardContent>
               <div className="p-6 pt-0">
                 <Button className="w-full" asChild>
-                  <Link href="https://app.saga.co.id/sahabat-warga?tier=pro">Pilih Pro</Link>
+                  <Link href="https://app.saga.co.id/register?tier=pro">Pilih Pro</Link>
                 </Button>
               </div>
             </Card>
@@ -735,12 +735,13 @@ const Promotion = () => (
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button size="lg" variant="secondary" className="h-14 px-8 text-lg" asChild>
-            <Link href="https://app.saga.co.id/sahabat-warga">
+            <Link href="https://app.saga.co.id/register">
               Daftar Sekarang - Gratis
             </Link>
           </Button>
           <Button size="lg" variant="outline" className="h-14 px-8 text-lg bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
-            <Link href="/request-demo">
+            {/* https://app.saga.co.id<Link href="/request-demo"> */}
+            <Link href="https://demo.saga.co.id">
               Jadwalkan Demo
             </Link>
           </Button>
@@ -818,12 +819,12 @@ const FAQ = () => {
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
                     <Button size="lg" className="h-12 px-8 min-w-[160px] text-base" asChild>
-                        <Link href="https://app.saga.co.id/sahabat-warga">
-                            Daftar Gratis
+                        <Link href="https://app.saga.co.id/register">
+                          Daftar Gratis
                         </Link>
                     </Button>
                     <Button size="lg" variant="outline" className="h-12 px-8 min-w-[160px] text-base" asChild>
-                        <Link href="https://wa.me/6281234567890">
+                        <Link href="https://wa.me/6285128070019">
                             <MessageCircle className="mr-2 h-5 w-5" />
                             Hubungi Sales
                         </Link>

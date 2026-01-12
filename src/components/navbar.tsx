@@ -28,10 +28,10 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           {/* <ThemeToggle /> */}
           <Button variant="ghost" asChild>
-            <Link href="https://app.saga.co.id/sahabat-warga">Masuk</Link>
+            <Link href="https://app.saga.co.id">Masuk</Link>
           </Button>
           <Button asChild>
-            <Link href="https://app.saga.co.id/sahabat-warga">Daftar Sekarang</Link>
+            <Link href="https://app.saga.co.id">Daftar Sekarang</Link>
           </Button>
         </div>
       </div>
