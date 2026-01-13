@@ -38,8 +38,8 @@ export default function RootLayout({
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Bukit Mampang Residence Blok E 12B",
-      "addressLocality": "Grogol, Limo",
+      "streetAddress": "Barokah Residence 21 Blok A No 3",
+      "addressLocality": "Jatimulya, Cilodong",
       "addressRegion": "Depok",
       "addressCountry": "ID"
     },

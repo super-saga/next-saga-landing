@@ -23,7 +23,7 @@ export function Footer() {
               <p className="font-semibold text-foreground">Hubungi Kami</p>
               <p>Email: <a href="mailto:hello@saga.co.id" className="hover:text-primary">hello@saga.co.id</a></p>
               <p>WhatsApp: <a href="https://wa.me/6285128070019" target="_blank" rel="noopener noreferrer" className="hover:text-primary">+62 851-2807-0019</a></p>
-              <p>Alamat: Bukit Mampang Residence Blok E 12B, Grogol, Limo, Depok</p>
+              <p>Alamat: Barokah Residence 21 Blok A No 3, Jatimulya, Cilodong, Depok</p>
             </div>
           </div>
           <div>
