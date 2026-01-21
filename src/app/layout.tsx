@@ -49,6 +49,11 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body className={inter.className}>
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute w-[500px] h-[500px] blur-3xl bg-gradient-radial from-purple-100/40 to-transparent right-0 top-0 opacity-60"></div>
+          <div className="absolute w-[500px] h-[500px] blur-3xl bg-gradient-radial from-purple-100/40 to-transparent right-20 top-20 opacity-60"></div>
+          <div className="absolute w-[500px] h-[500px] blur-3xl bg-gradient-radial from-primary/10 to-transparent left-0 bottom-0 opacity-40"></div>
+        </div>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -59,7 +64,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col relative">
             <Navbar />
             <main className="flex-1">
               {children}

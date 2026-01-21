@@ -3,8 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, ShoppingBag, CreditCard, Wallet, MessageCircle } from "lucide-react"
+import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, CreditCard, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
@@ -164,13 +163,13 @@ const Hero = () => (
           transition={{ duration: 0.5 }}
         >
           <Badge variant="secondary" className="mb-4 px-4 py-1 text-sm rounded-full">
-            🚀 Solusi #1 untuk Pengurus Komunitas & Warga
+            Portal Digital untuk Manajemen Lingkungan
           </Badge>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight lg:text-7xl max-w-4xl mx-auto">
-            Kelola Lingkungan <span className="text-primary">Lebih Mudah</span> & <span className="text-[#10B981]">Transparan</span>
+            Bikin Urusan Warga Jadi <span className="text-primary">Gampang</span> & <span className="text-[#10B981]">Transparan</span>
           </h1>
           <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
-            Aplikasi manajemen lingkungan all-in-one untuk iuran, surat pengantar, data warga, dan komunikasi yang lebih efektif.
+            Dari iuran sampai laporan, semua bisa di Sahabat Warga. Portal digital untuk manajemen lingkungan warga +62.
           </p>
         </motion.div>
         
@@ -219,10 +218,10 @@ const Hero = () => (
 
 const Metrics = () => {
   const metrics = [
-    { label: "Warga Terdaftar", value: "10,000+", icon: Users },
-    { label: "Komunitas Bergabung", value: "500+", icon: LayoutDashboard },
-    { label: "Surat Terbit", value: "25,000+", icon: FileText },
-    { label: "Transaksi Iuran", value: "Rp 2M+", icon: CheckCircle2 },
+    { label: "Desa", value: "3400+", icon: LayoutDashboard },
+    { label: "Warga", value: "2JT+", icon: Users },
+    { label: "Kota/Kab", value: "38+", icon: FileText },
+    { label: "Komunitas", value: "500+", icon: CheckCircle2 },
   ]
 
   return (
@@ -254,43 +253,34 @@ const Metrics = () => {
 const Features = () => {
   const features = [
     {
-      title: "Manajemen Data Warga",
-      description: "Database warga yang rapi, aman, dan mudah diakses. Ucapkan selamat tinggal pada buku catatan manual.",
-      icon: Users,
-    },
-    {
-      title: "Pembayaran Iuran Digital",
-      description: "Bayar iuran lingkungan (IPL) dengan mudah via QRIS, Virtual Account, atau E-Wallet. Otomatis tercatat.",
+      title: "Iuran Digital",
+      description: "Kelola dan bayar iuran lingkungan secara otomatis, transparan, dan mudah dipantau oleh semua warga.",
       icon: Smartphone,
     },
     {
-      title: "Auto Payout",
-      description: "Pencairan dana iuran otomatis ke rekening pengurus tanpa proses manual yang ribet.",
-      icon: Wallet,
-      badges: ["Pro", "Soon"],
-    },
-    {
-      title: "Laporan Keuangan Transparan",
-      description: "Dashboard keuangan real-time yang bisa diakses warga (opsional) untuk meningkatkan kepercayaan.",
+      title: "Laporan Transparan",
+      description: "Semua transaksi tercatat real-time dengan audit trail lengkap untuk meningkatkan kepercayaan warga.",
       icon: LayoutDashboard,
     },
     {
-      title: "Broadcast Informasi",
-      description: "Kirim pengumuman penting ke seluruh warga via WhatsApp atau notifikasi aplikasi dalam satu klik.",
-      icon: CheckCircle2,
-      badges: ["Pro", "Soon"],
+      title: "Manajemen Data Warga",
+      description: "Kelola data penghuni secara digital, aman, dan mudah dicari kapan saja.",
+      icon: Users,
     },
     {
-      title: "UMKM Marketplace",
-      description: "Wadah bagi warga untuk mempromosikan dan menjual produk UMKM mereka ke tetangga sekitar.",
-      icon: ShoppingBag,
-      badges: ["Pro", "Soon"],
+      title: "Komunikasi Warga",
+      description: "Pengumuman, notifikasi, dan komunikasi warga dalam satu portal yang rapi.",
+      icon: MessageCircle,
     },
     {
-      title: "Digital Product",
-      description: "Bayar tagihan listrik, air, pulsa, dan lainnya langsung dari aplikasi. Praktis dan menguntungkan kas RT.",
+      title: "Integrasi Pembayaran",
+      description: "Terhubung dengan QRIS, Virtual Account, dan E-Wallet untuk pembayaran yang fleksibel.",
       icon: CreditCard,
-      badges: ["Pro", "Soon"],
+    },
+    {
+      title: "Notifikasi Otomatis",
+      description: "Pengingat iuran dan laporan otomatis untuk pengurus dan warga.",
+      icon: CheckCircle2,
     },
   ]
 
@@ -298,10 +288,10 @@ const Features = () => {
     <section id="features" className="py-24">
       <div className="container">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge className="mb-4">Fitur Unggulan</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Semua yang Anda Butuhkan untuk Mengelola Lingkungan</h2>
+          <Badge className="mb-4">Fitur Utama</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Tingkatkan Alur Kerja Lingkungan Anda</h2>
           <p className="text-muted-foreground text-lg">
-            Sistem terintegrasi yang dirancang khusus untuk kebutuhan Komunitas, Cluster, dan Perumahan di Indonesia.
+            Sahabat Warga membantu pengurus RT/RW dan warga mengelola keuangan, laporan, dan komunikasi dalam satu sistem.
           </p>
         </div>
         
@@ -319,26 +309,7 @@ const Features = () => {
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 text-primary">
                     <feature.icon className="w-6 h-6" />
                   </div>
-                  <CardTitle className="text-xl">
-                    {feature.title}
-                    {feature.badges && (
-                      <div className="flex gap-2 mt-2">
-                        {feature.badges.map((badge, idx) => (
-                          <Badge 
-                            key={idx} 
-                            variant="secondary" 
-                            className={`text-[10px] px-2 py-0.5 h-auto ${
-                              badge === "Pro" 
-                                ? "bg-primary/10 text-primary hover:bg-primary/20" 
-                                : "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20"
-                            }`}
-                          >
-                            {badge}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </CardTitle>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">
@@ -354,90 +325,57 @@ const Features = () => {
   )
 }
 
-const Integration = () => {
+
+const Testimonials = () => {
+  const testimonials = [
+    {
+      quote: "Iuran dan laporan keuangan jadi rapi. Warga bisa lihat transaksi secara real-time.",
+      name: "Budi Santoso",
+      role: "Pengurus RT, Jakarta",
+    },
+    {
+      quote: "Komunikasi warga lebih cepat, dan data penghuni lebih tertata dengan baik.",
+      name: "Dewi Lestari",
+      role: "Pengembang Perumahan, Bekasi",
+    },
+    {
+      quote: "Bayar iuran jadi mudah, notifikasi jelas, dan tidak perlu lagi catatan manual.",
+      name: "Rizky Pratama",
+      role: "Warga, Surabaya",
+    },
+  ]
+
   return (
-    <section className="py-24 bg-muted/30">
+    <section className="py-24 bg-background">
       <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <Badge className="mb-4">Integrasi Sistem</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Terhubung dengan Layanan Digital</h2>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <Badge className="mb-4">Testimoni Warga</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Apa Kata Pengguna Sahabat Warga</h2>
           <p className="text-muted-foreground text-lg">
-            Sistem yang terintegrasi langsung dengan metode pembayaran modern dan layanan pesan instan.
+            Dipercaya oleh komunitas dan pengembang di seluruh Indonesia.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <Card className="h-full hover:shadow-lg transition-all border-primary/20">
-              <CardHeader>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400">
-                   <CreditCard className="w-6 h-6" />
-                </div>
-                <CardTitle className="text-2xl">Payment Gateway</CardTitle>
-                <p className="text-muted-foreground">Otomatisasi pembayaran iuran warga.</p>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">QRIS (GoPay, OVO, Dana, dll)</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">Virtual Account Bank</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">E-Wallet & Minimarket</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <Card className="h-full hover:shadow-lg transition-all border-primary/20">
-              <CardHeader>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400">
-                   <MessageCircle className="w-6 h-6" />
-                </div>
-                <CardTitle className="text-2xl">WhatsApp Integration</CardTitle>
-                <p className="text-muted-foreground">Komunikasi lebih efektif dan cepat.</p>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">Notifikasi Tagihan Otomatis</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">Broadcast Pengumuman Warga</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-full"><Check className="w-4 h-4 text-primary" /></div>
-                    <span className="font-medium">Laporan Pembayaran Real-time</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="h-full">
+                <CardContent className="pt-6 space-y-4">
+                  <p className="text-muted-foreground leading-relaxed">“{item.quote}”</p>
+                  <div>
+                    <p className="font-semibold">{item.name}</p>
+                    <p className="text-sm text-muted-foreground">{item.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
@@ -455,13 +393,29 @@ const MobileApp = () => (
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <Badge className="mb-4 bg-yellow-500 hover:bg-yellow-600 text-white border-none">COMING SOON</Badge>
+            <Badge className="mb-4 bg-yellow-500 hover:bg-yellow-600 text-white border-none">WEB + MOBILE</Badge>
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Lebih Dekat dengan <span className="text-primary">Aplikasi Mobile</span>
+              Semua yang Anda Butuhkan untuk <span className="text-primary">Lingkungan Digital</span>
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Pantau lingkungan, bayar iuran, dan belanja di UMKM tetangga langsung dari genggaman. Akan segera tersedia untuk Android dan iOS.
+              Dari pendataan warga, iuran, hingga laporan — semua tersedia dalam satu aplikasi yang ringan dan mudah digunakan.
             </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <ul className="grid sm:grid-cols-2 gap-4 text-muted-foreground">
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Template Data Warga</li>
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Laporan Keuangan Otomatis</li>
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Desain Modern & Ringan</li>
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Fitur Penting Terpadu</li>
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Integrasi Pembayaran</li>
+              <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Komunitas Pengguna</li>
+            </ul>
           </motion.div>
 
           <motion.div
@@ -537,183 +491,290 @@ const MobileApp = () => (
 )
 
 const Pricing = () => {
+  const [planType, setPlanType] = useState<"community" | "enterprise">("community")
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
+
+  // Base prices for Community Plans (Dummy Prices)
+  const prices = {
+    starter: 49000,
+    pro: 99000,
+    business: 399000
+  }
+
+  const calculatePrice = (base: number) => {
+    if (billingCycle === "monthly") {
+        return {
+            original: base,
+            final: base * 0.6, // 40% discount
+            discount: "40%"
+        }
+    } else {
+        return {
+            original: base,
+            final: base * 0.4, // 60% discount
+            discount: "60%"
+        }
+    }
+  }
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(amount)
+  }
+
+  // Starter is always free but shows "discount"
+  const starterPrice = {
+    original: prices.starter,
+    final: 0,
+    discount: "100%"
+  }
+  
+  const proPrice = calculatePrice(prices.pro)
+  const businessPrice = calculatePrice(prices.business)
+
+  const communityPlans = [
+    {
+      name: "Starter",
+      price: "Rp 0",
+      originalPrice: formatCurrency(starterPrice.original),
+      discount: starterPrice.discount,
+      period: "/ bulan",
+      billing: "Selamanya",
+      description: "Fitur esensial untuk memulai manajemen lingkungan.",
+      features: [
+        "Manajemen data warga dasar",
+        "Iuran digital",
+        "1 dashboard pengurus",
+        "Hingga 100 KK",
+        "Laporan keuangan sederhana"
+      ],
+      cta: "Mulai Starter",
+      href: "https://app.saga.co.id/register",
+      variant: "outline",
+      popular: false
+    },
+    {
+      name: "Pro",
+      price: formatCurrency(proPrice.final),
+      originalPrice: formatCurrency(proPrice.original),
+      discount: proPrice.discount,
+      period: "/ bulan",
+      billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(proPrice.final * 12)}` : "Ditagih bulanan",
+      description: "Solusi lengkap untuk RT/RW yang berkembang.",
+      features: [
+        "Semua fitur Starter",
+        "Manajemen surat pengantar",
+        "5 dashboard pengurus",
+        "Hingga 500 KK",
+        "Laporan keuangan detail",
+        "Notifikasi WhatsApp"
+      ],
+      cta: "Pilih Pro",
+      href: "https://app.saga.co.id/register",
+      variant: "default",
+      popular: true
+    },
+    {
+      name: "Business",
+      price: formatCurrency(businessPrice.final),
+      originalPrice: formatCurrency(businessPrice.original),
+      discount: businessPrice.discount,
+      period: "/ bulan",
+      billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(businessPrice.final * 12)}` : "Ditagih bulanan",
+      description: "Untuk pengelola kawasan atau kelurahan.",
+      features: [
+        "Semua fitur Pro",
+        "Dashboard multi-cluster",
+        "Unlimited pengurus",
+        "Unlimited KK",
+        "API Access & Integrasi",
+        "Support Prioritas 24/7"
+      ],
+      cta: "Pilih Business",
+      href: "https://app.saga.co.id/register",
+      variant: "outline",
+      popular: false
+    }
+  ]
+
+  const enterprisePlans = [
+    {
+      name: "Corporate Plus",
+      price: "Rp 1.500.000",
+      period: "/ bulan",
+      description: "Untuk pengelola properti & developer skala menengah.",
+      features: [
+        "Multi-Cluster Management",
+        "White Label Dashboard",
+        "Dedicated Account Manager",
+        "SLA 99.9%",
+        "API Access Basic"
+      ],
+      cta: "Hubungi Sales",
+      href: "https://wa.me/6285128070019",
+      variant: "outline",
+      popular: false
+    },
+    {
+      name: "Corporate Pro",
+      price: "Rp 5.000.000",
+      period: "/ bulan",
+      description: "Solusi terintegrasi untuk perusahaan properti besar.",
+      features: [
+        "Unlimited Clusters & Units",
+        "Custom Domain & Branding",
+        "On-premise Deployment Option",
+        "Priority 24/7 Support",
+        "Full API Access",
+        "Custom Integration"
+      ],
+      cta: "Hubungi Sales",
+      href: "https://wa.me/6285128070019",
+      variant: "default",
+      popular: true
+    },
+    {
+      name: "Corporate Business",
+      price: "Custom",
+      period: "",
+      description: "Ekosistem digital penuh untuk Smart City.",
+      features: [
+        "Smart City Integration",
+        "IoT Dashboard Integration",
+        "Custom Development",
+        "Dedicated Server Infrastructure",
+        "GovTech Compliance"
+      ],
+      cta: "Konsultasi Project",
+      href: "https://wa.me/6285128070019",
+      variant: "outline",
+      popular: false
+    }
+  ]
+
+  const activePlans = planType === "community" ? communityPlans : enterprisePlans
+
   return (
-    <section id="pricing" className="py-24 bg-muted/30">
-      <div className="container">
+    <section id="pricing" className="py-24 bg-muted/30 relative overflow-hidden">
+        {/* Background blobs for Enterprise mode */}
+        {planType === "enterprise" && (
+            <>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+            </>
+        )}
+
+      <div className="container relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-12"
         >
-          <Badge className="mb-4">Paket Harga</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Investasi Terjangkau untuk Lingkungan Maju</h2>
+          <Badge className={`mb-4 ${planType === "enterprise" ? "bg-blue-600 hover:bg-blue-700" : ""}`}>
+            {planType === "community" ? "Paket Warga" : "Paket Enterprise"}
+          </Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {planType === "community" 
+                ? "Pilih Paket Sesuai Kebutuhan Lingkungan Anda" 
+                : "Solusi Manajemen Properti & Smart City"}
+          </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Pilih paket yang sesuai dengan kebutuhan lingkungan Anda.
+            {planType === "community"
+                ? "Harga terjangkau dengan fitur lengkap untuk pengurus dan warga."
+                : "Platform terintegrasi untuk Developer, Pengelola Gedung, dan Pemerintahan."}
           </p>
+
+          {/* Toggle Switch */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="bg-muted p-1 rounded-full border inline-flex relative">
+                <div className="relative z-10 flex">
+                    <button
+                        onClick={() => setPlanType("community")}
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${planType === "community" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                        Community / Warga
+                    </button>
+                    <button
+                        onClick={() => setPlanType("enterprise")}
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${planType === "enterprise" ? "text-white" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                        Enterprise / Company
+                    </button>
+                </div>
+                {/* Sliding Background */}
+                <motion.div 
+                    layout
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className={`absolute top-1 bottom-1 rounded-full shadow-sm ${planType === "community" ? "bg-primary left-1 w-[calc(50%-4px)]" : "bg-blue-600 left-[50%] w-[calc(50%-4px)]"}`}
+                />
+            </div>
+          </div>
         </motion.div>
 
-        <div className="mb-12">
-          <PromoCountdown />
-        </div>
+        {planType === "community" && (
+            <div className="mb-12">
+              <PromoCountdown />
+            </div>
+        )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {/* Starter */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            <Card className="flex flex-col h-full">
-              <CardHeader>
-                <CardTitle className="text-2xl">Starter</CardTitle>
-                <div className="mt-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                    <span className="line-through decoration-red-500/50">Rp 199rb</span>
-                    <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">GRATIS SELAMANYA</span>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {activePlans.map((plan, i) => (
+            <motion.div
+              key={`${planType}-${i}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+            >
+              <Card className={`flex flex-col h-full relative overflow-hidden transition-all duration-300 hover:shadow-xl ${plan.popular ? (planType === "enterprise" ? "border-blue-600 shadow-blue-900/10 scale-105 z-10" : "border-primary shadow-primary/10 scale-105 z-10") : "hover:border-primary/50"}`}>
+                {plan.popular && (
+                  <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold rounded-bl-lg text-white ${planType === "enterprise" ? "bg-blue-600" : "bg-primary"}`}>
+                    POPULAR
                   </div>
-                  <div>
-                    <span className="text-4xl font-bold">Gratis</span>
-                    <span className="text-muted-foreground"> / bulan</span>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <div className="mt-4 space-y-1">
+                    {planType === "community" && (plan as any).originalPrice && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                        <span className="line-through decoration-red-500/50">{(plan as any).originalPrice}</span>
+                        <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">
+                          {(plan as any).discountLabel}
+                        </span>
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-3xl md:text-4xl font-bold">{plan.price}</span>
+                      <span className="text-muted-foreground text-sm font-normal">{plan.period}</span>
+                    </div>
+                    {(plan as any).billing && (
+                        <div className="text-xs text-muted-foreground">{(plan as any).billing}</div>
+                    )}
                   </div>
+                  <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
+                </CardHeader>
+                <CardContent className="flex-1">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm">
+                            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${planType === "enterprise" ? "text-blue-600" : "text-primary"}`} />
+                            <span className="text-muted-foreground">{feature}</span>
+                        </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <div className="p-6 pt-0">
+                  <Button 
+                    className={`w-full ${planType === "enterprise" && plan.popular ? "bg-blue-600 hover:bg-blue-700" : ""}`} 
+                    variant={plan.variant as any} 
+                    asChild
+                  >
+                    <Link href={plan.href}>{plan.cta}</Link>
+                  </Button>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">Untuk Komunitas kecil baru mulai.</p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 10 Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Manajemen Data Warga</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Digital</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Smart Reminder</li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0">
-                <Button className="w-full" variant="outline" asChild>
-                  <Link href="https://app.saga.co.id/register?tier=starter">Mulai Gratis</Link>
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* Pro */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <Card className="flex flex-col border-primary relative overflow-hidden h-full transform scale-105 shadow-xl z-10">
-              <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-bold rounded-bl-lg">
-                POPULAR
-              </div>
-              <CardHeader>
-                <CardTitle className="text-2xl">Pro</CardTitle>
-                <div className="mt-4 space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="line-through decoration-red-500/50">Rp 629rb</span>
-                    <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">HEMAT 40%</span>
-                  </div>
-                  <div>
-                    <span className="text-4xl font-bold">Rp 399rb</span>
-                    <span className="text-muted-foreground"> / bulan</span>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">Untuk Komunitas Menengah atau Cluster.</p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 100 Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Starter</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Laporan Keuangan Lengkap</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis hingga 6 per bulan</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Broadcast WhatsApp</li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0">
-                <Button className="w-full" asChild>
-                  <Link href="https://app.saga.co.id/register?tier=pro">Pilih Pro</Link>
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* Business */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <Card className="flex flex-col h-full relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-red-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
-                PROMO
-              </div>
-              <CardHeader>
-                <CardTitle className="text-2xl">Business</CardTitle>
-                <div className="mt-4 space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="line-through decoration-red-500/50">Rp 1129rb</span>
-                    <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">HEMAT 40%</span>
-                  </div>
-                  <div>
-                    <span className="text-4xl font-bold">Rp 699rb</span>
-                    <span className="text-muted-foreground"> / bulan</span>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">Untuk Gabungan Komunitas atau Desa.</p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Hingga 500 Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Pro</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Prioritas Support</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Pembayaran Otomatis hingga 32 per bulan</li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0">
-                <Button className="w-full" variant="outline" disabled>
-                  Segera Hadir
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* Enterprise */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <Card className="flex flex-col h-full relative overflow-hidden opacity-90">
-              <div className="absolute top-0 right-0 bg-muted text-muted-foreground px-3 py-1 text-xs font-bold rounded-bl-lg">
-                SOON
-              </div>
-              <CardHeader>
-                <CardTitle className="text-2xl">Enterprise</CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">Custom</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">Untuk Kelurahan atau Pengelola Gedung.</p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Unlimited Member</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Semua Fitur Business</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Custom Domain</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> API Access</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Dedicated Support</li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0">
-                <Button className="w-full" variant="outline" disabled>
-                  Segera Hadir
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
@@ -754,24 +815,24 @@ const Promotion = () => (
 const FAQ = () => {
   const faqs = [
     {
-      question: "Apa itu Sahabat Warga?",
-      answer: "Sahabat Warga adalah aplikasi manajemen lingkungan berbasis web yang membantu pengurus Komunitas mengelola data warga, iuran, dan surat pengantar secara digital, transparan, dan aman."
+      question: "Apakah Sahabat Warga bisa digunakan tanpa internet?",
+      answer: "Sahabat Warga berbasis web, jadi membutuhkan koneksi internet. Namun data tersimpan aman di server cloud."
+    },
+    {
+      question: "Bisakah setiap RT punya dashboard sendiri?",
+      answer: "Bisa. Setiap RT dapat memiliki dashboard dan akun pengurus terpisah di dalam satu RW."
     },
     {
       question: "Apakah data warga aman?",
-      answer: "Sangat aman. Kami menggunakan enkripsi standar industri dan server terproteksi. Data Anda adalah milik Anda, dan kami tidak memperjualbelikan data pengguna kepada pihak ketiga."
+      answer: "Data warga disimpan dengan enkripsi dan hanya bisa diakses oleh pengurus yang berwenang."
     },
     {
-      question: "Berapa biaya berlangganan Sahabat Warga?",
-      answer: "Kami menyediakan paket Starter yang GRATIS selamanya untuk lingkungan kecil (<50 Member). Untuk fitur lebih lengkap seperti pembayaran digital, tersedia paket Pro seharga Rp 199rb/bulan."
+      question: "Bagaimana cara mulai menggunakan Sahabat Warga?",
+      answer: "Cukup daftar, buat lingkungan Anda, dan undang warga untuk bergabung. Prosesnya cepat dan bisa dilakukan mandiri."
     },
     {
-      question: "Apakah perlu install aplikasi?",
-      answer: "Tidak perlu. Sahabat Warga adalah Web App (PWA) yang bisa diakses langsung dari browser HP atau Laptop tanpa perlu install. Cukup buka app.saga.co.id/sahabat-warga."
-    },
-    {
-      question: "Bagaimana cara mulai menggunakan?",
-      answer: "Cukup klik tombol 'Daftar Sekarang', isi data lingkungan Anda, dan Anda bisa langsung menggunakannya dalam hitungan menit. Tim kami juga siap membantu proses onboarding jika diperlukan."
+      question: "Apakah ada versi gratis?",
+      answer: "Ya, tersedia paket Gratis untuk kebutuhan dasar lingkungan kecil. Anda bisa upgrade kapan saja."
     }
   ]
 
@@ -838,14 +899,17 @@ const FAQ = () => {
   )
 }
 
+import { SecuritySection } from "@/components/security-section"
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
         <Hero />
-        {/* <Metrics /> */}
+        <Metrics />
         <Features />
-        <Integration />
+        <SecuritySection />
+        <Testimonials />
         <MobileApp />
         <Pricing />
         <Promotion />

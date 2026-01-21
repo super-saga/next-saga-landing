@@ -17,7 +17,7 @@ export function Footer() {
               />
             </div>
             <p className="text-muted-foreground text-sm mb-6">
-              Platform manajemen lingkungan terpercaya untuk Indonesia yang lebih baik.
+              Portal digital untuk manajemen lingkungan warga +62 yang transparan dan mudah digunakan.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p className="font-semibold text-foreground">Hubungi Kami</p>
