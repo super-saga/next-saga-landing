@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, CreditCard, MessageCircle } from "lucide-react"
+import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, CreditCard, MessageCircle, Store, Wallet, Zap } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
@@ -24,7 +24,7 @@ function PromoCountdown() {
 
   useEffect(() => {
     // Set deadline to End of Year 2025
-    const deadline = new Date("2026-01-31T23:59:59")
+    const deadline = new Date("2026-02-31T23:59:59")
     
     const interval = setInterval(() => {
       const now = new Date()
@@ -163,13 +163,13 @@ const Hero = () => (
           transition={{ duration: 0.5 }}
         >
           <Badge variant="secondary" className="mb-4 px-4 py-1 text-sm rounded-full">
-            Portal Digital untuk Manajemen Lingkungan
+            🚀 Solusi #1 untuk Pengurus Komunitas & Warga
           </Badge>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight lg:text-7xl max-w-4xl mx-auto">
-            Bikin Urusan Warga Jadi <span className="text-primary">Gampang</span> & <span className="text-[#10B981]">Transparan</span>
+            Kelola Lingkungan <span className="text-primary">Lebih Mudah</span> & <span className="text-[#10B981]">Transparan</span>
           </h1>
           <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
-            Dari iuran sampai laporan, semua bisa di Sahabat Warga. Portal digital untuk manajemen lingkungan warga +62.
+            Aplikasi manajemen lingkungan all-in-one untuk iuran, surat pengantar, data warga, dan komunikasi yang lebih efektif.
           </p>
         </motion.div>
         
@@ -218,10 +218,10 @@ const Hero = () => (
 
 const Metrics = () => {
   const metrics = [
-    { label: "Desa", value: "3400+", icon: LayoutDashboard },
-    { label: "Warga", value: "2JT+", icon: Users },
-    { label: "Kota/Kab", value: "38+", icon: FileText },
-    { label: "Komunitas", value: "500+", icon: CheckCircle2 },
+    { label: "Cluster", value: "24+", icon: LayoutDashboard },
+    { label: "Warga", value: "1242+", icon: Users },
+    { label: "Kota/Kab", value: "3", icon: FileText },
+    { label: "Kawasan", value: "8", icon: CheckCircle2 },
   ]
 
   return (
@@ -256,31 +256,65 @@ const Features = () => {
       title: "Iuran Digital",
       description: "Kelola dan bayar iuran lingkungan secara otomatis, transparan, dan mudah dipantau oleh semua warga.",
       icon: Smartphone,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
     },
     {
       title: "Laporan Transparan",
       description: "Semua transaksi tercatat real-time dengan audit trail lengkap untuk meningkatkan kepercayaan warga.",
       icon: LayoutDashboard,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
     },
     {
       title: "Manajemen Data Warga",
       description: "Kelola data penghuni secara digital, aman, dan mudah dicari kapan saja.",
       icon: Users,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
     },
     {
       title: "Komunikasi Warga",
       description: "Pengumuman, notifikasi, dan komunikasi warga dalam satu portal yang rapi.",
       icon: MessageCircle,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
     },
     {
       title: "Integrasi Pembayaran",
       description: "Terhubung dengan QRIS, Virtual Account, dan E-Wallet untuk pembayaran yang fleksibel.",
       icon: CreditCard,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
     },
     {
       title: "Notifikasi Otomatis",
       description: "Pengingat iuran dan laporan otomatis untuk pengurus dan warga.",
       icon: CheckCircle2,
+      status: "available",
+      tiers: ["Starter", "Pro", "Business"],
+    },
+    {
+      title: "Portal UMKM",
+      description: "Dukung ekonomi warga dengan marketplace khusus untuk UMKM di lingkungan Anda.",
+      icon: Store,
+      status: "coming_soon",
+      tiers: ["Business"],
+    },
+    {
+      title: "Auto Payout",
+      description: "Pencairan dana iuran otomatis ke rekening pengurus secara berkala dan aman.",
+      icon: Wallet,
+      status: "coming_soon",
+      tiers: ["Pro", "Business"],
+    },
+    {
+      title: "Produk Digital PPOB",
+      description: "Beli pulsa, token listrik, dan bayar tagihan langsung dari aplikasi warga.",
+      icon: Zap,
+      status: "coming_soon",
+      tiers: ["Pro", "Business"],
+      tierNote: "*Komisi hanya di Business",
     },
   ]
 
@@ -291,7 +325,7 @@ const Features = () => {
           <Badge className="mb-4">Fitur Utama</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Tingkatkan Alur Kerja Lingkungan Anda</h2>
           <p className="text-muted-foreground text-lg">
-            Sahabat Warga membantu pengurus RT/RW dan warga mengelola keuangan, laporan, dan komunikasi dalam satu sistem.
+            Sahabat Warga membantu pengelola perumahan, developer, apartemen, dan kawasan mengelola keuangan, laporan, dan komunikasi dalam satu sistem.
           </p>
         </div>
         
@@ -304,17 +338,42 @@ const Features = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow">
+              <Card className="h-full hover:shadow-lg transition-shadow flex flex-col group relative overflow-hidden">
+                {feature.status === "coming_soon" && (
+                  <div className="absolute inset-0 bg-muted/50 backdrop-blur-[1px] flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="font-bold text-sm bg-background px-3 py-1 rounded-full shadow-sm">Segera Hadir</span>
+                  </div>
+                )}
                 <CardHeader>
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 text-primary">
                     <feature.icon className="w-6 h-6" />
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    {feature.title}
+                    {feature.status === "coming_soon" && (
+                      <Badge variant="secondary" className="text-[10px] px-2 h-5">
+                        Akan Datang
+                      </Badge>
+                    )}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
+                <CardContent className="flex-1">
+                  <p className="text-muted-foreground leading-relaxed mb-4">
                     {feature.description}
                   </p>
+                  <div className="pt-4 mt-auto border-t">
+                    <p className="text-xs text-muted-foreground font-semibold mb-2">Tersedia di:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {feature.tiers.map((tier) => (
+                        <Badge key={tier} variant="outline" className="text-[10px] px-2 py-0 h-5 font-normal">
+                          {tier}
+                        </Badge>
+                      ))}
+                    </div>
+                    {(feature as any).tierNote && (
+                        <p className="text-[10px] text-muted-foreground mt-2 italic">{(feature as any).tierNote}</p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -343,10 +402,35 @@ const Testimonials = () => {
       name: "Rizky Pratama",
       role: "Warga, Surabaya",
     },
+    {
+      quote: "Aplikasi ini sangat membantu transparansi dana warga. Sangat direkomendasikan!",
+      name: "Andi Wijaya",
+      role: "Ketua RW, Bandung",
+    },
+    {
+      quote: "Fitur surat pengantarnya sangat praktis, tidak perlu bolak-balik ke rumah RT.",
+      name: "Siti Aminah",
+      role: "Warga, Depok",
+    },
+    {
+      quote: "Sangat mudah digunakan bahkan untuk orang tua. Tampilannya bersih dan jelas.",
+      name: "Pak Joko",
+      role: "Bendahara, Semarang",
+    },
+    {
+      quote: "Luar biasa, pengelolaan apartemen jadi lebih efisien dan modern.",
+      name: "Hendra Gunawan",
+      role: "Manager Apartemen, Jaksel",
+    },
+    {
+      quote: "Support tim Saga sangat responsif membantu migrasi data kami.",
+      name: "Rina Kartika",
+      role: "Admin Perumahan, Tangerang",
+    },
   ]
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-background overflow-hidden">
       <div className="container">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <Badge className="mb-4">Testimoni Warga</Badge>
@@ -356,26 +440,38 @@ const Testimonials = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Card className="h-full">
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-muted-foreground leading-relaxed">“{item.quote}”</p>
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+        <div className="relative w-full max-w-7xl mx-auto">
+          <motion.div 
+            className="flex gap-8 w-max"
+            animate={{ x: "-50%" }}
+            transition={{ 
+              duration: 50, 
+              ease: "linear", 
+              repeat: Infinity 
+            }}
+          >
+            {[...testimonials, ...testimonials].map((item, i) => (
+              <div
+                key={i}
+                className="w-[350px] md:w-[400px] flex-shrink-0"
+              >
+                <Card className="h-full hover:shadow-md transition-shadow">
+                  <CardContent className="pt-6 space-y-4">
+                    <p className="text-muted-foreground leading-relaxed italic">“{item.quote}”</p>
+                    <div className="flex items-center gap-3 pt-2">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                            {item.name.charAt(0)}
+                        </div>
+                        <div>
+                            <p className="font-semibold text-sm">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">{item.role}</p>
+                        </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
@@ -496,9 +592,11 @@ const Pricing = () => {
 
   // Base prices for Community Plans (Dummy Prices)
   const prices = {
-    starter: 49000,
-    pro: 99000,
-    business: 399000
+    starter: 199000,
+    pro: 629000,
+    business: 1129000,
+    corporatePlus: 2500000,
+    corporatePro: 5000000
   }
 
   const calculatePrice = (base: number) => {
@@ -511,8 +609,29 @@ const Pricing = () => {
     } else {
         return {
             original: base,
-            final: base * 0.4, // 60% discount
-            discount: "60%"
+            final: base * 0.3, // 70% discount
+            discount: "70%"
+        }
+    }
+  }
+
+  // Special calculation for Enterprise plans where user specified Final Price and markup
+  const calculateEnterprisePrice = (targetFinal: number) => {
+    const original = targetFinal * 1.4 // "base/dummy price was add 40% more"
+    
+    if (billingCycle === "monthly") {
+        return {
+            original: original,
+            final: targetFinal,
+            discount: "29%" // (1.4 - 1) / 1.4 ≈ 28.57%
+        }
+    } else {
+        // Assuming yearly maintains the deep discount relative to the original price
+        // Existing logic was 60% off original
+        return {
+            original: original,
+            final: original * 0.3, // 70% discount from original
+            discount: "70%"
         }
     }
   }
@@ -530,6 +649,8 @@ const Pricing = () => {
   
   const proPrice = calculatePrice(prices.pro)
   const businessPrice = calculatePrice(prices.business)
+  const corporatePlusPrice = calculateEnterprisePrice(prices.corporatePlus)
+  const corporateProPrice = calculateEnterprisePrice(prices.corporatePro)
 
   const communityPlans = [
     {
@@ -543,9 +664,10 @@ const Pricing = () => {
       features: [
         "Manajemen data warga dasar",
         "Iuran digital",
-        "1 dashboard pengurus",
-        "Hingga 100 KK",
-        "Laporan keuangan sederhana"
+        "Admin pengurus tanpa batas",
+        "Hingga 40 Warga",
+        "Laporan keuangan sederhana",
+        "Pengingat iuran WhatsApp"
       ],
       cta: "Mulai Starter",
       href: "https://app.saga.co.id/register",
@@ -559,14 +681,14 @@ const Pricing = () => {
       discount: proPrice.discount,
       period: "/ bulan",
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(proPrice.final * 12)}` : "Ditagih bulanan",
-      description: "Solusi lengkap untuk RT/RW yang berkembang.",
+      description: "Cocok untuk perumahan dan RT RW",
       features: [
         "Semua fitur Starter",
-        "Manajemen surat pengantar",
-        "5 dashboard pengurus",
-        "Hingga 500 KK",
+        "Hingga 400 warga",
         "Laporan keuangan detail",
-        "Notifikasi WhatsApp"
+        "Auto payout (Akan datang)",
+        "Biaya transaksi murah",
+        "Program affiliate untuk semua warga"
       ],
       cta: "Pilih Pro",
       href: "https://app.saga.co.id/register",
@@ -580,13 +702,14 @@ const Pricing = () => {
       discount: businessPrice.discount,
       period: "/ bulan",
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(businessPrice.final * 12)}` : "Ditagih bulanan",
-      description: "Untuk pengelola kawasan atau kelurahan.",
+      description: "Cocok untuk kawasan, developer, dan apartement.",
       features: [
         "Semua fitur Pro",
-        "Dashboard multi-cluster",
         "Unlimited pengurus",
-        "Unlimited KK",
-        "API Access & Integrasi",
+        "Unlimited warga",
+        "Portal UMKM (Akan datang)",
+        "Komisi produk multi biller (Akan datang)",
+        "Program affiliate untuk semua warga",
         "Support Prioritas 24/7"
       ],
       cta: "Pilih Business",
@@ -599,8 +722,11 @@ const Pricing = () => {
   const enterprisePlans = [
     {
       name: "Corporate Plus",
-      price: "Rp 1.500.000",
+      price: formatCurrency(corporatePlusPrice.final),
+      originalPrice: formatCurrency(corporatePlusPrice.original),
+      discount: corporatePlusPrice.discount,
       period: "/ bulan",
+      billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(corporatePlusPrice.final * 12)}` : "Ditagih bulanan",
       description: "Untuk pengelola properti & developer skala menengah.",
       features: [
         "Multi-Cluster Management",
@@ -616,8 +742,11 @@ const Pricing = () => {
     },
     {
       name: "Corporate Pro",
-      price: "Rp 5.000.000",
+      price: formatCurrency(corporateProPrice.final),
+      originalPrice: formatCurrency(corporateProPrice.original),
+      discount: corporateProPrice.discount,
       period: "/ bulan",
+      billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(corporateProPrice.final * 12)}` : "Ditagih bulanan",
       description: "Solusi terintegrasi untuk perusahaan properti besar.",
       features: [
         "Unlimited Clusters & Units",
@@ -686,7 +815,7 @@ const Pricing = () => {
           </p>
 
           {/* Toggle Switch */}
-          <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center justify-center mb-6">
             <div className="bg-muted p-1 rounded-full border inline-flex relative">
                 <div className="relative z-10 flex">
                     <button
@@ -710,6 +839,8 @@ const Pricing = () => {
                 />
             </div>
           </div>
+
+         
         </motion.div>
 
         {planType === "community" && (
@@ -718,7 +849,38 @@ const Pricing = () => {
             </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <motion.div>
+           {/* Billing Cycle Toggle (Community Only) */}
+            {planType === "community" && (
+              <div className="flex items-center justify-center mb-8">
+                  <div className="bg-muted p-1 rounded-full border inline-flex relative">
+                      <div className="relative z-10 flex">
+                          <button
+                              onClick={() => setBillingCycle("monthly")}
+                              className={`w-32 py-2 rounded-full text-sm font-medium transition-all duration-300 ${billingCycle === "monthly" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          >
+                              Bulanan
+                          </button>
+                          <button
+                              onClick={() => setBillingCycle("yearly")}
+                              className={`w-32 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${billingCycle === "yearly" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          >
+                              Tahunan
+                              <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-bold">-70%</span>
+                          </button>
+                      </div>
+                      {/* Sliding Background */}
+                      <motion.div 
+                          layout
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                          className={`absolute top-1 bottom-1 rounded-full shadow-sm bg-primary ${billingCycle === "monthly" ? "left-1 w-[calc(50%-4px)]" : "left-[50%] w-[calc(50%-4px)]"}`}
+                      />
+                  </div>
+              </div>
+            )}
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {activePlans.map((plan, i) => (
             <motion.div
               key={`${planType}-${i}`}
@@ -735,11 +897,11 @@ const Pricing = () => {
                 <CardHeader>
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <div className="mt-4 space-y-1">
-                    {planType === "community" && (plan as any).originalPrice && (
+                    {(plan as any).originalPrice && (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                         <span className="line-through decoration-red-500/50">{(plan as any).originalPrice}</span>
                         <span className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full animate-heartbeat">
-                          {(plan as any).discountLabel}
+                          {(plan as any).discount}
                         </span>
                       </div>
                     )}
@@ -815,12 +977,24 @@ const Promotion = () => (
 const FAQ = () => {
   const faqs = [
     {
-      question: "Apakah Sahabat Warga bisa digunakan tanpa internet?",
-      answer: "Sahabat Warga berbasis web, jadi membutuhkan koneksi internet. Namun data tersimpan aman di server cloud."
+      question: "Apa itu Sahabat Warga?",
+      answer: "Sahabat Warga adalah aplikasi manajemen lingkungan berbasis web yang membantu pengurus Komunitas mengelola data warga, iuran, dan surat pengantar secara digital, transparan, dan aman."
     },
     {
-      question: "Bisakah setiap RT punya dashboard sendiri?",
-      answer: "Bisa. Setiap RT dapat memiliki dashboard dan akun pengurus terpisah di dalam satu RW."
+      question: "Apakah data warga aman?",
+      answer: "Sangat aman. Kami menggunakan enkripsi standar industri dan server terproteksi. Data Anda adalah milik Anda, dan kami tidak memperjualbelikan data pengguna kepada pihak ketiga."
+    },
+    {
+      question: "Berapa biaya berlangganan Sahabat Warga?",
+      answer: "Kami menyediakan paket Starter yang GRATIS selamanya untuk lingkungan kecil (<40 Member). Untuk fitur lebih lengkap seperti pembayaran digital, tersedia paket Pro seharga Rp 199rb/bulan."
+    },
+    {
+      question: "Apakah perlu install aplikasi?",
+      answer: "Tidak perlu. Sahabat Warga adalah Web App (PWA) yang bisa diakses langsung dari browser HP atau Laptop tanpa perlu install. Cukup buka app.saga.co.id/sahabat-warga."
+    },
+    {
+      question: "Bagaimana cara mulai menggunakan?",
+      answer: "Cukup klik tombol 'Daftar Sekarang', isi data lingkungan Anda, dan Anda bisa langsung menggunakannya dalam hitungan menit. Tim kami juga siap membantu proses onboarding jika diperlukan."
     },
     {
       question: "Apakah data warga aman?",
@@ -901,6 +1075,27 @@ const FAQ = () => {
 
 import { SecuritySection } from "@/components/security-section"
 
+const Partners = () => (
+  <section className="py-12 border-b bg-muted/10">
+    <div className="container">
+      <p className="text-center text-xs md:text-sm font-semibold text-muted-foreground mb-8 tracking-[0.2em]">
+        OFFICIAL PARTNERS
+      </p>
+      <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20">
+        <div className="text-xl md:text-2xl font-bold text-muted-foreground hover:text-foreground transition-colors cursor-default">
+            Google Cloud
+        </div>
+        <div className="text-xl md:text-2xl font-bold text-muted-foreground hover:text-foreground transition-colors cursor-default">
+            AWS
+        </div>
+        <div className="text-xl md:text-2xl font-bold text-muted-foreground hover:text-foreground transition-colors cursor-default">
+            flip
+        </div>
+      </div>
+    </div>
+  </section>
+)
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -909,6 +1104,7 @@ export default function Home() {
         <Metrics />
         <Features />
         <SecuritySection />
+        <Partners />
         <Testimonials />
         <MobileApp />
         <Pricing />

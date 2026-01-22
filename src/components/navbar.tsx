@@ -4,6 +4,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { Zap } from "lucide-react"
+import { ShareDialog } from "@/components/share-dialog"
 
 export function Navbar() {
   return (
@@ -27,11 +29,15 @@ export function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           {/* <ThemeToggle /> */}
+          <ShareDialog />
           <Button variant="ghost" asChild>
             <Link href="https://app.saga.co.id">Masuk</Link>
           </Button>
           <Button asChild>
-            <Link href="https://app.saga.co.id">Daftar Sekarang</Link>
+            <Link href="https://app.saga.co.id">
+              <Zap className="mr-2 h-4 w-4" />
+              Daftar Sekarang
+            </Link>
           </Button>
         </div>
       </div>

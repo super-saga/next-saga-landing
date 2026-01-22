@@ -6,6 +6,12 @@ import { ArrowLeft, Shield, Lock, Server, FileCheck } from "lucide-react"
 export default function SecurityPage() {
   return (
     <div className="container py-12 md:py-20 max-w-4xl">
+      <Button asChild variant="ghost" className="mb-8 pl-0 hover:bg-transparent hover:text-primary">
+        <Link href="/" className="flex items-center gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Kembali ke Beranda
+        </Link>
+      </Button>
       <div className="mb-12 text-center">
         <Badge className="mb-4">Security & Compliance</Badge>
         <h1 className="text-3xl md:text-5xl font-bold mb-6">Keamanan adalah Prioritas Utama Kami</h1>
