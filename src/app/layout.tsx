@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     description: "Solusi Manajemen Lingkungan Modern",
     images: [
       {
-        url: `${siteUrl}/assets/images/dashboard-preview.png`,
+        url: `${siteUrl}/assets/images/web-preview.png`,
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: [`${siteUrl}/assets/images/dashboard-preview.png`],
+    images: [`${siteUrl}/assets/images/web-preview.png`],
   },
   icons: {
     icon: "/assets/images/icon.png",
