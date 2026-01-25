@@ -6,22 +6,23 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saga.co.id"
 
 export const metadata: Metadata = {
   title: "Sahabat Warga by Saga",
   description: "Solusi Manajemen Lingkungan Modern",
-  metadataBase: new URL("https://saga.co.id"),
+  metadataBase: new URL(siteUrl),
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
   },
   openGraph: {
     type: "website",
-    url: "/",
+    url: siteUrl,
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
     images: [
       {
-        url: "/assets/images/dashboard-preview.png",
+        url: `${siteUrl}/assets/images/dashboard-preview.png`,
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: ["/assets/images/dashboard-preview.png"],
+    images: [`${siteUrl}/assets/images/dashboard-preview.png`],
   },
   icons: {
     icon: "/assets/images/icon.png",
