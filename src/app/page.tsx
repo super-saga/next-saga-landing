@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, CreditCard, MessageCircle, Store, Wallet, Zap } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import {
@@ -180,7 +181,7 @@ const Hero = () => (
           className="flex flex-col sm:flex-row gap-4 w-full justify-center"
         >
           <Button size="lg" className="h-12 px-8 text-lg" asChild>
-            <Link href="https://app.saga.co.id/sahabat-warga">
+            <Link href="https://app.saga.co.id">
               Coba Gratis Sekarang <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
@@ -200,12 +201,14 @@ const Hero = () => (
             <div className="w-3 h-3 rounded-full bg-yellow-400" />
             <div className="w-3 h-3 rounded-full bg-green-400" />
           </div>
-          <div className="aspect-[16/9] bg-muted/20 flex items-center justify-center text-muted-foreground">
-             {/* Placeholder for Dashboard Image */}
-             <div className="text-center">
-               <LayoutDashboard className="w-16 h-16 mx-auto mb-4 opacity-50" />
-               <p>Dashboard Preview</p>
-             </div>
+          <div className="aspect-[16/9] bg-muted/20 relative overflow-hidden">
+            <Image
+              src="/assets/images/dashboard-preview.png"
+              alt="Dashboard Preview"
+              fill
+              className="object-cover"
+              priority
+            />
           </div>
         </motion.div>
       </div>
@@ -990,7 +993,7 @@ const FAQ = () => {
     },
     {
       question: "Apakah perlu install aplikasi?",
-      answer: "Tidak perlu. Sahabat Warga adalah Web App (PWA) yang bisa diakses langsung dari browser HP atau Laptop tanpa perlu install. Cukup buka app.saga.co.id/sahabat-warga."
+      answer: "Tidak perlu. Sahabat Warga adalah Web App (PWA) yang bisa diakses langsung dari browser HP atau Laptop tanpa perlu install. Cukup buka app.saga.co.id."
     },
     {
       question: "Bagaimana cara mulai menggunakan?",
