@@ -152,13 +152,74 @@ function PromoCountdown() {
   )
 }
 
+const PhonePreview = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const screens = [
+    {
+      src: "/assets/images/billing-details.png",
+      alt: "Billing Details",
+      badge: "Tagihan Masuk 📨",
+      color: "bg-blue-500"
+    },
+    {
+      src: "/assets/images/qris-preview.png",
+      alt: "QRIS Payment",
+      badge: "Siap Bayar ⚡",
+      color: "bg-emerald-500"
+    },
+  ]
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % screens.length)
+    }, 3000)
+    return () => clearInterval(timer)
+  }, [screens.length])
+
+  return (
+    <div className="relative w-full h-full">
+      {/* Animated Badge */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, y: 10, x: -20 }}
+          animate={{ opacity: 1, y: 0, x: -20 }}
+          exit={{ opacity: 0, y: -10, x: -20 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className={`absolute -left-16 top-16 z-20 px-4 py-2 rounded-full text-white text-xs md:text-sm font-bold shadow-lg flex items-center gap-2 ${screens[currentIndex].color}`}
+        >
+          {screens[currentIndex].badge}
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="relative w-full h-full rounded-[1.5rem] md:rounded-[2.5rem] border-[4px] md:border-[8px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 bg-white"
+          >
+            <Image
+              src={screens[currentIndex].src}
+              alt={screens[currentIndex].alt}
+              fill
+              className="object-contain"
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
 
 const Hero = () => (
   <section className="py-20 md:py-32 overflow-hidden relative">
-    <div className="container px-4 md:px-6 relative z-10">
+    <div className="container">
       <div className="flex flex-col items-center text-center space-y-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -209,6 +270,16 @@ const Hero = () => (
               className="object-cover"
               priority
             />
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="absolute bottom-0 right-4 md:right-10 w-[20%] md:w-[18%] translate-y-[10%] z-10"
+            >
+              <div className="relative aspect-[9/19]">
+                <PhonePreview />
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
@@ -291,9 +362,9 @@ const Features = () => {
       tiers: ["Starter", "Pro", "Business"],
     },
     {
-      title: "Notifikasi Otomatis",
-      description: "Pengingat iuran dan laporan otomatis untuk pengurus dan warga.",
-      icon: CheckCircle2,
+      title: "Integrasi WhatsApp",
+      description: "Broadcast pengumuman, pengingat iuran, dan update laporan langsung ke WhatsApp warga.",
+      icon: MessageCircle,
       status: "available",
       tiers: ["Starter", "Pro", "Business"],
     },

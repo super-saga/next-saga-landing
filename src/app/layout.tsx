@@ -10,6 +10,30 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Sahabat Warga by Saga",
   description: "Solusi Manajemen Lingkungan Modern",
+  metadataBase: new URL("https://saga.co.id"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    title: "Sahabat Warga by Saga",
+    description: "Solusi Manajemen Lingkungan Modern",
+    images: [
+      {
+        url: "/assets/images/dashboard-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Sahabat Warga Dashboard Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sahabat Warga by Saga",
+    description: "Solusi Manajemen Lingkungan Modern",
+    images: ["/assets/images/dashboard-preview.png"],
+  },
   icons: {
     icon: "/assets/images/icon.png",
     shortcut: "/assets/images/icon.png",
