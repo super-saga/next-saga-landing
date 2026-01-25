@@ -262,7 +262,7 @@ const Hero = () => (
             <div className="w-3 h-3 rounded-full bg-yellow-400" />
             <div className="w-3 h-3 rounded-full bg-green-400" />
           </div>
-          <div className="aspect-[16/9] bg-muted/20 relative overflow-hidden">
+          <div className="aspect-[16/9] bg-muted/20 relative overflow-hidden group">
             <Image
               src="/assets/images/dashboard-preview.png"
               alt="Dashboard Preview"
@@ -270,6 +270,9 @@ const Hero = () => (
               className="object-cover"
               priority
             />
+            <div className="absolute inset-0 bg-muted/50 backdrop-blur-[1px] flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="font-bold text-sm bg-background px-3 py-1 rounded-full shadow-sm">Segera Hadir</span>
+            </div>
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
