@@ -41,6 +41,8 @@ export default function RequestDemoPage() {
           requestedDate: date || null,
           messageLength: message.length,
           hasMessage: Boolean(message),
+          name: name || null,
+          email: email || null,
         })
         setIsSuccess(true)
       } else {
