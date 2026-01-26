@@ -8,7 +8,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import posthog from "posthog-js"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import {
   Accordion,
   AccordionContent,
@@ -23,6 +23,12 @@ function PromoCountdown({ deadline }: { deadline: Date }) {
     const interval = setInterval(() => {
       const now = new Date()
       const difference = deadline.getTime() - now.getTime()
+
+      if (Number.isNaN(difference)) {
+        clearInterval(interval)
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+        return
+      }
 
       if (difference <= 0) {
         clearInterval(interval)
@@ -659,9 +665,32 @@ const MobileApp = () => (
 const Pricing = () => {
   const [planType, setPlanType] = useState<"community" | "enterprise">("community")
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
-  const defaultDiscountEndDate = new Date("2026-01-31T23:59:59")
+  const defaultDiscountEndDate = new Date(Date.UTC(2026, 1, 28, 23, 59, 59))
   const [discountEndDate, setDiscountEndDate] = useState<Date | null>(defaultDiscountEndDate)
-  const [discountExpired, setDiscountExpired] = useState(false)
+  const [now, setNow] = useState(() => Date.now())
+
+  const parseDiscountDate = (value: unknown) => {
+    if (value instanceof Date) {
+      return value
+    }
+    if (typeof value !== "string") {
+      return null
+    }
+    const trimmed = value.trim()
+    if (!trimmed) {
+      return null
+    }
+    const parsed = new Date(trimmed)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed
+    }
+    const normalized = trimmed.includes("T") ? trimmed : `${trimmed}T00:00:00`
+    const normalizedParsed = new Date(normalized)
+    if (!Number.isNaN(normalizedParsed.getTime())) {
+      return normalizedParsed
+    }
+    return null
+  }
 
   useEffect(() => {
     const applyDiscountConfig = () => {
@@ -671,14 +700,37 @@ const Pricing = () => {
         return
       }
 
-      const payload = posthog.getFeatureFlagPayload?.("landing_discount") as any
-      const endDateValue = payload?.endDate || payload?.end_date || payload?.discount_end_date
-      if (endDateValue) {
-        const parsed = new Date(endDateValue)
-        if (!Number.isNaN(parsed.getTime())) {
-          setDiscountEndDate(parsed)
-          return
+      const rawPayload = posthog.getFeatureFlagPayload?.("landing_discount")
+      const payload = (() => {
+        if (typeof rawPayload !== "string") {
+          return rawPayload
         }
+        const trimmed = rawPayload.trim()
+        try {
+          const parsed = JSON.parse(trimmed)
+          if (typeof parsed === "string") {
+            const nested = parsed.trim()
+            if ((nested.startsWith("{") && nested.endsWith("}")) || (nested.startsWith("[") && nested.endsWith("]"))) {
+              try {
+                return JSON.parse(nested)
+              } catch {
+                return parsed
+              }
+            }
+          }
+          return parsed
+        } catch {
+          return rawPayload
+        }
+      })()
+      const resolvedPayload = (payload as any)?.payload ?? payload
+      const endDateValue = typeof resolvedPayload === "string"
+        ? resolvedPayload
+        : (resolvedPayload as any)?.endDate || (resolvedPayload as any)?.end_date || (resolvedPayload as any)?.discount_end_date
+      const parsed = parseDiscountDate(endDateValue)
+      if (parsed) {
+        setDiscountEndDate(parsed)
+        return
       }
 
       setDiscountEndDate(defaultDiscountEndDate)
@@ -690,22 +742,24 @@ const Pricing = () => {
 
   useEffect(() => {
     if (!discountEndDate) {
-      setDiscountExpired(false)
+      setNow(Date.now())
       return
     }
 
     const ms = discountEndDate.getTime() - Date.now()
     if (ms <= 0) {
-      setDiscountExpired(true)
+      setNow(Date.now())
       return
     }
 
-    setDiscountExpired(false)
-    const timeout = setTimeout(() => setDiscountExpired(true), ms)
+    const timeout = setTimeout(() => setNow(Date.now()), ms)
     return () => clearTimeout(timeout)
   }, [discountEndDate])
 
-  const discountActive = Boolean(discountEndDate && !discountExpired)
+  const discountActive = useMemo(
+    () => Boolean(discountEndDate && discountEndDate.getTime() > now),
+    [discountEndDate, now]
+  )
 
   // Base prices for Community Plans (Dummy Prices)
   const prices = {

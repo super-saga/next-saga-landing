@@ -4,18 +4,29 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useState } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils"
+import { useMemo, useState } from "react"
 import posthog from "posthog-js"
 import { CalendarIcon, CheckCircle2 } from "lucide-react"
+import { format } from "date-fns"
 import Link from "next/link"
 
 export default function RequestDemoPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [tier, setTier] = useState("")
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const minDate = useMemo(() => {
+    const value = new Date()
+    value.setDate(value.getDate() + 3)
+    value.setHours(0, 0, 0, 0)
+    return value
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
 
     const formData = new FormData(e.target as HTMLFormElement)
     const data = Object.fromEntries(formData.entries())
@@ -25,6 +36,14 @@ export default function RequestDemoPage() {
     const company = typeof data.company === "string" ? data.company.trim() : ""
     const date = typeof data.date === "string" ? data.date : ""
     const message = typeof data.message === "string" ? data.message.trim() : ""
+    const selectedTier = typeof data.tier === "string" ? data.tier.trim() : ""
+
+    if (!name || !email || !phone || !company || !selectedTier || !date) {
+      alert("Mohon lengkapi semua kolom wajib sebelum mengirim permintaan demo.")
+      return
+    }
+
+    setIsLoading(true)
 
     try {
       const res = await fetch("/api/demo", {
@@ -34,15 +53,29 @@ export default function RequestDemoPage() {
       })
 
       if (res.ok) {
+        if (phone) {
+          posthog.identify?.(phone, {
+            name: name || null,
+            email: email || null,
+            phone,
+            company: company || null,
+            tier: selectedTier || null,
+          })
+        }
+        if (company) {
+          posthog.group?.("company", company, {
+            name: company,
+          })
+        }
         posthog.capture?.("demo_request_submitted", {
           source: "request-demo",
-          hasPhone: Boolean(phone),
-          hasCompany: Boolean(company),
-          requestedDate: date || null,
-          messageLength: message.length,
-          hasMessage: Boolean(message),
+          phone: phone,
+          company: company,
+          request_date: date || null,
+          message: message,
           name: name || null,
           email: email || null,
+          tier: selectedTier || null,
         })
         setIsSuccess(true)
       } else {
@@ -106,7 +139,7 @@ export default function RequestDemoPage() {
               </div>
               <div className="space-y-2">
                 <label htmlFor="phone" className="text-sm font-medium">Nomor WhatsApp</label>
-                <Input id="phone" name="phone" placeholder="0812..." />
+                <Input id="phone" name="phone" placeholder="0812..." required />
               </div>
             </div>
             
@@ -117,13 +150,58 @@ export default function RequestDemoPage() {
               </div>
               <div className="space-y-2">
                 <label htmlFor="company" className="text-sm font-medium">Lingkungan / Organisasi</label>
-                <Input id="company" name="company" placeholder="RT 05 / RW 02" />
+                <Input id="company" name="company" placeholder="RT 05 / RW 02" required />
               </div>
             </div>
 
             <div className="space-y-2">
+              <label className="text-sm font-medium">Ketertarikan Paket</label>
+              <div className="grid sm:grid-cols-3 gap-3">
+                {["Starter", "Pro", "Business"].map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setTier(option)}
+                    className={`rounded-lg border px-4 py-3 text-sm font-medium transition-all ${tier === option ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              <input type="hidden" name="tier" value={tier} />
+            </div>
+
+            <div className="space-y-2">
               <label htmlFor="date" className="text-sm font-medium">Tanggal yang Diinginkan</label>
-              <Input id="date" name="date" type="date" required />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !selectedDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "dd MMM yyyy") : "Pilih tanggal"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    disabled={(day: Date) => day < minDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <input
+                type="hidden"
+                name="date"
+                value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
+              />
             </div>
 
             <div className="space-y-2">

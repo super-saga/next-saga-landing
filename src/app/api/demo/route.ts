@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import { createCalendarEvent } from "@/lib/calendar"
+import { createCalcomBooking, createCalendarEvent } from "@/lib/calendar"
 import { sendDemoRequestEmail } from "@/lib/email"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, phone, company, date, message } = body
+    const { name, email, phone, company, date, message, tier } = body
 
     if (!name || !email || !date) {
       return NextResponse.json(
@@ -16,7 +16,15 @@ export async function POST(request: Request) {
 
     // Parallel execution for speed
     await Promise.all([
-      createCalendarEvent(name, email, date, message || "No notes provided"),
+      createCalcomBooking({
+        name,
+        email,
+        phone,
+        company,
+        date,
+        message,
+        tier,
+      }),
       sendDemoRequestEmail({
         name,
         email,
