@@ -4,25 +4,20 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
 import { useMemo, useState } from "react"
 import posthog from "posthog-js"
 import { CalendarIcon, CheckCircle2 } from "lucide-react"
-import { format } from "date-fns"
 import Link from "next/link"
 
 export default function RequestDemoPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [tier, setTier] = useState("")
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
-  const minDate = useMemo(() => {
+  const minDateValue = useMemo(() => {
     const value = new Date()
     value.setDate(value.getDate() + 3)
     value.setHours(0, 0, 0, 0)
-    return value
+    return value.toISOString().split("T")[0]
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,9 +32,21 @@ export default function RequestDemoPage() {
     const date = typeof data.date === "string" ? data.date : ""
     const message = typeof data.message === "string" ? data.message.trim() : ""
     const selectedTier = typeof data.tier === "string" ? data.tier.trim() : ""
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const phonePattern = /^62\d{8,13}$/
 
     if (!name || !email || !phone || !company || !selectedTier || !date) {
       alert("Mohon lengkapi semua kolom wajib sebelum mengirim permintaan demo.")
+      return
+    }
+
+    if (!emailPattern.test(email)) {
+      alert("Format email tidak valid.")
+      return
+    }
+
+    if (!phonePattern.test(phone)) {
+      alert("Nomor WhatsApp harus diawali 62 dan hanya berisi angka.")
       return
     }
 
@@ -134,37 +141,62 @@ export default function RequestDemoPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium">Nama Lengkap</label>
+                <label htmlFor="name" className="text-sm font-medium">Nama Lengkap <span className="text-red-500">*</span></label>
                 <Input id="name" name="name" required placeholder="Budi Santoso" />
               </div>
               <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium">Nomor WhatsApp</label>
-                <Input id="phone" name="phone" placeholder="0812..." required />
+                <label htmlFor="phone" className="text-sm font-medium">Nomor WhatsApp <span className="text-red-500">*</span></label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  placeholder="62812..."
+                  required
+                  inputMode="numeric"
+                  pattern="^62\d{8,13}$"
+                  title="Gunakan format 62 diikuti 8-13 digit angka"
+                />
               </div>
             </div>
             
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">Email</label>
-                <Input id="email" name="email" type="email" required placeholder="nama@email.com" />
+                <label htmlFor="email" className="text-sm font-medium">Email <span className="text-red-500">*</span></label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="nama@email.com"
+                  pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                  title="Masukkan alamat email yang valid"
+                />
               </div>
               <div className="space-y-2">
-                <label htmlFor="company" className="text-sm font-medium">Lingkungan / Organisasi</label>
+                <label htmlFor="company" className="text-sm font-medium">Lingkungan / Organisasi <span className="text-red-500">*</span></label>
                 <Input id="company" name="company" placeholder="RT 05 / RW 02" required />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Ketertarikan Paket</label>
+              <label htmlFor="tier" className="text-sm font-medium">Ketertarikan Paket <span className="text-red-500">*</span></label>
               <div className="grid sm:grid-cols-3 gap-3">
-                {["Starter", "Pro", "Business"].map((option) => (
+                {[{
+                  value: "starter",
+                  label: "Starter",
+                }, {
+                  value: "pro",
+                  label: "Pro",
+                }, {
+                  value: "business",
+                  label: "Business",
+                }].map((option) => (
                   <button
-                    key={option}
+                    key={option.value}
                     type="button"
-                    onClick={() => setTier(option)}
-                    className={`rounded-lg border px-4 py-3 text-sm font-medium transition-all ${tier === option ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}
+                    onClick={() => setTier(option.value)}
+                    className={`rounded-lg border px-4 py-3 text-sm font-medium transition-all ${tier === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`} 
                   >
-                    {option}
+                    {option.label}
                   </button>
                 ))}
               </div>
@@ -173,35 +205,7 @@ export default function RequestDemoPage() {
 
             <div className="space-y-2">
               <label htmlFor="date" className="text-sm font-medium">Tanggal yang Diinginkan</label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="date"
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !selectedDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "dd MMM yyyy") : "Pilih tanggal"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    disabled={(day: Date) => day < minDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <input
-                type="hidden"
-                name="date"
-                value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
-              />
+              <Input id="date" name="date" type="date" required min={minDateValue} />
             </div>
 
             <div className="space-y-2">
