@@ -53,45 +53,31 @@ export default function RequestDemoPage() {
     setIsLoading(true)
 
     try {
-      const res = await fetch("/api/demo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-
-      if (res.ok) {
-        if (phone) {
-          posthog.identify?.(phone, {
-            name: name || null,
-            email: email || null,
-            phone,
-            company: company || null,
-            tier: selectedTier || null,
-          })
-        }
-        if (company) {
-          posthog.group?.("company", company, {
-            name: company,
-          })
-        }
-        posthog.capture?.("demo_request_submitted", {
-          source: "request-demo",
-          phone: phone,
-          company: company,
-          request_date: date || null,
-          message: message,
+      if (phone) {
+        posthog.identify?.(phone, {
           name: name || null,
           email: email || null,
+          phone,
+          company: company || null,
           tier: selectedTier || null,
         })
-        setIsSuccess(true)
-      } else {
-        posthog.capture?.("demo_request_failed", {
-          source: "request-demo",
-          status: res.status,
-        })
-        alert("Something went wrong. Please try again.")
       }
+      if (company) {
+        posthog.group?.("company", company, {
+          name: company,
+        })
+      }
+      posthog.capture?.("demo_request_submitted", {
+        source: "request-demo",
+        phone: phone,
+        company: company,
+        request_date: date || null,
+        message: message,
+        name: name || null,
+        email: email || null,
+        tier: selectedTier || null,
+      })
+      setIsSuccess(true)
     } catch (error) {
       posthog.capture?.("demo_request_failed", {
         source: "request-demo",
