@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
+import posthog from "posthog-js"
 import { CalendarIcon, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 
@@ -18,6 +19,12 @@ export default function RequestDemoPage() {
 
     const formData = new FormData(e.target as HTMLFormElement)
     const data = Object.fromEntries(formData.entries())
+    const name = typeof data.name === "string" ? data.name.trim() : ""
+    const email = typeof data.email === "string" ? data.email.trim() : ""
+    const phone = typeof data.phone === "string" ? data.phone.trim() : ""
+    const company = typeof data.company === "string" ? data.company.trim() : ""
+    const date = typeof data.date === "string" ? data.date : ""
+    const message = typeof data.message === "string" ? data.message.trim() : ""
 
     try {
       const res = await fetch("/api/demo", {
@@ -27,11 +34,27 @@ export default function RequestDemoPage() {
       })
 
       if (res.ok) {
+        posthog.capture?.("demo_request_submitted", {
+          source: "request-demo",
+          hasPhone: Boolean(phone),
+          hasCompany: Boolean(company),
+          requestedDate: date || null,
+          messageLength: message.length,
+          hasMessage: Boolean(message),
+        })
         setIsSuccess(true)
       } else {
+        posthog.capture?.("demo_request_failed", {
+          source: "request-demo",
+          status: res.status,
+        })
         alert("Something went wrong. Please try again.")
       }
     } catch (error) {
+      posthog.capture?.("demo_request_failed", {
+        source: "request-demo",
+        error: error instanceof Error ? error.message : "Unknown error",
+      })
       console.error(error)
       alert("Error submitting form.")
     } finally {

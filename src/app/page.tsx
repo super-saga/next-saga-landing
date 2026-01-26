@@ -7,6 +7,7 @@ import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smar
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
+import posthog from "posthog-js"
 import { useState, useEffect } from "react"
 import {
   Accordion,
@@ -15,18 +16,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
-function PromoCountdown() {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  })
+function PromoCountdown({ deadline }: { deadline: Date }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   useEffect(() => {
-    // Set deadline to End of Year 2025
-    const deadline = new Date("2026-02-31T23:59:59")
-    
     const interval = setInterval(() => {
       const now = new Date()
       const difference = deadline.getTime() - now.getTime()
@@ -46,7 +39,7 @@ function PromoCountdown() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [deadline])
 
   return (
     <motion.div 
@@ -666,6 +659,53 @@ const MobileApp = () => (
 const Pricing = () => {
   const [planType, setPlanType] = useState<"community" | "enterprise">("community")
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
+  const defaultDiscountEndDate = new Date("2026-01-31T23:59:59")
+  const [discountEndDate, setDiscountEndDate] = useState<Date | null>(defaultDiscountEndDate)
+  const [discountExpired, setDiscountExpired] = useState(false)
+
+  useEffect(() => {
+    const applyDiscountConfig = () => {
+      const enabled = posthog.isFeatureEnabled?.("landing_discount")
+      if (enabled === false) {
+        setDiscountEndDate(null)
+        return
+      }
+
+      const payload = posthog.getFeatureFlagPayload?.("landing_discount") as any
+      const endDateValue = payload?.endDate || payload?.end_date || payload?.discount_end_date
+      if (endDateValue) {
+        const parsed = new Date(endDateValue)
+        if (!Number.isNaN(parsed.getTime())) {
+          setDiscountEndDate(parsed)
+          return
+        }
+      }
+
+      setDiscountEndDate(defaultDiscountEndDate)
+    }
+
+    posthog.onFeatureFlags?.(applyDiscountConfig)
+    applyDiscountConfig()
+  }, [])
+
+  useEffect(() => {
+    if (!discountEndDate) {
+      setDiscountExpired(false)
+      return
+    }
+
+    const ms = discountEndDate.getTime() - Date.now()
+    if (ms <= 0) {
+      setDiscountExpired(true)
+      return
+    }
+
+    setDiscountExpired(false)
+    const timeout = setTimeout(() => setDiscountExpired(true), ms)
+    return () => clearTimeout(timeout)
+  }, [discountEndDate])
+
+  const discountActive = Boolean(discountEndDate && !discountExpired)
 
   // Base prices for Community Plans (Dummy Prices)
   const prices = {
@@ -677,39 +717,51 @@ const Pricing = () => {
   }
 
   const calculatePrice = (base: number) => {
+    if (!discountActive) {
+      return {
+        original: base,
+        final: base,
+      }
+    }
+
     if (billingCycle === "monthly") {
-        return {
-            original: base,
-            final: base * 0.6, // 40% discount
-            discount: "40%"
-        }
-    } else {
-        return {
-            original: base,
-            final: base * 0.3, // 70% discount
-            discount: "70%"
-        }
+      return {
+        original: base,
+        final: base * 0.6,
+        discount: "40%",
+      }
+    }
+
+    return {
+      original: base,
+      final: base * 0.4,
+      discount: "60%",
     }
   }
 
   // Special calculation for Enterprise plans where user specified Final Price and markup
   const calculateEnterprisePrice = (targetFinal: number) => {
-    const original = targetFinal * 1.4 // "base/dummy price was add 40% more"
-    
+    const original = targetFinal * 1.4
+
+    if (!discountActive) {
+      return {
+        original: original,
+        final: original,
+      }
+    }
+
     if (billingCycle === "monthly") {
-        return {
-            original: original,
-            final: targetFinal,
-            discount: "29%" // (1.4 - 1) / 1.4 ≈ 28.57%
-        }
-    } else {
-        // Assuming yearly maintains the deep discount relative to the original price
-        // Existing logic was 60% off original
-        return {
-            original: original,
-            final: original * 0.3, // 70% discount from original
-            discount: "70%"
-        }
+      return {
+        original: original,
+        final: targetFinal,
+        discount: "29%",
+      }
+    }
+
+    return {
+      original: original,
+      final: original * 0.4,
+      discount: "60%",
     }
   }
 
@@ -754,7 +806,7 @@ const Pricing = () => {
     {
       name: "Pro",
       price: formatCurrency(proPrice.final),
-      originalPrice: formatCurrency(proPrice.original),
+      originalPrice: proPrice.discount ? formatCurrency(proPrice.original) : undefined,
       discount: proPrice.discount,
       period: "/ bulan",
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(proPrice.final * 12)}` : "Ditagih bulanan",
@@ -775,7 +827,7 @@ const Pricing = () => {
     {
       name: "Business",
       price: formatCurrency(businessPrice.final),
-      originalPrice: formatCurrency(businessPrice.original),
+      originalPrice: businessPrice.discount ? formatCurrency(businessPrice.original) : undefined,
       discount: businessPrice.discount,
       period: "/ bulan",
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(businessPrice.final * 12)}` : "Ditagih bulanan",
@@ -920,10 +972,10 @@ const Pricing = () => {
          
         </motion.div>
 
-        {planType === "community" && (
-            <div className="mb-12">
-              <PromoCountdown />
-            </div>
+        {planType === "community" && discountActive && discountEndDate && (
+          <div className="mb-12">
+            <PromoCountdown deadline={discountEndDate} />
+          </div>
         )}
 
         <motion.div>
