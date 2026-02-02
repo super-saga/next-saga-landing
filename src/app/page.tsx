@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { features } from "@/lib/features"
-import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, MessageCircle, Star } from "lucide-react"
+import { 
+  ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, MessageCircle, Star, 
+  ShieldCheck, Zap, Lock, Database, Globe, BarChart3, Cloud, Server, Box, Building, Laptop, 
+  CreditCard, Key, Settings, HelpCircle, Mail, Phone, Clock, FileSpreadsheet, Search,
+  Store, Wallet,
+  Palette
+} from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
@@ -24,6 +30,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import {
+  PricingDetailDialog
+} from "@/components/pricing-detail-dialog"
 
 function PromoCountdown({ deadline }: { deadline: Date }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -709,6 +718,10 @@ const Pricing = () => {
   const [now, setNow] = useState(() => Date.now())
   const [showDialog, setShowDialog] = useState(false)
   const [hasShownDialog, setHasShownDialog] = useState(false)
+  
+  // State for the Detailed Comparison Dialog
+  const [selectedPlan, setSelectedPlan] = useState<any>(null)
+  const [showDetailDialog, setShowDetailDialog] = useState(false)
 
   const parseDiscountDate = (value: unknown) => {
     if (value instanceof Date) {
@@ -886,12 +899,12 @@ const Pricing = () => {
       billing: "Selamanya",
       description: "Fitur esensial untuk memulai manajemen lingkungan.",
       features: [
-        "Manajemen data warga dasar",
-        "Iuran digital",
-        "Admin pengurus tanpa batas",
-        "Hingga 40 Warga",
-        "Laporan keuangan sederhana",
-        "Pengingat iuran WhatsApp"
+        { name: "Manajemen data warga dasar", description: "Catat data warga, KK, dan rumah dengan mudah.", icon: Users },
+        { name: "Iuran digital", description: "Terima pembayaran iuran via QRIS & VA otomatis.", icon: Smartphone },
+        { name: "Admin pengurus tanpa batas", description: "Tambahkan seluruh tim pengurus tanpa biaya tambahan.", icon: ShieldCheck },
+        { name: "Hingga 40 Warga", description: "Cocok untuk lingkungan kecil atau RT baru.", icon: Users },
+        { name: "Laporan keuangan sederhana", description: "Rekap pemasukan dan pengeluaran kas otomatis.", icon: FileText },
+        { name: "Pengingat iuran WhatsApp", description: "Kirim notifikasi tagihan ke warga via WA.", icon: MessageCircle }
       ],
       cta: "Mulai Starter",
       href: "https://app.saga.co.id/register",
@@ -907,12 +920,12 @@ const Pricing = () => {
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(proPrice.final * 12)}` : "Ditagih bulanan",
       description: "Cocok untuk perumahan dan RT RW",
       features: [
-        "Semua fitur Starter",
-        "Hingga 400 warga",
-        "Laporan keuangan detail",
-        "Auto payout (Akan datang)",
-        "Biaya transaksi murah",
-        "Program affiliate untuk semua warga"
+        { name: "Semua fitur Starter", description: "Termasuk semua fitur yang ada di paket Starter.", icon: CheckCircle2 },
+        { name: "Hingga 400 warga", description: "Kapasitas lebih besar untuk RW atau Cluster.", icon: Users },
+        { name: "Laporan keuangan detail", description: "Neraca, Arus Kas, dan Laporan Perubahan Modal.", icon: BarChart3 },
+        { name: "Auto payout (Akan datang)", description: "Pencairan dana otomatis ke rekening pengurus.", icon: CreditCard },
+        { name: "Biaya transaksi murah", description: "Fee MDR dan admin bank yang lebih kompetitif.", icon: Zap },
+        { name: "Program affiliate untuk semua warga", description: "Warga bisa dapat penghasilan tambahan.", icon: Star }
       ],
       cta: "Pilih Pro",
       href: "https://app.saga.co.id/register",
@@ -928,13 +941,13 @@ const Pricing = () => {
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(businessPrice.final * 12)}` : "Ditagih bulanan",
       description: "Cocok untuk kawasan, developer, dan apartement.",
       features: [
-        "Semua fitur Pro",
-        "Unlimited pengurus",
-        "Unlimited warga",
-        "Portal UMKM (Akan datang)",
-        "Komisi produk multi biller (Akan datang)",
-        "Program affiliate untuk semua warga",
-        "Support Prioritas 24/7"
+        { name: "Semua fitur Pro", description: "Termasuk semua fitur yang ada di paket Pro.", icon: CheckCircle2 },
+        { name: "Unlimited pengurus", description: "Tidak ada batasan jumlah admin pengelola.", icon: ShieldCheck },
+        { name: "Unlimited warga", description: "Kelola ribuan unit tanpa batasan kuota.", icon: Users },
+        { name: "Portal UMKM (Akan datang)", description: "Marketplace lokal untuk usaha warga.", icon: Store },
+        { name: "Komisi produk multi biller", description: "Dapat bagi hasil dari transaksi PPOB warga.", icon: Wallet },
+        { name: "Program affiliate untuk semua warga", description: "Sistem referral bertingkat untuk komunitas.", icon: Star },
+        { name: "Support Prioritas 24/7", description: "Jalur khusus bantuan teknis kapan saja.", icon: HelpCircle }
       ],
       cta: "Pilih Business",
       href: "https://app.saga.co.id/register",
@@ -953,11 +966,11 @@ const Pricing = () => {
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(corporatePlusPrice.final * 12)}` : "Ditagih bulanan",
       description: "Untuk pengelola properti & developer skala menengah.",
       features: [
-        "Multi-Cluster Management",
-        "White Label Dashboard",
-        "Dedicated Account Manager",
-        "SLA 99.9%",
-        "API Access Basic"
+        { name: "Multi-Cluster Management", description: "Kelola banyak proyek dalam satu dashboard.", icon: Building },
+        { name: "White Label Dashboard", description: "Gunakan logo dan warna brand perusahaan Anda.", icon: Palette },
+        { name: "Dedicated Account Manager", description: "Satu PIC khusus untuk membantu operasional.", icon: Users },
+        { name: "SLA 99.9%", description: "Jaminan uptime server untuk operasional kritis.", icon: Server },
+        { name: "API Access Basic", description: "Integrasi data dasar dengan sistem internal.", icon: Database }
       ],
       cta: "Hubungi Sales",
       href: "https://wa.me/6285128070019",
@@ -973,12 +986,12 @@ const Pricing = () => {
       billing: billingCycle === "yearly" ? `Ditagih tahunan ${formatCurrency(corporateProPrice.final * 12)}` : "Ditagih bulanan",
       description: "Solusi terintegrasi untuk perusahaan properti besar.",
       features: [
-        "Unlimited Clusters & Units",
-        "Custom Domain & Branding",
-        "On-premise Deployment Option",
-        "Priority 24/7 Support",
-        "Full API Access",
-        "Custom Integration"
+        { name: "Unlimited Clusters & Units", description: "Skalabilitas tanpa batas untuk Enterprise.", icon: Globe },
+        { name: "Custom Domain & Branding", description: "Akses via domain perusahaan (cth: warga.perusahaan.com).", icon: Globe },
+        { name: "On-premise Deployment Option", description: "Install di server perusahaan sendiri (Self-hosted).", icon: Server },
+        { name: "Priority 24/7 Support", description: "Dukungan teknis enterprise grade.", icon: Phone },
+        { name: "Full API Access", description: "Akses penuh ke seluruh endpoint API.", icon: Key },
+        { name: "Custom Integration", description: "Integrasi khusus dengan ERP/SAP perusahaan.", icon: Settings }
       ],
       cta: "Hubungi Sales",
       href: "https://wa.me/6285128070019",
@@ -991,11 +1004,11 @@ const Pricing = () => {
       period: "",
       description: "Ekosistem digital penuh untuk Smart City.",
       features: [
-        "Smart City Integration",
-        "IoT Dashboard Integration",
-        "Custom Development",
-        "Dedicated Server Infrastructure",
-        "GovTech Compliance"
+        { name: "Smart City Integration", description: "Integrasi dengan Command Center Kota.", icon: Building },
+        { name: "IoT Dashboard Integration", description: "Monitoring CCTV, Palang Parkir, dan Sensor IoT.", icon: Cloud },
+        { name: "Custom Development", description: "Pengembangan fitur khusus sesuai kebutuhan Pemda.", icon: Box },
+        { name: "Dedicated Server Infrastructure", description: "Infrastruktur server terdedikasi.", icon: Server },
+        { name: "GovTech Compliance", description: "Sesuai standar keamanan dan regulasi pemerintah.", icon: ShieldCheck }
       ],
       cta: "Konsultasi Project",
       href: "https://wa.me/6285128070019",
@@ -1117,8 +1130,13 @@ const Pricing = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
+              onClick={() => {
+                setSelectedPlan(plan)
+                setShowDetailDialog(true)
+              }}
+              className="cursor-pointer group"
             >
-              <Card className={`flex flex-col h-full relative overflow-hidden transition-all duration-300 hover:shadow-xl ${plan.popular ? (planType === "enterprise" ? "border-blue-600 shadow-blue-900/10 scale-105 z-10" : "border-primary shadow-primary/10 scale-105 z-10") : "hover:border-primary/50"}`}>
+              <Card className={`flex flex-col h-full relative overflow-hidden transition-all duration-300 hover:shadow-xl ${plan.popular ? (planType === "enterprise" ? "border-blue-600 shadow-blue-900/10 scale-105 z-10" : "border-primary shadow-primary/10 scale-105 z-10") : "hover:border-primary/50 group-hover:-translate-y-1"}`}>
                 {plan.popular && (
                   <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold rounded-bl-lg text-white ${planType === "enterprise" ? "bg-blue-600" : "bg-primary"}`}>
                     POPULAR
@@ -1147,12 +1165,17 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent className="flex-1">
                   <ul className="space-y-3">
-                    {plan.features.map((feature, idx) => (
+                    {plan.features.slice(0, 5).map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm">
                             <Check className={`w-4 h-4 mt-0.5 shrink-0 ${planType === "enterprise" ? "text-blue-600" : "text-primary"}`} />
-                            <span className="text-muted-foreground">{feature}</span>
+                            <span className="text-muted-foreground">{feature.name}</span>
                         </li>
                     ))}
+                    {plan.features.length > 5 && (
+                       <li className="flex items-center gap-2 text-sm text-muted-foreground/80 italic pt-2">
+                          <span className="text-xs">+ {plan.features.length - 5} fitur lainnya (Klik untuk detail)</span>
+                       </li>
+                    )}
                   </ul>
                 </CardContent>
                 <div className="p-6 pt-0">
@@ -1160,6 +1183,7 @@ const Pricing = () => {
                     className={`w-full ${planType === "enterprise" && plan.popular ? "bg-blue-600 hover:bg-blue-700" : ""}`} 
                     variant={plan.variant as any} 
                     asChild
+                    onClick={(e) => e.stopPropagation()} 
                   >
                     <Link href={plan.href}>{plan.cta}</Link>
                   </Button>
@@ -1168,6 +1192,14 @@ const Pricing = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Detailed Comparison Dialog */}
+        <PricingDetailDialog 
+          open={showDetailDialog} 
+          onOpenChange={setShowDetailDialog}
+          plan={selectedPlan}
+          planType={planType}
+        />
       </div>
     </section>
   )
