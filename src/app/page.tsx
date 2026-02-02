@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, CreditCard, MessageCircle, Store, Wallet, Zap } from "lucide-react"
+import { features } from "@/lib/features"
+import { ArrowRight, Check, CheckCircle2, LayoutDashboard, Users, FileText, Smartphone, Flame, MessageCircle, Star } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
@@ -15,6 +16,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 
 function PromoCountdown({ deadline }: { deadline: Date }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -217,82 +226,137 @@ const PhonePreview = () => {
 const Hero = () => (
   <section className="py-20 md:py-32 overflow-hidden relative">
     <div className="container">
-      <div className="flex flex-col items-center text-center space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Badge variant="secondary" className="mb-4 px-4 py-1 text-sm rounded-full">
-            🚀 Solusi #1 untuk Pengurus Komunitas & Warga
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight lg:text-7xl max-w-4xl mx-auto">
-            Kelola Lingkungan <span className="text-primary">Lebih Mudah</span> & <span className="text-[#10B981]">Transparan</span>
-          </h1>
-          <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
-            Aplikasi manajemen lingkungan all-in-one untuk iuran, surat pengantar, data warga, dan komunikasi yang lebih efektif.
-          </p>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex flex-col sm:flex-row gap-4 w-full justify-center"
-        >
-          <Button size="lg" className="h-12 px-8 text-lg" asChild>
-            <Link href="https://app.saga.co.id">
-              Coba Gratis Sekarang <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" className="h-12 px-8 text-lg" asChild>
-            <Link href="/request-demo">Jadwalkan Demo</Link>
-          </Button>
-        </motion.div>
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+        {/* Left Column: Content */}
+        <div className="flex flex-col items-start text-left space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Badge variant="secondary" className="mb-6 px-4 py-1 text-sm rounded-full">
+              🚀 Solusi Praktis untuk Pengurus Komunitas dan Pengurus Warga
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight lg:text-7xl max-w-4xl">
+              Kelola Lingkungan <span className="text-primary">Lebih Mudah</span> & <span className="text-[#10B981]">Transparan</span>
+            </h1>
+            <p className="mt-6 text-xl text-muted-foreground max-w-2xl">
+              Aplikasi manajemen lingkungan all-in-one untuk iuran, surat pengantar, data warga, dan komunikasi yang lebih efektif.
+            </p>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+          >
+            <Button size="lg" className="h-12 px-8 text-lg w-full sm:w-auto" asChild>
+              <Link href="https://app.saga.co.id">
+                Coba Gratis Sekarang <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="h-12 px-8 text-lg w-full sm:w-auto" asChild>
+              <Link href="/request-demo">Jadwalkan Demo</Link>
+            </Button>
+          </motion.div>
 
-        <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ delay: 0.4, duration: 0.5 }}
-           className="mt-12 w-full max-w-5xl mx-auto rounded-xl border bg-background shadow-2xl overflow-hidden"
-        >
-          <div className="bg-muted/50 p-2 flex gap-2 border-b">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-400" />
-          </div>
-          <div className="aspect-[16/9] bg-muted/20 relative overflow-hidden group">
-            <Image
-              src="/assets/images/dashboard-preview.png"
-              alt="Dashboard Preview"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-muted/50 backdrop-blur-[1px] flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="font-bold text-sm bg-background px-3 py-1 rounded-full shadow-sm">Segera Hadir</span>
-            </div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-              className="absolute bottom-0 right-4 md:right-10 w-[20%] md:w-[18%] translate-y-[10%] z-10"
-            >
-              <div className="relative aspect-[9/19]">
-                <PhonePreview />
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
+          {/* Social Proof */}
+          <motion.div
+             initial={{ opacity: 0, x: -20 }}
+             animate={{ opacity: 1, x: 0 }}
+             transition={{ delay: 0.3, duration: 0.5 }}
+             className="flex items-center gap-6 pt-4"
+          >
+             <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className={`w-10 h-10 rounded-full border-2 border-background flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br ${i === 1 ? 'from-red-400 to-red-600' : i === 2 ? 'from-blue-400 to-blue-600' : i === 3 ? 'from-green-400 to-green-600' : 'from-purple-400 to-purple-600'}`}>
+                    {String.fromCharCode(64 + i)}
+                  </div>
+                ))}
+             </div>
+             <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                   <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                   <span className="font-bold text-lg">4.9</span>
+                   <span className="text-muted-foreground text-sm ml-1">(100+ Komunitas)</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Dipercaya oleh ribuan warga</p>
+             </div>
+          </motion.div>
+        </div>
+
+        {/* Right Column: Visuals */}
+        <div className="relative mt-12 lg:mt-0">
+           <motion.div
+             initial={{ opacity: 0, scale: 0.9 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ delay: 0.4, duration: 0.5 }}
+             className="relative z-10 rounded-xl border bg-background shadow-2xl overflow-hidden"
+           >
+             <div className="bg-muted/50 p-2 flex gap-2 border-b">
+               <div className="w-3 h-3 rounded-full bg-red-400" />
+               <div className="w-3 h-3 rounded-full bg-yellow-400" />
+               <div className="w-3 h-3 rounded-full bg-green-400" />
+             </div>
+             <div className="aspect-[4/3] bg-muted/20 relative overflow-hidden group">
+               <Image
+                 src="/assets/images/dashboard-preview.png"
+                 alt="Dashboard Preview"
+                 fill
+                 className="object-cover object-left-top"
+                 priority
+               />
+               
+               {/* Floating Element 1: Phone Preview */}
+               <motion.div
+                 initial={{ y: 20, opacity: 0 }}
+                 animate={{ y: 0, opacity: 1 }}
+                 transition={{ delay: 0.8, duration: 0.8 }}
+                 className="absolute -bottom-10 -right-10 w-[40%] md:w-[35%] z-20"
+               >
+                 <div className="relative aspect-[9/19] scale-75 origin-bottom-right hover:scale-90 transition-transform duration-500">
+                   <PhonePreview />
+                 </div>
+               </motion.div>
+
+               {/* Floating Element 2: Simple Card */}
+               <motion.div
+                 initial={{ x: -20, opacity: 0 }}
+                 animate={{ x: 0, opacity: 1 }}
+                 transition={{ delay: 1, duration: 0.8 }}
+                 className="absolute top-10 left-4 md:left-10 bg-white dark:bg-slate-900 p-4 rounded-xl shadow-lg border z-20 max-w-[200px]"
+               >
+                  <div className="flex items-center gap-3 mb-2">
+                     <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600">
+                        <CheckCircle2 className="w-5 h-5" />
+                     </div>
+                     <div>
+                        <p className="text-xs text-muted-foreground">Status Iuran</p>
+                        <p className="font-bold text-sm">Lunas ✅</p>
+                     </div>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                     <div className="bg-green-500 h-full w-full rounded-full" />
+                  </div>
+               </motion.div>
+             </div>
+           </motion.div>
+
+           {/* Decorative Background Blob behind image */}
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/5 rounded-full blur-3xl -z-10" />
+        </div>
       </div>
     </div>
     
-    {/* Background Elements */}
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl -z-10" />
+    {/* Global Background Elements */}
+    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3" />
   </section>
 )
 
 const Metrics = () => {
+  const [showDialog, setShowDialog] = useState(false)
+
   const metrics = [
     { label: "Cluster", value: "24+", icon: LayoutDashboard },
     { label: "Warga", value: "1242+", icon: Users },
@@ -321,79 +385,40 @@ const Metrics = () => {
             </motion.div>
           ))}
         </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Siap untuk Transformasi Digital?</DialogTitle>
+              <DialogDescription>
+                Dapatkan demo gratis atau konsultasi langsung dengan tim kami untuk solusi terbaik bagi lingkungan Anda.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-4">
+               <div className="grid gap-2">
+                 <h4 className="font-medium leading-none">Mengapa Daftar Sekarang?</h4>
+                 <ul className="text-sm text-muted-foreground list-disc pl-4 space-y-1">
+                   <li>Akses penuh ke fitur manajemen warga</li>
+                   <li>Dukungan teknis prioritas</li>
+                   <li>Penawaran harga spesial (Terbatas)</li>
+                 </ul>
+               </div>
+            </div>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button variant="outline" onClick={() => setShowDialog(false)}>
+                Nanti Saja
+              </Button>
+              <Button asChild>
+                <Link href="https://app.saga.co.id/register">Daftar Sekarang</Link>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   )
 }
 
 const Features = () => {
-  const features = [
-    {
-      title: "Iuran Digital",
-      description: "Kelola dan bayar iuran lingkungan secara otomatis, transparan, dan mudah dipantau oleh semua warga.",
-      icon: Smartphone,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Laporan Transparan",
-      description: "Semua transaksi tercatat real-time dengan audit trail lengkap untuk meningkatkan kepercayaan warga.",
-      icon: LayoutDashboard,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Manajemen Data Warga",
-      description: "Kelola data penghuni secara digital, aman, dan mudah dicari kapan saja.",
-      icon: Users,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Komunikasi Warga",
-      description: "Pengumuman, notifikasi, dan komunikasi warga dalam satu portal yang rapi.",
-      icon: MessageCircle,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Integrasi Pembayaran",
-      description: "Terhubung dengan QRIS, Virtual Account, dan E-Wallet untuk pembayaran yang fleksibel.",
-      icon: CreditCard,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Integrasi WhatsApp",
-      description: "Broadcast pengumuman, pengingat iuran, dan update laporan langsung ke WhatsApp warga.",
-      icon: MessageCircle,
-      status: "available",
-      tiers: ["Starter", "Pro", "Business"],
-    },
-    {
-      title: "Portal UMKM",
-      description: "Dukung ekonomi warga dengan marketplace khusus untuk UMKM di lingkungan Anda.",
-      icon: Store,
-      status: "coming_soon",
-      tiers: ["Business"],
-    },
-    {
-      title: "Auto Payout",
-      description: "Pencairan dana iuran otomatis ke rekening pengurus secara berkala dan aman.",
-      icon: Wallet,
-      status: "coming_soon",
-      tiers: ["Pro", "Business"],
-    },
-    {
-      title: "Produk Digital PPOB",
-      description: "Beli pulsa, token listrik, dan bayar tagihan langsung dari aplikasi warga.",
-      icon: Zap,
-      status: "coming_soon",
-      tiers: ["Pro", "Business"],
-      tierNote: "*Komisi hanya di Business",
-    },
-  ]
-
   return (
     <section id="features" className="py-24">
       <div className="container">
@@ -405,7 +430,7 @@ const Features = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {features.map((feature, i) => (
             <motion.div
               key={i}
@@ -414,45 +439,59 @@ const Features = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow flex flex-col group relative overflow-hidden">
-                {feature.status === "coming_soon" && (
-                  <div className="absolute inset-0 bg-muted/50 backdrop-blur-[1px] flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="font-bold text-sm bg-background px-3 py-1 rounded-full shadow-sm">Segera Hadir</span>
-                  </div>
-                )}
-                <CardHeader>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 text-primary">
-                    <feature.icon className="w-6 h-6" />
-                  </div>
-                  <CardTitle className="text-xl flex items-center gap-2">
-                    {feature.title}
-                    {feature.status === "coming_soon" && (
-                      <Badge variant="secondary" className="text-[10px] px-2 h-5">
-                        Akan Datang
-                      </Badge>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-muted-foreground leading-relaxed mb-4">
-                    {feature.description}
-                  </p>
-                  <div className="pt-4 mt-auto border-t">
-                    <p className="text-xs text-muted-foreground font-semibold mb-2">Tersedia di:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {feature.tiers.map((tier) => (
-                        <Badge key={tier} variant="outline" className="text-[10px] px-2 py-0 h-5 font-normal">
-                          {tier}
-                        </Badge>
-                      ))}
+              <Link href={`/features/${feature.slug}`} className="block h-full">
+                <Card className={`h-full border-none shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group relative overflow-hidden ${feature.color}`}>
+                  {feature.status === "coming_soon" && (
+                    <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="font-bold text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        Segera Hadir
+                      </span>
                     </div>
-                    {(feature as any).tierNote && (
-                        <p className="text-[10px] text-muted-foreground mt-2 italic">{(feature as any).tierNote}</p>
-                    )}
+                  )}
+                  
+                  <div className="p-6 md:p-8 flex flex-col h-full relative z-10">
+                    <div className="mb-8">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm group-hover:scale-110 transition-transform duration-300 ${feature.iconColor}`}>
+                          <feature.icon className="w-6 h-6" />
+                        </div>
+                        {feature.status === "coming_soon" && (
+                           <Badge variant="outline" className="bg-background/50 backdrop-blur-sm border-0 text-[10px] px-2 h-5">
+                              Soon
+                           </Badge>
+                        )}
+                      </div>
+                      <h3 className="font-bold text-2xl mb-3 tracking-tight group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
+                        {feature.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto">
+                       <div className="flex flex-wrap gap-2 mb-6">
+                          {feature.tiers.map((tier) => (
+                            <Badge key={tier} variant="secondary" className="bg-white/50 hover:bg-white text-[10px] px-2 py-0 h-5 border-0 shadow-sm">
+                              {tier}
+                            </Badge>
+                          ))}
+                       </div>
+                       {feature.tierNote && (
+                          <p className="text-xs text-muted-foreground italic mb-4">{feature.tierNote}</p>
+                       )}
+                       
+                       <div className="flex items-center text-primary font-medium text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                          Lihat Detail <ArrowRight className="ml-2 w-4 h-4" />
+                       </div>
+                    </div>
+                    
+                    {/* Decor */}
+                    <div className={`absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${feature.color.replace('/50', '/30')}`} />
                   </div>
-                </CardContent>
-              </Card>
+                </Card>
+              </Link>
             </motion.div>
+
+
           ))}
         </div>
       </div>
@@ -668,6 +707,8 @@ const Pricing = () => {
   const defaultDiscountEndDate = new Date(Date.UTC(2026, 1, 28, 23, 59, 59))
   const [discountEndDate, setDiscountEndDate] = useState<Date | null>(defaultDiscountEndDate)
   const [now, setNow] = useState(() => Date.now())
+  const [showDialog, setShowDialog] = useState(false)
+  const [hasShownDialog, setHasShownDialog] = useState(false)
 
   const parseDiscountDate = (value: unknown) => {
     if (value instanceof Date) {
@@ -979,7 +1020,13 @@ const Pricing = () => {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.5 }}
+          onViewportEnter={() => {
+            if (!hasShownDialog) {
+              setShowDialog(true)
+              setHasShownDialog(true)
+            }
+          }}
           transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto mb-12"
         >
