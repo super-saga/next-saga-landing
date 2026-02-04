@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -21,12 +22,14 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
+    siteName: "Sahabat Warga",
     images: [
       {
-        url: `${siteUrl}/assets/images/web-preview.png`,
+        url: "/assets/images/web-preview.png",
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
+        type: "image/png",
       },
     ],
   },
@@ -34,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: [`${siteUrl}/assets/images/web-preview.png`],
+    images: ["/assets/images/web-preview.png"],
   },
   icons: {
     icon: "/assets/images/icon.png",
@@ -83,22 +86,24 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <PostHogProviderClient>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="min-h-screen flex flex-col relative">
-              <Navbar />
-              <main className="flex-1">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </ThemeProvider>
-        </PostHogProviderClient>
+        <Suspense fallback={null}>
+          <PostHogProviderClient>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="min-h-screen flex flex-col relative">
+                <Navbar />
+                <main className="flex-1">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </ThemeProvider>
+          </PostHogProviderClient>
+        </Suspense>
       </body>
     </html>
   )
