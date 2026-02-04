@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
-  const ogImage = post.feature_image || "/assets/images/web-preview.png"
+  const ogImage = post.feature_image || "/assets/images/web-preview.jpg"
 
   return {
     title: post.title,

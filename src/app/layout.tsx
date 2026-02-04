@@ -25,24 +25,24 @@ export const metadata: Metadata = {
     siteName: "Sahabat Warga",
     images: [
       {
-        url: "/assets/images/web-preview.png",
+        url: `${siteUrl}/assets/images/web-preview.jpg`,
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
-        type: "image/png",
+        type: "image/jpeg",
       },
-    ],
+    ]
   },
   twitter: {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: ["/assets/images/web-preview.png"],
+    images: [`${siteUrl}/assets/images/web-preview.jpg`],
   },
   icons: {
-    icon: "/assets/images/icon.png",
-    shortcut: "/assets/images/icon.png",
-    apple: "/assets/images/icon.png",
+    icon: `${siteUrl}/assets/images/icon.png`,
+    shortcut: `${siteUrl}/assets/images/icon.png`,
+    apple: `${siteUrl}/assets/images/icon.png`,
   },
 }
 
@@ -55,8 +55,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Sahabat Warga by Saga",
-    "url": "https://saga.co.id",
-    "logo": "https://saga.co.id/assets/images/icon.png",
+    "url": siteUrl,
+    "logo": `${siteUrl}/assets/images/icon.png`,
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+62-851-2807-0019",
@@ -66,7 +66,7 @@ export default function RootLayout({
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Barokah Residence 21 Blok A No 3",
+      "streetAddress": "Kavling AL, Jalan Boulevard Grand Depok City (GDC)",
       "addressLocality": "Jatimulya, Cilodong",
       "addressRegion": "Depok",
       "addressCountry": "ID"
