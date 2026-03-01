@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g transform="translate(50, 20) scale(0.8)">
+    <path fill="#E01F26" d="M125,50 C125,50 125,50 125,50 C75,-20 0,50 0,100 C0,160 125,250 125,250 C125,250 250,160 250,100 C250,50 175,-20 125,50 Z" />
+    <path fill="#FFFFFF" d="M125,60 C125,60 125,60 125,60 C85,0 20,60 20,100 C20,150 125,230 125,230 C125,230 230,150 230,100 C230,60 165,0 125,60 Z" transform="scale(0.8) translate(30, 10)" />
+    <path fill="#E01F26" d="M125,70 C125,70 125,70 125,70 C95,20 40,70 40,100 C40,140 125,210 125,210 C125,210 210,140 210,100 C210,70 155,20 125,70 Z" transform="scale(0.6) translate(80, 20)" />
+  </g>
+  <text x="150" y="240" font-family="Arial, sans-serif" font-weight="bold" font-size="24" text-anchor="middle" fill="#333">BANGGA BUATAN</text>
+  <text x="150" y="270" font-family="Arial, sans-serif" font-weight="bold" font-size="24" text-anchor="middle" fill="#333">INDONESIA</text>
+</svg>
