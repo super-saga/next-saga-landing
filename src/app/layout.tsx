@@ -71,7 +71,7 @@ export default function RootLayout({
       "addressRegion": "Depok",
       "addressCountry": "ID"
     },
-    "email": "hello@saga.co.id"
+    "email": "sales@saga.co.id"
   }
 
   return (

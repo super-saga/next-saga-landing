@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { features } from "@/lib/features"
@@ -33,6 +34,7 @@ import {
 import {
   PricingDetailDialog
 } from "@/components/pricing-detail-dialog"
+import { POSTHOG_EVENTS } from "@/constants/posthog-events"
 
 function PromoCountdown({ deadline }: { deadline: Date }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -1359,6 +1361,82 @@ const Partners = () => (
 )
 
 export default function Home() {
+  const [isLeadDialogOpen, setIsLeadDialogOpen] = useState(false)
+  const [hasLeadDialogShown, setHasLeadDialogShown] = useState(false)
+  const [isLeadSubmitting, setIsLeadSubmitting] = useState(false)
+  const [isLeadSuccess, setIsLeadSuccess] = useState(false)
+
+  useEffect(() => {
+    if (hasLeadDialogShown || isLeadSuccess) {
+      return
+    }
+
+    const handleScroll = () => {
+      const reachedBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 16
+      if (!reachedBottom) {
+        return
+      }
+
+      setIsLeadDialogOpen(true)
+      setHasLeadDialogShown(true)
+    }
+
+    handleScroll()
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [hasLeadDialogShown, isLeadSuccess])
+
+  const handleLeadCaptureSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.target as HTMLFormElement)
+    const data = Object.fromEntries(formData.entries())
+    const name = typeof data.name === "string" ? data.name.trim() : ""
+    const email = typeof data.email === "string" ? data.email.trim() : ""
+    const phone = typeof data.phone === "string" ? data.phone.trim() : ""
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const phonePattern = /^62\d{8,13}$/
+
+    if (!name || !email || !phone) {
+      alert("Please complete all required fields before submitting.")
+      return
+    }
+
+    if (!emailPattern.test(email)) {
+      alert("Invalid email format.")
+      return
+    }
+
+    if (!phonePattern.test(phone)) {
+      alert("WhatsApp number must start with 62 and contain digits only.")
+      return
+    }
+
+    setIsLeadSubmitting(true)
+
+    try {
+      posthog.identify?.(phone, {
+        name: name || null,
+        email: email || null,
+        phone,
+      })
+
+      posthog.capture?.(POSTHOG_EVENTS.LEAD_CAPTURES, {
+        source: "landing-page",
+        name: name || null,
+        email: email || null,
+        phone,
+      })
+
+      setIsLeadSuccess(true)
+    } catch (error) {
+      console.error(error)
+      alert("Failed to submit lead capture.")
+    } finally {
+      setIsLeadSubmitting(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
@@ -1373,6 +1451,61 @@ export default function Home() {
         <Promotion />
         <FAQ />
       </main>
+      <Dialog open={isLeadDialogOpen} onOpenChange={setIsLeadDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{isLeadSuccess ? "Thank You" : "Stay Connected"}</DialogTitle>
+            <DialogDescription>
+              {isLeadSuccess
+                ? "Our team will contact you soon."
+                : "Share your contact to get product updates and offers."}
+            </DialogDescription>
+          </DialogHeader>
+          {isLeadSuccess ? (
+            <DialogFooter>
+              <Button className="w-full" onClick={() => setIsLeadDialogOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          ) : (
+            <form onSubmit={handleLeadCaptureSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="lead-name" className="text-sm font-medium">Name</label>
+                <Input id="lead-name" name="name" required placeholder="John Doe" />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="lead-email" className="text-sm font-medium">Email</label>
+                <Input
+                  id="lead-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="john@email.com"
+                  pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                  title="Enter a valid email address"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="lead-phone" className="text-sm font-medium">Phone Number</label>
+                <Input
+                  id="lead-phone"
+                  name="phone"
+                  required
+                  placeholder="62812..."
+                  inputMode="numeric"
+                  pattern="^62\d{8,13}$"
+                  title="Use format 62 followed by 8-13 digits"
+                />
+              </div>
+              <DialogFooter>
+                <Button type="submit" className="w-full" disabled={isLeadSubmitting}>
+                  {isLeadSubmitting ? "Submitting..." : "Submit"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

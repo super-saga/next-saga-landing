@@ -8,6 +8,7 @@ import { useMemo, useState } from "react"
 import posthog from "posthog-js"
 import { CalendarIcon, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import { POSTHOG_EVENTS } from "@/constants/posthog-events"
 
 export default function RequestDemoPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -67,7 +68,7 @@ export default function RequestDemoPage() {
           name: company,
         })
       }
-      posthog.capture?.("demo_request_submitted", {
+      posthog.capture?.(POSTHOG_EVENTS.DEMO_REQUEST_SUBMITTED, {
         source: "request-demo",
         phone: phone,
         company: company,
@@ -79,7 +80,7 @@ export default function RequestDemoPage() {
       })
       setIsSuccess(true)
     } catch (error) {
-      posthog.capture?.("demo_request_failed", {
+      posthog.capture?.(POSTHOG_EVENTS.DEMO_REQUEST_FAILED, {
         source: "request-demo",
         error: error instanceof Error ? error.message : "Unknown error",
       })
