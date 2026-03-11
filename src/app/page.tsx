@@ -36,7 +36,7 @@ import {
 } from "@/components/pricing-detail-dialog"
 import { POSTHOG_EVENTS } from "@/constants/posthog-events"
 
-function PromoCountdown({ deadline }: { deadline: Date }) {
+function PromoCountdown({ deadline, label }: { deadline: Date, label: string }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   useEffect(() => {
@@ -91,7 +91,7 @@ function PromoCountdown({ deadline }: { deadline: Date }) {
            </motion.div>
            <div>
              <h3 className="font-bold text-xl md:text-2xl tracking-tight">LAUNCHING PROMO</h3>
-             <p className="text-white/90 font-medium">Penawaran Terbatas!</p>
+             <p className="text-white/90 font-medium">{label}</p>
            </div>
         </motion.div>
 
@@ -716,7 +716,9 @@ const Pricing = () => {
   const [planType, setPlanType] = useState<"community" | "enterprise">("community")
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const defaultDiscountEndDate = new Date(Date.UTC(2026, 1, 28, 23, 59, 59))
+  const defaultDiscountLabel = "Promo Terbatas"
   const [discountEndDate, setDiscountEndDate] = useState<Date | null>(defaultDiscountEndDate)
+  const [discountLabel, setDiscountLabel] = useState(defaultDiscountLabel)
   const [now, setNow] = useState(() => Date.now())
   const [showDialog, setShowDialog] = useState(false)
   const [hasShownDialog, setHasShownDialog] = useState(false)
@@ -783,13 +785,17 @@ const Pricing = () => {
       const endDateValue = typeof resolvedPayload === "string"
         ? resolvedPayload
         : (resolvedPayload as any)?.endDate || (resolvedPayload as any)?.end_date || (resolvedPayload as any)?.discount_end_date
+      const labelValue = typeof resolvedPayload === "string" ? "" : (resolvedPayload as any)?.label
+      const normalizedLabel = typeof labelValue === "string" && labelValue.trim() ? labelValue.trim() : defaultDiscountLabel
       const parsed = parseDiscountDate(endDateValue)
       if (parsed) {
         setDiscountEndDate(parsed)
+        setDiscountLabel(normalizedLabel)
         return
       }
 
       setDiscountEndDate(defaultDiscountEndDate)
+      setDiscountLabel(defaultDiscountLabel)
     }
 
     posthog.onFeatureFlags?.(applyDiscountConfig)
@@ -1090,7 +1096,7 @@ const Pricing = () => {
 
         {planType === "community" && discountActive && discountEndDate && (
           <div className="mb-12">
-            <PromoCountdown deadline={discountEndDate} />
+            <PromoCountdown deadline={discountEndDate} label={discountLabel} />
           </div>
         )}
 
@@ -1361,8 +1367,27 @@ const Partners = () => (
 )
 
 export default function Home() {
+  const leadCaptureCookieKey = "lead_capture_submitted"
+  const leadCaptureCookieValue = "1"
+  const leadCaptureCookieTTL = 60 * 60 * 24 * 365
+  const [leadType, setLeadType] = useState<"customer" | "referrer">("customer")
   const [isLeadDialogOpen, setIsLeadDialogOpen] = useState(false)
-  const [hasLeadDialogShown, setHasLeadDialogShown] = useState(false)
+  const [hasLeadDialogShown, setHasLeadDialogShown] = useState(() => {
+    if (typeof document === "undefined") {
+      return false
+    }
+    const matched = document.cookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith(`${leadCaptureCookieKey}=`))
+
+    if (!matched) {
+      return false
+    }
+
+    const value = matched.slice(leadCaptureCookieKey.length + 1)
+    return decodeURIComponent(value) === leadCaptureCookieValue
+  })
   const [isLeadSubmitting, setIsLeadSubmitting] = useState(false)
   const [isLeadSuccess, setIsLeadSuccess] = useState(false)
 
@@ -1395,30 +1420,33 @@ export default function Home() {
     const email = typeof data.email === "string" ? data.email.trim() : ""
     const phone = typeof data.phone === "string" ? data.phone.trim() : ""
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const phonePattern = /^62\d{8,13}$/
+    // const phonePattern = /^62\d{8,13}$/
 
     if (!name || !email || !phone) {
-      alert("Please complete all required fields before submitting.")
+      alert("Mohon lengkapi semua kolom wajib sebelum mengirim.")
       return
     }
 
     if (!emailPattern.test(email)) {
-      alert("Invalid email format.")
+      alert("Format email tidak valid.")
       return
     }
 
-    if (!phonePattern.test(phone)) {
-      alert("WhatsApp number must start with 62 and contain digits only.")
-      return
-    }
+    // if (!phonePattern.test(phone)) {
+    //   alert("Nomor WhatsApp harus diawali 62 dan hanya berisi angka.")
+    //   return
+    // }
 
     setIsLeadSubmitting(true)
 
     try {
+      document.cookie = `${leadCaptureCookieKey}=${leadCaptureCookieValue}; max-age=${leadCaptureCookieTTL}; path=/; samesite=lax`
+      setHasLeadDialogShown(true)
       posthog.identify?.(phone, {
         name: name || null,
         email: email || null,
         phone,
+        lead_type: leadType,
       })
 
       posthog.capture?.(POSTHOG_EVENTS.LEAD_CAPTURES, {
@@ -1426,12 +1454,13 @@ export default function Home() {
         name: name || null,
         email: email || null,
         phone,
+        type: leadType,
       })
 
       setIsLeadSuccess(true)
     } catch (error) {
       console.error(error)
-      alert("Failed to submit lead capture.")
+      alert("Gagal mengirim data. Silakan coba lagi.")
     } finally {
       setIsLeadSubmitting(false)
     }
@@ -1452,26 +1481,98 @@ export default function Home() {
         <FAQ />
       </main>
       <Dialog open={isLeadDialogOpen} onOpenChange={setIsLeadDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{isLeadSuccess ? "Thank You" : "Stay Connected"}</DialogTitle>
-            <DialogDescription>
-              {isLeadSuccess
-                ? "Our team will contact you soon."
-                : "Share your contact to get product updates and offers."}
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-[460px] overflow-hidden">
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <Button
+              type="button"
+              variant={leadType === "customer" ? "default" : "outline"}
+              className="w-full"
+              onClick={() => setLeadType("customer")}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Pengguna
+            </Button>
+            <Button
+              type="button"
+              variant={leadType === "referrer" ? "default" : "outline"}
+              className="w-full"
+              onClick={() => setLeadType("referrer")}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Program Referral
+            </Button>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="relative -mx-6 -mt-6 mb-4 px-6 pt-6 pb-5 bg-gradient-to-br from-primary/15 via-primary/5 to-background"
+          >
+            <motion.div
+              animate={{ y: [0, -4, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute right-5 top-5 w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center text-primary"
+            >
+              <Mail className="w-5 h-5" />
+            </motion.div>
+            <motion.div
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute left-5 top-8 w-8 h-8 rounded-full bg-emerald-500/15 flex items-center justify-center text-emerald-600"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+            </motion.div>
+            <DialogHeader className="items-center text-center space-y-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-background/80 border px-3 py-1 text-xs font-semibold text-primary">
+                <Clock className="w-3.5 h-3.5" />
+                {leadType === "customer" ? "Promo onboarding terbatas" : "Komisi referral hingga 1.129.000"}
+              </div>
+              <DialogTitle className="text-2xl">
+                {isLeadSuccess
+                  ? leadType === "customer"
+                    ? "Terima kasih, data Anda sudah masuk"
+                    : "Terima kasih, minat referral Anda tercatat"
+                  : leadType === "customer"
+                    ? "Dapatkan Demo & Penawaran Spesial"
+                    : "Gabung Program Referral Sahabat Warga"}
+              </DialogTitle>
+              <DialogDescription className="text-sm">
+                {isLeadSuccess
+                  ? leadType === "customer"
+                    ? "Tim kami akan menghubungi Anda secepatnya untuk tindak lanjut."
+                    : "Tim partnership kami akan menghubungi Anda untuk proses registrasi referrer."
+                  : leadType === "customer"
+                    ? "Isi data singkat berikut, kami akan bantu rekomendasi paket yang paling cocok untuk kebutuhan Anda."
+                    : "Isi data berikut untuk bergabung sebagai referrer dan dapatkan komisi hingga 1.129.000 dari setiap lead valid. Syarat dan ketentuan berlaku."}
+              </DialogDescription>
+            </DialogHeader>
+          </motion.div>
+
           {isLeadSuccess ? (
             <DialogFooter>
               <Button className="w-full" onClick={() => setIsLeadDialogOpen(false)}>
-                Close
+                Tutup
               </Button>
             </DialogFooter>
           ) : (
             <form onSubmit={handleLeadCaptureSubmit} className="space-y-4">
+              <div className="grid grid-cols-3 gap-2 rounded-lg border bg-muted/30 p-3 text-xs">
+                <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
+                  <Phone className="w-4 h-4 text-primary" />
+                  {leadType === "customer" ? "Respon cepat" : "Tracking mudah"}
+                </div>
+                <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
+                  <Mail className="w-4 h-4 text-primary" />
+                  {leadType === "customer" ? "Konsultasi gratis" : "Komisi menarik"}
+                </div>
+                <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  {leadType === "customer" ? "Tanpa komitmen" : "Onboarding mudah"}
+                </div>
+              </div>
               <div className="space-y-2">
-                <label htmlFor="lead-name" className="text-sm font-medium">Name</label>
-                <Input id="lead-name" name="name" required placeholder="John Doe" />
+                <label htmlFor="lead-name" className="text-sm font-medium">Nama Lengkap</label>
+                <Input id="lead-name" name="name" required placeholder="Budi Santoso" />
               </div>
               <div className="space-y-2">
                 <label htmlFor="lead-email" className="text-sm font-medium">Email</label>
@@ -1480,26 +1581,25 @@ export default function Home() {
                   name="email"
                   type="email"
                   required
-                  placeholder="john@email.com"
+                  placeholder="nama@email.com"
                   pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-                  title="Enter a valid email address"
+                  title="Masukkan alamat email yang valid"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="lead-phone" className="text-sm font-medium">Phone Number</label>
+                <label htmlFor="lead-phone" className="text-sm font-medium">Nomor WhatsApp</label>
                 <Input
                   id="lead-phone"
                   name="phone"
                   required
                   placeholder="62812..."
                   inputMode="numeric"
-                  pattern="^62\d{8,13}$"
-                  title="Use format 62 followed by 8-13 digits"
+                  title="Gunakan format 62 diikuti 8-13 digit angka"
                 />
               </div>
               <DialogFooter>
                 <Button type="submit" className="w-full" disabled={isLeadSubmitting}>
-                  {isLeadSubmitting ? "Submitting..." : "Submit"}
+                  {isLeadSubmitting ? "Mengirim data..." : "Kirim Data Saya"}
                 </Button>
               </DialogFooter>
             </form>
