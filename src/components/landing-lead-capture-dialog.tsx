@@ -29,7 +29,7 @@ export const LeadCaptureDialog = () => {
   const leadCaptureCookieKey = "lead_capture_submitted"
   const leadCaptureCookieValue = "1"
   const leadCaptureCookieTTL = 60 * 60 * 24 * 365
-  const [leadType, setLeadType] = useState<"customer" | "referrer">("customer")
+  const [leadType, setLeadType] = useState<"CUSTOMER" | "REFERRER">("CUSTOMER")
   const [isLeadDialogOpen, setIsLeadDialogOpen] = useState(false)
   const [hasLeadDialogShown, setHasLeadDialogShown] = useState(() => {
     if (typeof document === "undefined") {
@@ -128,18 +128,18 @@ export const LeadCaptureDialog = () => {
         <div className="grid grid-cols-2 gap-2 mb-4">
           <Button
             type="button"
-            variant={leadType === "customer" ? "default" : "outline"}
+            variant={leadType === "CUSTOMER" ? "default" : "outline"}
             className="w-full"
-            onClick={() => setLeadType("customer")}
+            onClick={() => setLeadType("CUSTOMER")}
           >
             <Users className="w-4 h-4 mr-2" />
             Pengguna
           </Button>
           <Button
             type="button"
-            variant={leadType === "referrer" ? "default" : "outline"}
+            variant={leadType === "REFERRER" ? "default" : "outline"}
             className="w-full"
-            onClick={() => setLeadType("referrer")}
+            onClick={() => setLeadType("REFERRER")}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             Program Referral
@@ -168,23 +168,23 @@ export const LeadCaptureDialog = () => {
           <DialogHeader className="items-center text-center space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full bg-background/80 border px-3 py-1 text-xs font-semibold text-primary">
               <Clock className="w-3.5 h-3.5" />
-              {leadType === "customer" ? "Promo onboarding terbatas" : "Komisi referral hingga 1.129.000"}
+              {leadType === "CUSTOMER" ? "Promo onboarding terbatas" : "Komisi referral hingga 1.129.000"}
             </div>
             <DialogTitle className="text-2xl">
               {isLeadSuccess
-                ? leadType === "customer"
+                ? leadType === "CUSTOMER"
                   ? "Terima kasih, data Anda sudah masuk"
                   : "Terima kasih, minat referral Anda tercatat"
-                : leadType === "customer"
+                : leadType === "REFERRER"
                   ? "Dapatkan Demo & Penawaran Spesial"
                   : "Gabung Program Referral Sahabat Warga"}
             </DialogTitle>
             <DialogDescription className="text-sm">
               {isLeadSuccess
-                ? leadType === "customer"
+                ? leadType === "CUSTOMER"
                   ? "Tim kami akan menghubungi Anda secepatnya untuk tindak lanjut."
                   : "Tim partnership kami akan menghubungi Anda untuk proses registrasi referrer."
-                : leadType === "customer"
+                : leadType === "CUSTOMER"
                   ? "Isi data singkat berikut, kami akan bantu rekomendasi paket yang paling cocok untuk kebutuhan Anda."
                   : "Isi data berikut untuk bergabung sebagai referrer dan dapatkan komisi hingga 1.129.000 dari setiap lead valid. Syarat dan ketentuan berlaku."}
             </DialogDescription>
@@ -202,15 +202,15 @@ export const LeadCaptureDialog = () => {
             <div className="grid grid-cols-3 gap-2 rounded-lg border bg-muted/30 p-3 text-xs">
               <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary" />
-                {leadType === "customer" ? "Respon cepat" : "Tracking mudah"}
+                {leadType === "CUSTOMER" ? "Respon cepat" : "Tracking mudah"}
               </div>
               <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary" />
-                {leadType === "customer" ? "Konsultasi gratis" : "Komisi menarik"}
+                {leadType === "CUSTOMER" ? "Konsultasi gratis" : "Komisi menarik"}
               </div>
               <div className="flex flex-col items-center gap-1 text-center text-muted-foreground">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
-                {leadType === "customer" ? "Tanpa komitmen" : "Onboarding mudah"}
+                {leadType === "CUSTOMER" ? "Tanpa komitmen" : "Onboarding mudah"}
               </div>
             </div>
             <div className="space-y-2">
