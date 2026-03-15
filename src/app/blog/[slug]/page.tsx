@@ -56,8 +56,46 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saga.co.id"
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${siteUrl}/blog/${post.slug}`,
+    headline: post.title,
+    description: post.excerpt || post.title,
+    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.jpg`],
+    datePublished: post.published_at,
+    dateModified: post.updated_at || post.published_at,
+    author: post.primary_author?.name
+      ? {
+          "@type": "Person",
+          name: post.primary_author.name,
+        }
+      : {
+          "@type": "Organization",
+          name: "Sahabat Warga by Saga",
+        },
+    publisher: {
+      "@type": "Organization",
+      name: "Sahabat Warga by Saga",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/assets/images/icon.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/blog/${post.slug}`,
+    },
+  }
+
   return (
     <article className="container py-20 max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <Link 
         href="/blog" 
         className={cn(buttonVariants({ variant: "ghost" }), "mb-8 pl-0 hover:pl-2 transition-all")}

@@ -46,8 +46,33 @@ export const dynamic = "force-static"
 export const revalidate = 3600
 
 export default function Home() {
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${siteUrl}#product`,
+    name: "Sahabat Warga",
+    image: [`${siteUrl}/assets/images/web-preview.jpg`],
+    description: "Aplikasi manajemen lingkungan untuk iuran, data warga, surat pengantar, dan komunikasi komunitas.",
+    brand: {
+      "@type": "Organization",
+      name: "SAGA",
+      url: siteUrl,
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "IDR",
+      price: "0",
+      availability: "https://schema.org/InStock",
+      url: siteUrl,
+    },
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <main className="flex-1">
         <Hero />
         <div className="content-visibility-auto">

@@ -9,9 +9,46 @@ export const revalidate = 3600 // 1 hour
 
 export default async function BlogPage() {
   const posts = await getPosts()
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saga.co.id"
+  const blogJsonLd = posts.map((post: any) => ({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${siteUrl}/blog/${post.slug}`,
+    headline: post.title,
+    description: post.excerpt || post.title,
+    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.jpg`],
+    datePublished: post.published_at,
+    dateModified: post.updated_at || post.published_at,
+    author: post.primary_author?.name
+      ? {
+          "@type": "Person",
+          name: post.primary_author.name,
+        }
+      : {
+          "@type": "Organization",
+          name: "Sahabat Warga by Saga",
+        },
+    publisher: {
+      "@type": "Organization",
+      name: "Sahabat Warga by Saga",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/assets/images/icon.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/blog/${post.slug}`,
+    },
+  }))
 
   return (
     <div className="container py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       <div className="text-center mb-12">
         <Badge className="mb-4">Blog & Artikel</Badge>
         <h1 className="text-4xl font-bold mb-4">Wawasan Terbaru</h1>
