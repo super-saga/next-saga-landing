@@ -175,7 +175,7 @@ export const LeadCaptureDialog = () => {
                 ? leadType === "CUSTOMER"
                   ? "Terima kasih, data Anda sudah masuk"
                   : "Terima kasih, minat referral Anda tercatat"
-                : leadType === "REFERRER"
+                : leadType === "CUSTOMER"
                   ? "Dapatkan Demo & Penawaran Spesial"
                   : "Gabung Program Referral Sahabat Warga"}
             </DialogTitle>
