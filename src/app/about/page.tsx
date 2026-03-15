@@ -168,7 +168,7 @@ export default function AboutPage() {
 
                <div className="pt-6">
                  <Button asChild>
-                   <Link href="https://linkedin.com/in/dedekurnihawan" target="_blank">
+                  <Link href="https://www.linkedin.com/in/dedekrnwan/" target="_blank" rel="noopener noreferrer">
                      Lihat Profil Profesional <ArrowRight className="ml-2 w-4 h-4" />
                    </Link>
                  </Button>

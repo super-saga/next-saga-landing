@@ -77,6 +77,11 @@
   background-image: radial-gradient(closest-side, var(--tw-gradient-stops));
 }
 
+@utility content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1000px;
+}
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

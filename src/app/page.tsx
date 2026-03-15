@@ -42,20 +42,41 @@ export const metadata: Metadata = {
   },
 }
 
+export const dynamic = "force-static"
+export const revalidate = 3600
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
         <Hero />
-        <Metrics />
-        <Features />
-        <SecuritySection />
-        <Partners />
-        <Testimonials />
-        <MobileApp />
-        <Pricing />
-        <Promotion />
-        <FAQ />
+        <div className="content-visibility-auto">
+          <Metrics />
+        </div>
+        <div className="content-visibility-auto">
+          <Features />
+        </div>
+        <div className="content-visibility-auto">
+          <SecuritySection />
+        </div>
+        <div className="content-visibility-auto">
+          <Partners />
+        </div>
+        <div className="content-visibility-auto">
+          <Testimonials />
+        </div>
+        <div className="content-visibility-auto">
+          <MobileApp />
+        </div>
+        <div className="content-visibility-auto">
+          <Pricing />
+        </div>
+        <div className="content-visibility-auto">
+          <Promotion />
+        </div>
+        <div className="content-visibility-auto">
+          <FAQ />
+        </div>
       </main>
       <LeadCaptureDialog />
     </div>

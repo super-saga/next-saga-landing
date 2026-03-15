@@ -93,7 +93,7 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://wa.me/6285128070019" target="_blank" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group">
+                  <Link href="https://wa.me/6285128070019" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group">
                     <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     Kontak
                   </Link>
