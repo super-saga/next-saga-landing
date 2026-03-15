@@ -12,17 +12,39 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saga.co.id"
 
 export const metadata: Metadata = {
   title: "Sahabat Warga by Saga",
-  description: "Solusi Manajemen Lingkungan Modern",
+  description: "Aplikasi manajemen lingkungan untuk iuran, data warga, dan komunikasi komunitas.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: siteUrl,
+  },
+  keywords: [
+    "Sahabat Warga",
+    "Saga",
+    "aplikasi manajemen lingkungan",
+    "iuran warga",
+    "komunikasi warga",
+    "data warga",
+    "RT RW digital",
+    "manajemen komunitas",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
     type: "website",
     url: siteUrl,
     title: "Sahabat Warga by Saga",
-    description: "Solusi Manajemen Lingkungan Modern",
+    description: "Aplikasi manajemen lingkungan untuk iuran, data warga, dan komunikasi komunitas.",
     siteName: "Sahabat Warga",
+    locale: "id_ID",
     images: [
       {
         url: `${siteUrl}/assets/images/web-preview.jpg`,
