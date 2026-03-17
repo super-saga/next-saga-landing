@@ -17,17 +17,17 @@ export const metadata: Metadata = {
   title: "Sahabat Warga by Saga | Kelola Lingkungan Lebih Mudah",
   description: "Solusi digital untuk iuran, data warga, surat pengantar, dan komunikasi komunitas yang transparan.",
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: "/",
     title: "Sahabat Warga by Saga | Kelola Lingkungan Lebih Mudah",
     description: "Solusi digital untuk iuran, data warga, surat pengantar, dan komunikasi komunitas yang transparan.",
     siteName: "Sahabat Warga",
     images: [
       {
-        url: `${siteUrl}/assets/images/web-preview.jpg`,
+        url: "/assets/images/web-preview.jpg",
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga | Kelola Lingkungan Lebih Mudah",
     description: "Solusi digital untuk iuran, data warga, surat pengantar, dan komunikasi komunitas yang transparan.",
-    images: [`${siteUrl}/assets/images/web-preview.jpg`],
+    images: ["/assets/images/web-preview.jpg"],
   },
 }
 

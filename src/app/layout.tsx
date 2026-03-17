@@ -8,14 +8,15 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saga.co.id"
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
+const siteUrl = configuredSiteUrl ?? "https://saga.co.id"
 
 export const metadata: Metadata = {
   title: "Sahabat Warga by Saga",
   description: "Aplikasi manajemen lingkungan untuk iuran, data warga, dan komunikasi komunitas.",
-  metadataBase: new URL(siteUrl),
+  metadataBase: configuredSiteUrl ? new URL(configuredSiteUrl) : undefined,
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
   keywords: [
     "Sahabat Warga",
@@ -38,16 +39,22 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    yandex: "f6e379ee70a1d93d",
+    other: {
+      "msvalidate.01": "08A68517B4606CEB0E3DDD56A49F3127",
+    },
+  },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: "/",
     title: "Sahabat Warga by Saga",
     description: "Aplikasi manajemen lingkungan untuk iuran, data warga, dan komunikasi komunitas.",
     siteName: "Sahabat Warga",
     locale: "id_ID",
     images: [
       {
-        url: `${siteUrl}/assets/images/web-preview.jpg`,
+        url: "/assets/images/web-preview.jpg",
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
@@ -59,12 +66,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: [`${siteUrl}/assets/images/web-preview.jpg`],
+    images: ["/assets/images/web-preview.jpg"],
   },
   icons: {
-    icon: `${siteUrl}/assets/images/icon.png`,
-    shortcut: `${siteUrl}/assets/images/icon.png`,
-    apple: `${siteUrl}/assets/images/icon.png`,
+    icon: "/assets/images/icon.png",
+    shortcut: "/assets/images/icon.png",
+    apple: "/assets/images/icon.png",
   },
 }
 
@@ -98,6 +105,9 @@ export default function RootLayout({
 
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+      </head>
       <body className={inter.className}>
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           <div className="absolute w-[500px] h-[500px] blur-3xl bg-gradient-radial from-purple-100/40 to-transparent right-0 top-0 opacity-60"></div>
