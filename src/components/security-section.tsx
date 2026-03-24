@@ -7,15 +7,15 @@ import { Badge } from "@/components/ui/badge"
 export function SecuritySection() {
   const items = [
     {
-      image: "/assets/images/pse.png",
+      image: "/assets/images/pse.webp",
       text: "Terdaftar Resmi di Komdigi",
     },
     {
-      image: "/assets/images/aes.png",
+      image: "/assets/images/aes.webp",
       text: "Enkripsi Data Tingkat Tinggi (AES-256)",
     },
     {
-      image: "/assets/images/ssl.png",
+      image: "/assets/images/ssl.webp",
       text: "Proteksi Koneksi SSL/TLS Global",
     },
   ]

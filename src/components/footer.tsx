@@ -14,7 +14,7 @@ export function Footer() {
             <div className="flex items-start gap-4 mb-8">
               <div className="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center bg-primary/10">
                 <Image 
-                  src="/assets/images/icon.png" 
+                  src="/assets/images/icon.webp" 
                   alt="Sahabat Warga Logo" 
                   width={32} 
                   height={32} 
@@ -30,7 +30,7 @@ export function Footer() {
             <div className="border-t border-border pt-8">
               <div className="flex items-center gap-4">
                 <Image 
-                  src="/assets/images/pse.png" 
+                  src="/assets/images/pse.webp" 
                   alt="Terdaftar PSE Kominfo" 
                   width={80} 
                   height={80}

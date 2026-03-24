@@ -16,7 +16,7 @@ export default async function BlogPage() {
     "@id": `${siteUrl}/blog/${post.slug}`,
     headline: post.title,
     description: post.excerpt || post.title,
-    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.jpg`],
+    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.webp`],
     datePublished: post.published_at,
     dateModified: post.updated_at || post.published_at,
     author: post.primary_author?.name

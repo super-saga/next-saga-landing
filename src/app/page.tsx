@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Sahabat Warga",
     images: [
       {
-        url: "/assets/images/web-preview.jpg",
+        url: "/assets/images/web-preview.webp",
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga | Kelola Lingkungan Lebih Mudah",
     description: "Solusi digital untuk iuran, data warga, surat pengantar, dan komunikasi komunitas yang transparan.",
-    images: ["/assets/images/web-preview.jpg"],
+    images: ["/assets/images/web-preview.webp"],
   },
 }
 
@@ -51,7 +51,7 @@ export default function Home() {
     "@type": "Product",
     "@id": `${siteUrl}#product`,
     name: "Sahabat Warga",
-    image: [`${siteUrl}/assets/images/web-preview.jpg`],
+    image: [`${siteUrl}/assets/images/web-preview.webp`],
     description: "Aplikasi manajemen lingkungan untuk iuran, data warga, surat pengantar, dan komunikasi komunitas.",
     brand: {
       "@type": "Organization",

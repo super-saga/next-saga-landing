@@ -12,13 +12,13 @@ const PhonePreview = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const screens = [
     {
-      src: "/assets/images/billing-details.png",
+      src: "/assets/images/billing-details.webp",
       alt: "Billing Details",
       badge: "Tagihan Masuk 📨",
       color: "bg-blue-500"
     },
     {
-      src: "/assets/images/qris-preview.png",
+      src: "/assets/images/qris-preview.webp",
       alt: "QRIS Payment",
       badge: "Siap Bayar ⚡",
       color: "bg-emerald-500"
@@ -148,7 +148,7 @@ export const Hero = () => (
             </div>
             <div className="aspect-[4/3] bg-muted/20 relative overflow-hidden group">
               <Image
-                src="/assets/images/dashboard-preview.png"
+                src="/assets/images/dashboard-preview.webp"
                 alt="Dashboard Preview"
                 fill
                 className="object-cover object-left-top"

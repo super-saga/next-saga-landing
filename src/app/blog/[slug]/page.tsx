@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
-  const ogImage = post.feature_image || "/assets/images/web-preview.jpg"
+  const ogImage = post.feature_image || "/assets/images/web-preview.webp"
 
   return {
     title: post.title,
@@ -63,7 +63,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     "@id": `${siteUrl}/blog/${post.slug}`,
     headline: post.title,
     description: post.excerpt || post.title,
-    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.jpg`],
+    image: post.feature_image ? [post.feature_image] : [`${siteUrl}/assets/images/web-preview.webp`],
     datePublished: post.published_at,
     dateModified: post.updated_at || post.published_at,
     author: post.primary_author?.name

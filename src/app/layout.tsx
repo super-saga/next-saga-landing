@@ -54,11 +54,11 @@ export const metadata: Metadata = {
     locale: "id_ID",
     images: [
       {
-        url: "/assets/images/web-preview.jpg",
+        url: "/assets/images/web-preview.webp",
         width: 1200,
         height: 630,
         alt: "Sahabat Warga Dashboard Preview",
-        type: "image/jpeg",
+        type: "image/webp",
       },
     ]
   },
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sahabat Warga by Saga",
     description: "Solusi Manajemen Lingkungan Modern",
-    images: ["/assets/images/web-preview.jpg"],
+    images: ["/assets/images/web-preview.webp"],
   },
   icons: {
     icon: "/assets/images/icon.png",
