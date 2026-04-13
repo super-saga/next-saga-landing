@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion } from "framer-motion"
@@ -131,10 +132,13 @@ export default function AboutPage() {
                className="flex-1 relative"
              >
                <div className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl overflow-hidden shadow-xl relative group">
-                  {/* Placeholder for Profile Image */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                    <Users className="w-24 h-24 text-muted-foreground/30" />
-                  </div>
+                  <Image
+                    src="/assets/images/founder.png"
+                    alt="Dede Kurnihawan"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
                   
                   {/* Decorative frame */}
                   <div className="absolute inset-0 border-[10px] border-background/30 rounded-2xl z-10" />
