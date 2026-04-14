@@ -107,6 +107,19 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${gaId}');
+          `}
+        </Script>
       </head>
       <body className={inter.className}>
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
