@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
 import { ThemeProvider } from "@/components/theme-provider"
 import { PostHogProviderClient } from "@/components/posthog-provider"
 import { Navbar } from "@/components/navbar"
@@ -10,6 +11,7 @@ import { Footer } from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
 const siteUrl = configuredSiteUrl ?? "https://saga.co.id"
+const gaId = process.env.NEXT_PUBLIC_GA_ID ?? "G-J48433C4W2"
 
 export const metadata: Metadata = {
   title: "Sahabat Warga by Saga",
