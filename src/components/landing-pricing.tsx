@@ -90,7 +90,7 @@ function PromoCountdown({ deadline, label }: { deadline: Date, label: string }) 
             <Flame className="w-8 h-8 text-yellow-300 fill-yellow-300" />
           </motion.div>
           <div>
-            <h3 className="font-bold text-xl md:text-2xl tracking-tight">LAUNCHING PROMO</h3>
+            <h3 className="font-bold text-xl md:text-2xl tracking-tight">LIMITED PROMO</h3>
             <p className="text-white/90 font-medium">{label}</p>
           </div>
         </motion.div>
