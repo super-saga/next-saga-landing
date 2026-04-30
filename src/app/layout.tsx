@@ -90,7 +90,7 @@ export default function RootLayout({
     "logo": `${siteUrl}/assets/images/icon.png`,
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+62-851-2807-0019",
+      "telephone": "+62-851-5511-6381",
       "contactType": "customer service",
       "areaServed": "ID",
       "availableLanguage": "Indonesian"
@@ -102,7 +102,7 @@ export default function RootLayout({
       "addressRegion": "Depok",
       "addressCountry": "ID"
     },
-    "email": "sales@saga.co.id"
+    "email": "dede.kurniawan@saga.co.id"
   }
 
   return (
