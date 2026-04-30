@@ -1,5 +1,5 @@
 {
-  "name": "next-saga-landing-v2",
+  "name": "next-saga-landing",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-01-15",
   "compatibility_flags": ["nodejs_compat"],
