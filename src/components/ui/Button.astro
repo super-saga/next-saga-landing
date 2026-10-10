@@ -1,6 +1,6 @@
 ---
 interface Props {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-inverse' | 'secondary-inverse';
   href: string;
   label?: string;
   target?: string;
@@ -31,6 +31,10 @@ const variants: Record<string, string> = {
     'bg-transparent border border-border text-text-primary hover:bg-surface-muted',
   ghost:
     'bg-transparent text-text-primary underline-offset-4 hover:underline',
+  'ghost-inverse':
+    'bg-transparent text-text-inverse underline-offset-4 hover:underline focus-visible:ring-offset-ink-900',
+  'secondary-inverse':
+    'bg-transparent border border-text-inverse/40 text-text-inverse hover:bg-white/10 focus-visible:ring-offset-ink-900',
 };
 ---
 

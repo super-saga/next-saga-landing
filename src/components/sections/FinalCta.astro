@@ -33,19 +33,18 @@ import { WA_URL } from '../../config';
             data-open="waitlist"
           />
 
-          <!-- Secondary: WhatsApp consultation — ghost on ink bg for contrast -->
+          <!-- Secondary: WhatsApp consultation — ghost-inverse on ink bg for contrast -->
           <Button
             href={WA_URL}
-            variant="ghost"
+            variant="ghost-inverse"
             label={finalCta.ctaSecondary}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-text-inverse hover:text-text-inverse"
           />
         </div>
 
         <!-- Invite line: small reassurance text -->
-        <p class="font-sans text-sm text-text-inverse mt-1" style="opacity:0.75">
+        <p class="font-sans text-sm text-text-tertiary mt-1">
           {finalCta.inviteLine}
         </p>
 
