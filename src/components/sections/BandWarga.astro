@@ -1,0 +1,98 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import PhoneMockup from '../ui/PhoneMockup.astro';
+import Reveal from '../ui/Reveal.astro';
+import Sobi from '../sobi/Sobi.astro';
+import { warga } from '../../data/content.id';
+---
+
+<!--
+  BandWarga uses ALTERNATING zig-zag rows (image left / text right, text left / image right)
+  — compositionally distinct from BandPengurus (flagship card + compact list).
+-->
+<section id="untuk-warga" class="bg-bg">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        eyebrow="Untuk Warga"
+        title={warga.heading}
+        align="center"
+        class="mb-16 mx-auto max-w-2xl"
+      />
+    </Reveal>
+
+    <!-- Alternating zig-zag rows -->
+    <div class="flex flex-col gap-16 lg:gap-20">
+      {warga.features.map((feat, i) => {
+        const isEven = i % 2 === 0;
+        return (
+          <Reveal delay={i * 60}>
+            <div
+              class:list={[
+                'flex flex-col gap-8 items-center',
+                isEven ? 'lg:flex-row' : 'lg:flex-row-reverse',
+              ]}
+            >
+              <!-- Visual side: tinted panel acting as phone screen placeholder -->
+              <div class="w-full lg:w-1/2 flex justify-center">
+                <div
+                  class="rounded-[var(--radius-lg)] bg-surface-muted flex items-center justify-center"
+                  style="width:260px;height:320px;"
+                  aria-hidden="true"
+                >
+                  <PhoneMockup
+                    src=""
+                    alt={feat.title}
+                    width={180}
+                  />
+                </div>
+              </div>
+
+              <!-- Text side -->
+              <div class="w-full lg:w-1/2 flex flex-col gap-3">
+                <!-- Step indicator -->
+                <span class="font-sans text-xs font-bold tracking-widest uppercase text-primary">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 class="font-sans font-bold text-2xl lg:text-3xl text-text-primary leading-tight">
+                  {feat.title}
+                </h3>
+                <p class="font-sans text-base leading-relaxed text-text-secondary">
+                  {feat.body}
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        );
+      })}
+    </div>
+
+    <!-- Sobi highlight block: ink surface, inline mascot -->
+    <Reveal delay={80} class="mt-20">
+      <div
+        class="rounded-[var(--radius-lg)] bg-ink-800 flex flex-col sm:flex-row items-center gap-8 p-8 lg:p-10"
+        aria-labelledby="sobi-highlight-title"
+      >
+        <!-- Inline Sobi instance (second on the page alongside the floating launcher) -->
+        <div class="flex-shrink-0 flex items-center justify-center">
+          <Sobi size={120} />
+        </div>
+
+        <!-- Copy -->
+        <div class="flex flex-col gap-2 text-center sm:text-left">
+          <h3
+            id="sobi-highlight-title"
+            class="font-sans font-bold text-xl lg:text-2xl text-text-inverse leading-tight"
+          >
+            {warga.sobi.title}
+          </h3>
+          <p class="font-sans text-base leading-relaxed text-text-inverse">
+            {warga.sobi.body}
+          </p>
+        </div>
+      </div>
+    </Reveal>
+
+  </div>
+</section>

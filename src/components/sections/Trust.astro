@@ -1,0 +1,71 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Reveal from '../ui/Reveal.astro';
+import { trust } from '../../data/content.id';
+
+const CheckIcon = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<!--
+  bg-surface-inverse = ink (#0F1A17). All text must be text-text-inverse for AA contrast.
+  First point (settlement) is always rendered first and visually emphasized.
+-->
+<section id="trust" class="bg-surface-inverse">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        eyebrow="Transparansi"
+        title={trust.heading}
+        align="center"
+        tone="inverse"
+        class="mb-14 mx-auto max-w-2xl"
+      />
+    </Reveal>
+
+    <div class="flex flex-col gap-6">
+      {trust.points.map((point, i) => (
+        <Reveal delay={i * 80}>
+          {i === 0 ? (
+            <article
+              class="rounded-[var(--radius-lg)] bg-ink-700 border border-emerald-300/20 flex flex-col sm:flex-row gap-5 p-7 lg:p-9"
+              aria-labelledby={`trust-point-${i}`}
+            >
+              <span class="flex-shrink-0 mt-0.5 text-emerald-300" set:html={CheckIcon} />
+              <div class="flex flex-col gap-2">
+                <h3
+                  id={`trust-point-${i}`}
+                  class="font-sans font-bold text-xl lg:text-2xl text-text-inverse leading-tight"
+                >
+                  {point.title}
+                </h3>
+                <p class="font-sans text-base leading-relaxed text-text-inverse">
+                  {point.body}
+                </p>
+              </div>
+            </article>
+          ) : (
+            <article
+              class="rounded-[var(--radius-md)] bg-ink-800 flex flex-row gap-5 p-6 lg:p-7"
+              aria-labelledby={`trust-point-${i}`}
+            >
+              <span class="flex-shrink-0 mt-0.5 text-emerald-300" set:html={CheckIcon} />
+              <div class="flex flex-col gap-1.5">
+                <h3
+                  id={`trust-point-${i}`}
+                  class="font-sans font-semibold text-lg text-text-inverse leading-snug"
+                >
+                  {point.title}
+                </h3>
+                <p class="font-sans text-sm leading-relaxed text-text-inverse">
+                  {point.body}
+                </p>
+              </div>
+            </article>
+          )}
+        </Reveal>
+      ))}
+    </div>
+
+  </div>
+</section>

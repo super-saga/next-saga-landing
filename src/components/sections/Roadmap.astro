@@ -1,0 +1,47 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Badge from '../ui/Badge.astro';
+import Reveal from '../ui/Reveal.astro';
+import { roadmap } from '../../data/content.id';
+---
+
+<section id="roadmap" class="bg-surface-muted">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        eyebrow="Roadmap"
+        title={roadmap.heading}
+        align="left"
+        class="mb-12 max-w-xl"
+      />
+    </Reveal>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {roadmap.items.map((item, i) => (
+        <Reveal delay={i * 80}>
+          <article
+            class="rounded-[var(--radius-lg)] bg-surface border border-border flex flex-col gap-4 p-7"
+            aria-labelledby={`roadmap-item-${i}`}
+          >
+            <!-- Badge always shown — these are never presented as existing -->
+            <Badge label="Segera hadir" tone="soon" />
+
+            <div class="flex flex-col gap-2">
+              <h3
+                id={`roadmap-item-${i}`}
+                class="font-sans font-semibold text-lg text-text-primary leading-snug"
+              >
+                {item.title}
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-text-secondary">
+                {item.body}
+              </p>
+            </div>
+          </article>
+        </Reveal>
+      ))}
+    </div>
+
+  </div>
+</section>
