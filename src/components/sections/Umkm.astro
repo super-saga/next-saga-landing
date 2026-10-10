@@ -2,6 +2,7 @@
 import SectionHeader from '../ui/SectionHeader.astro';
 import Badge from '../ui/Badge.astro';
 import Reveal from '../ui/Reveal.astro';
+import PhoneMockup from '../ui/PhoneMockup.astro';
 import { umkm } from '../../data/content.id';
 import { UMKM_LIVE } from '../../config';
 ---
@@ -26,13 +27,12 @@ import { UMKM_LIVE } from '../../config';
         </p>
 
         {UMKM_LIVE ? (
-          <div
-            class="w-full rounded-[var(--radius-lg)] bg-surface-muted flex items-center justify-center"
-            style="height:240px;"
-            aria-label="Pratinjau fitur UMKM"
-            role="img"
-          >
-            <span class="font-sans text-text-secondary text-sm">Pratinjau segera hadir</span>
+          <div class="w-full flex justify-center pt-4">
+            <PhoneMockup
+              src="/screens/umkm.png"
+              alt="Jelajah UMKM dan ekonomi warga di aplikasi Sahabat Warga"
+              width={240}
+            />
           </div>
         ) : (
           <div

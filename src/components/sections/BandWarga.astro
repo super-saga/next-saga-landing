@@ -4,6 +4,15 @@ import PhoneMockup from '../ui/PhoneMockup.astro';
 import Reveal from '../ui/Reveal.astro';
 import Sobi from '../sobi/Sobi.astro';
 import { warga } from '../../data/content.id';
+
+// Real app screens per warga feature row (exported from the pen.dev design).
+const wargaScreens = [
+  '/screens/tagihan.png',
+  '/screens/pengumuman.png',
+  '/screens/laporan.png',
+  '/screens/qr-akses.png',
+  '/screens/polling.png',
+];
 ---
 
 <!--
@@ -34,18 +43,13 @@ import { warga } from '../../data/content.id';
                 isEven ? 'lg:flex-row' : 'lg:flex-row-reverse',
               ]}
             >
-              <!-- Visual side: tinted panel acting as phone screen placeholder -->
+              <!-- Visual side: real app screen for this feature -->
               <div class="w-full lg:w-1/2 flex justify-center">
-                <div
-                  class="w-full max-w-[260px] aspect-[4/5] rounded-[var(--radius-lg)] bg-surface-muted flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  <PhoneMockup
-                    src=""
-                    alt={feat.title}
-                    width={180}
-                  />
-                </div>
+                <PhoneMockup
+                  src={wargaScreens[i] ?? ''}
+                  alt={`Pratinjau layar ${feat.title} di aplikasi Sahabat Warga`}
+                  width={240}
+                />
               </div>
 
               <!-- Text side -->

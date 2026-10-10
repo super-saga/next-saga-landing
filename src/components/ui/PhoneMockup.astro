@@ -17,31 +17,26 @@ const hasSrc = src && src.trim().length > 0;
 const aspectHeight = Math.round(width * (16 / 9));
 ---
 
-<div
-  class={[
-    'relative overflow-hidden rounded-xl border border-border bg-surface shadow-lg',
-    className,
-  ].filter(Boolean).join(' ')}
-  style={`width:${width}px`}
->
-  {hasSrc ? (
-    <img
-      src={src}
-      alt={alt}
-      width={width}
-      height={aspectHeight}
-      loading="lazy"
-      decoding="async"
-      class="block w-full h-auto"
-    />
-  ) : (
-    <div
-      class="flex items-center justify-center bg-surface-muted text-text-primary text-sm font-sans"
-      style={`width:${width}px;height:${aspectHeight}px`}
-      aria-label={alt}
-      role="img"
-    >
-      {alt}
-    </div>
-  )}
-</div>
+{hasSrc ? (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    loading="lazy"
+    decoding="async"
+    class={['block h-auto', className].filter(Boolean).join(' ')}
+    style={`width:${width}px`}
+  />
+) : (
+  <div
+    class={[
+      'relative overflow-hidden rounded-xl border border-border bg-surface-muted shadow-lg flex items-center justify-center text-text-primary text-sm font-sans',
+      className,
+    ].filter(Boolean).join(' ')}
+    style={`width:${width}px;height:${aspectHeight}px`}
+    aria-label={alt}
+    role="img"
+  >
+    {alt}
+  </div>
+)}
