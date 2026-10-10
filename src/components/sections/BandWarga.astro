@@ -64,18 +64,18 @@ const visualLeft = [true, false, true, false, true];
             {/* Visual card */}
             <div class="w-full lg:w-[580px] lg:shrink-0 h-[320px] lg:h-[440px] flex flex-row gap-[28px] pt-[32px] lg:pt-[52px] justify-center items-start bg-[#EEFBF5] rounded-[24px] overflow-hidden">
               {isQrRow ? (
-                /* Row 4: two narrower phones side by side */
+                /* Row 4: two distinct phones side by side (QR Akses Gerbang + Undang Tamu) */
                 <>
                   <img
-                    src={wargaScreens[i]}
-                    alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
+                    src="/screens/qr-akses.png"
+                    alt="Layar QR Akses Gerbang di aplikasi Sahabat Warga"
                     class="block h-auto w-[160px] lg:w-[200px] shrink-0"
                     loading="lazy"
                     decoding="async"
                   />
                   <img
-                    src={wargaScreens[i]}
-                    alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
+                    src="/screens/qr-tamu.png"
+                    alt="Layar Undang Tamu di aplikasi Sahabat Warga"
                     class="block h-auto w-[160px] lg:w-[200px] shrink-0"
                     loading="lazy"
                     decoding="async"

@@ -13,79 +13,322 @@
  *   - aria-live="polite" on the message list for incoming assistant text
  *   - Enter sends; Shift+Enter inserts newline
  */
+
+import { WA_URL } from '../../config.ts';
+import Sobi from './Sobi.astro';
+
+// Popular questions
+const popularQuestions = [
+  {
+    text: 'Berapa biaya langganannya?',
+    icon: 'wallet',
+  },
+  {
+    text: 'Cara daftarkan RT/RW saya',
+    icon: 'house-plus',
+  },
+  {
+    text: 'Warga bisa bayar pakai QRIS?',
+    icon: 'qr-code',
+  },
+  {
+    text: 'Apakah data kami aman?',
+    icon: 'shield-check',
+  },
+];
 ---
 
+<!-- Chat Panel -->
 <div
   id="sobi-chat-panel"
   role="dialog"
   aria-modal="true"
   aria-label="Chat dengan Sobi"
   aria-hidden="true"
-  class="sobi-chat-panel fixed bottom-[108px] right-5 z-50 flex w-[340px] max-w-[calc(100vw-2.5rem)] flex-col rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 transition-all duration-200"
-  style="display:none;"
+  class="fixed bottom-[84px] right-5 z-50 flex w-[380px] max-w-[calc(100vw-1.25rem)] flex-col rounded-[24px] overflow-hidden bg-white"
+  style="display:none; box-shadow:0px 24px 60px #0F1A1733, 0px 2px 8px #0F1A171A; height: min(812px, calc(100dvh - 100px));"
 >
-  <!-- Header -->
-  <header class="flex items-center justify-between rounded-t-2xl bg-emerald-600 px-4 py-3">
-    <div class="flex items-center gap-2">
-      <span class="text-base font-semibold text-white">Sobi</span>
-      <span
-        class="rounded-full bg-emerald-800/50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-100"
-        aria-label="Versi demo"
-      >
-        versi demo
+
+  <!-- Panel Header -->
+  <header
+    class="flex w-full shrink-0 flex-row items-center gap-[12px] bg-[#06372A] px-[18px] py-[16px] pr-[16px]"
+  >
+    <!-- Avatar with online dot -->
+    <div class="relative flex h-[40px] w-[40px] shrink-0 items-center justify-center overflow-hidden rounded-full">
+      <div class="absolute inset-0 bg-[#EEFBF5]" style="z-index:0;"></div>
+      <div class="absolute inset-0 overflow-hidden rounded-full" style="z-index:1;">
+        <div
+          class="absolute inset-0 bg-[url('/mascots/sobi-reference.png')] bg-no-repeat"
+          style="background-size:178.6% 178.6%; background-position:-15.72px -8px;"
+        ></div>
+      </div>
+      <div
+        class="absolute rounded-full bg-[#5FD4AE]"
+        style="width:11px;height:11px;left:29px;top:29px;outline:2px solid #06372A;z-index:2;"
+      ></div>
+    </div>
+
+    <!-- Title block -->
+    <div class="flex min-w-0 flex-1 flex-col gap-[2px]">
+      <div class="flex flex-row items-center gap-[6px]">
+        <span class="whitespace-nowrap text-[16px] font-bold leading-normal text-white">Sobi</span>
+        <!-- AI badge -->
+        <div class="flex shrink-0 items-center rounded-[6px] px-[6px] py-[2px]" style="background:rgba(201,245,228,0.15);">
+          <span class="whitespace-nowrap text-[10px] font-bold tracking-[0.4px] text-[#C9F5E4]">AI</span>
+        </div>
+        <!-- Demo badge (subtle) -->
+        <div class="flex shrink-0 items-center rounded-[6px] px-[6px] py-[2px]" style="background:rgba(255,255,255,0.08);" aria-label="Versi demo">
+          <span class="whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.4px] text-[#5FD4AE]/70">demo</span>
+        </div>
+      </div>
+      <span id="sobi-header-status" class="whitespace-nowrap text-[12px] font-medium leading-normal text-[#5FD4AE]">
+        Asisten Sahabat Warga &middot; Online
       </span>
     </div>
+
+    <!-- Minimize button (closes panel) -->
+    <button
+      id="sobi-chat-minimize"
+      type="button"
+      aria-label="Minimumkan chat"
+      class="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      style="background:rgba(255,255,255,0.1);"
+    >
+      <!-- minus icon -->
+      <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2.731 6.453q-0.239 0.085-0.345 0.325-0.103 0.236-0.007 0.461 0.058 0.096 0.14 0.181 0.085 0.082 0.185 0.126l0.096 0.027 8.401 0 0.096-0.027q0.099-0.044 0.181-0.126 0.085-0.085 0.133-0.188 0.051-0.106 0.051-0.232 0-0.126-0.041-0.239-0.099-0.195-0.294-0.294l-0.085-0.041-4.228 0q-4.228 0-4.283 0.027z" fill="#FFFFFF"/>
+      </svg>
+    </button>
+
+    <!-- Close button -->
     <button
       id="sobi-chat-close"
       type="button"
       aria-label="Tutup chat"
-      class="flex h-7 w-7 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-emerald-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      class="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      style="background:rgba(255,255,255,0.1);"
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <!-- x icon -->
+      <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3.346 2.939q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.253 0 0.167 0.041 0.253 0.044 0.082 1.624 1.665l1.583 1.583-1.583 1.583q-1.579 1.583-1.624 1.668-0.041 0.082-0.041 0.236 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.099 0.096 0.181 0.133 0.085 0.034 0.239 0.034 0.154 0 0.236-0.041 0.085-0.044 1.668-1.624l1.583-1.583 1.583 1.583q1.583 1.579 1.665 1.624 0.085 0.041 0.239 0.041 0.154 0 0.236-0.034 0.085-0.038 0.181-0.133 0.099-0.099 0.133-0.181 0.038-0.085 0.038-0.239 0-0.154-0.044-0.236-0.041-0.085-1.620-1.668l-1.583-1.583 1.583-1.583q1.579-1.583 1.620-1.665 0.044-0.085 0.044-0.253 0-0.167-0.041-0.253-0.099-0.167-0.280-0.267-0.058-0.027-0.099-0.041-0.041-0.014-0.154-0.014-0.113 0-0.154 0.014-0.041 0.014-0.113 0.041-0.099 0.058-1.665 1.627l-1.569 1.565-2.827-2.813q-0.311-0.294-0.420-0.379-0.085-0.055-0.198-0.055l-0.027 0q-0.140 0-0.181 0.014z" fill="#FFFFFF"/>
       </svg>
     </button>
   </header>
 
-  <!-- Message list: aria-live removed so per-token mutations do not spam screen readers.
-       Announcements are made once on completion via #sobi-sr-status below. -->
+  <!-- Welcome state (shown when no messages) -->
+  <div
+    id="sobi-welcome-panel"
+    class="flex w-full flex-1 flex-col gap-[12px] overflow-y-auto bg-[#F6F7F6] p-[16px]"
+  >
+    <!-- Sobi Hero -->
+    <div class="flex w-full shrink-0 flex-col items-center gap-[4px]">
+      <Sobi size={80} />
+      <p class="whitespace-nowrap text-[16px] font-bold leading-normal text-[#0F1A17]">Hai, saya Sobi!</p>
+      <p class="whitespace-nowrap text-[11px] font-medium leading-normal text-[#98A29E]">
+        Hari ini &middot; Biasanya membalas instan
+      </p>
+    </div>
+
+    <!-- Greeting bubble -->
+    <div class="flex w-full shrink-0 flex-row items-start gap-[8px] pr-[16px]">
+      <!-- Small avatar -->
+      <div class="relative flex h-[32px] w-[32px] shrink-0 items-center justify-center overflow-hidden rounded-full">
+        <div class="absolute inset-0 bg-[#EEFBF5]" style="z-index:0;"></div>
+        <div class="absolute inset-0 overflow-hidden rounded-full" style="z-index:1;">
+          <div
+            class="absolute inset-0 bg-[url('/mascots/sobi-reference.png')] bg-no-repeat"
+            style="background-size:178.6% 178.6%; background-position:-12.576px -6.4px;"
+          ></div>
+        </div>
+      </div>
+      <!-- Bubble -->
+      <div class="flex flex-1 flex-col gap-[10px] rounded-[6px_20px_20px_20px] bg-[#EEF1EF] p-[12px_14px]">
+        <p class="text-[14px] font-normal leading-[21px] text-[#0F1A17]">
+          Halo! Saya Sobi 👋 Saya bisa bantu jelaskan fitur, harga, dan cara mulai pakai
+          Sahabat Warga untuk lingkungan Anda.
+        </p>
+      </div>
+    </div>
+
+    <!-- Popular Questions -->
+    <div class="flex w-full shrink-0 flex-col gap-[8px] pl-[40px]">
+      <p class="whitespace-nowrap text-[10px] font-bold tracking-[0.8px] text-[#98A29E]">PERTANYAAN POPULER</p>
+
+      <!-- Q1: Biaya langganan -->
+      <button
+        type="button"
+        data-popular-question="Berapa biaya langganannya?"
+        class="flex w-full shrink-0 cursor-pointer flex-row items-center gap-[10px] rounded-[14px] bg-white px-[12px] py-[11px] text-left transition-colors hover:bg-[#EEFBF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
+        style="outline:1px solid #E3E7E5; outline-offset:-0.5px;"
+      >
+        <div class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px] bg-[#EEFBF5]">
+          <!-- wallet icon -->
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.604 1.203q-0.506 0.085-0.878 0.437-0.369 0.349-0.509 0.865-0.027 0.085-0.027 0.714l-0.014 3.780 0.014 3.780q0 0.629 0.027 0.714 0.267 0.981 1.261 1.289l0.126 0.041 8.289 0q0.769 0 0.991-0.027 0.157-0.014 0.253-0.072l0.058-0.027q0.154-0.068 0.294-0.209 0.140-0.140 0.209-0.294l0.014-0.014q0.072-0.126 0.085-0.212 0.027-0.099 0.027-0.335l0-1.863 0.126-0.099q0.321-0.236 0.434-0.629 0.014-0.068 0.027-0.226l0-0.656q0-0.574-0.007-0.687-0.007-0.113-0.034-0.209-0.044-0.140-0.092-0.229-0.048-0.092-0.174-0.232-0.126-0.140-0.212-0.185l-0.068-0.055-0.014-2.017q0-0.167-0.027-0.253-0.072-0.181-0.212-0.355-0.140-0.174-0.294-0.273-0.222-0.126-0.489-0.154l-0.113-0.014-0.014-0.687q0-0.489-0.007-0.608-0.007-0.120-0.034-0.202-0.058-0.154-0.123-0.260-0.062-0.106-0.185-0.232-0.253-0.250-0.547-0.308-0.126-0.027-4.074-0.027-3.948 0-4.088 0.027z m7.896 1.709l0 0.588-7.687 0-0.096-0.041q-0.154-0.058-0.267-0.198-0.113-0.140-0.113-0.349 0-0.126 0.055-0.239 0.058-0.126 0.174-0.215 0.120-0.092 0.260-0.120 0.085 0 3.879-0.014l3.794 0 0 0.588z m-8.022 1.695q0.113 0.027 0.253 0.048 0.140 0.021 4.549 0.021l4.396 0 0 1.750-0.742 0q-0.588 0-0.721 0.014-0.133 0.014-0.328 0.099-0.239 0.082-0.465 0.260-0.222 0.174-0.362 0.383-0.335 0.506-0.301 1.087 0.034 0.581 0.403 1.029 0.373 0.448 0.974 0.588 0.126 0.027 0.827 0.027l0.714 0.014 0 1.750-4.382 0q-4.382 0-4.481-0.027-0.294-0.058-0.434-0.335l-0.041-0.099 0-6.118q0-0.533 0.014-0.520l0.126 0.031z m9.772 3.555l0 0.588-1.904-0.014-0.099-0.041q-0.096-0.044-0.174-0.133-0.075-0.092-0.120-0.188-0.041-0.099-0.034-0.232 0.007-0.133 0.048-0.219 0.072-0.126 0.181-0.215 0.113-0.092 0.253-0.106 0.099-0.027 0.967-0.027l0.882 0 0 0.588z" fill="#08745A"/>
+          </svg>
+        </div>
+        <span class="flex-1 text-[13px] font-semibold leading-normal text-[#0F1A17]">
+          Berapa biaya langganannya?
+        </span>
+        <!-- chevron-right -->
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="shrink-0">
+          <path d="M5.096 2.939q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.253 0 0.167 0.041 0.253 0.044 0.082 1.624 1.665l1.583 1.583-1.583 1.583q-1.579 1.583-1.624 1.668-0.041 0.082-0.041 0.236 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.099 0.096 0.181 0.133 0.085 0.034 0.239 0.034 0.154 0 0.243-0.048 0.092-0.051 1.904-1.863 1.815-1.815 1.863-1.904 0.051-0.092 0.051-0.260 0-0.167-0.044-0.250-0.041-0.085-1.859-1.907l-1.442-1.429q-0.335-0.335-0.461-0.417-0.099-0.072-0.198-0.072l-0.041 0q-0.140 0-0.181 0.014z" fill="#98A29E"/>
+        </svg>
+      </button>
+
+      <!-- Q2: Cara daftarkan RT/RW -->
+      <button
+        type="button"
+        data-popular-question="Cara daftarkan RT/RW saya"
+        class="flex w-full shrink-0 cursor-pointer flex-row items-center gap-[10px] rounded-[14px] bg-white px-[12px] py-[11px] text-left transition-colors hover:bg-[#EEFBF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
+        style="outline:1px solid #E3E7E5; outline-offset:-0.5px;"
+      >
+        <div class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px] bg-[#EEFBF5]">
+          <!-- house-plus icon -->
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M6.819 0.602q-0.239 0.014-0.448 0.099-0.253 0.096-0.461 0.267-0.352 0.294-2.314 1.982-1.959 1.685-1.999 1.740-0.239 0.280-0.366 0.673l-0.055 0.154 0.014 5.459q0 0.434 0.027 0.520 0.267 0.981 1.261 1.289l0.126 0.041 4.703 0 0.113-0.027q0.209-0.085 0.308-0.294 0.055-0.099 0.055-0.253 0-0.099-0.014-0.140-0.014-0.041-0.041-0.113-0.041-0.082-0.133-0.164-0.092-0.085-0.178-0.120-0.082-0.038-0.202-0.038-0.116 0-0.649 0l-0.742 0 0-4.102 2.338 0 0.068 0.068q0.171 0.185 0.414 0.178 0.246-0.007 0.407-0.188 0.161-0.185 0.161-0.407 0-0.140-0.051-0.239-0.048-0.099-0.171-0.226-0.198-0.195-0.448-0.280l-0.126-0.055-2.451 0q-0.308 0-0.434 0.027-0.085 0.014-0.226 0.085l-0.014 0.014q-0.154 0.068-0.287 0.209-0.133 0.140-0.202 0.294l-0.027 0.044q-0.058 0.109-0.072 0.209-0.027 0.140-0.027 0.533l0 3.835-0.882 0q-0.882 0-0.981-0.027-0.294-0.058-0.434-0.335l-0.041-0.099 0-4.929q0-0.475 0.027-0.615 0.014-0.099 0.072-0.167l0.027-0.027q0.068-0.099 2.133-1.856 2.068-1.757 2.143-1.798 0.079-0.044 0.120-0.051 0.041-0.007 0.140-0.007 0.099 0 0.140 0.007 0.041 0.007 0.116 0.044 0.079 0.034 2.116 1.777 2.037 1.743 2.150 1.866 0.068 0.085 0.096 0.157 0.031 0.068 0.044 0.250l0.014 0.673q0 0.615 0.007 0.728 0.007 0.113 0.041 0.191 0.038 0.075 0.120 0.161 0.085 0.082 0.174 0.123 0.092 0.041 0.239 0.041 0.147 0 0.246-0.055 0.209-0.099 0.294-0.308 0.027-0.085 0.027-0.209 0-0.126 0-0.745 0-0.837-0.027-0.964-0.099-0.461-0.379-0.813-0.055-0.055-2.044-1.771-1.989-1.716-2.283-1.952-0.543-0.448-1.271-0.366z m3.527 7.588q-0.253 0.085-0.379 0.308-0.027 0.072-0.034 0.164-0.007 0.089-0.007 0.591l0 0.673-1.343 0-0.085 0.055q-0.181 0.099-0.280 0.267-0.041 0.085-0.041 0.253 0 0.167 0.041 0.246 0.044 0.075 0.126 0.161 0.085 0.082 0.154 0.120 0.072 0.034 0.161 0.041 0.092 0.007 0.595 0.007l0.673 0 0 0.673q0 0.502 0.007 0.595 0.007 0.089 0.041 0.161 0.038 0.068 0.120 0.154 0.085 0.082 0.161 0.126 0.079 0.041 0.246 0.041 0.167 0 0.243-0.041 0.079-0.044 0.161-0.126 0.085-0.085 0.120-0.154 0.038-0.072 0.044-0.161 0.007-0.092 0.007-0.595l0-0.673 0.673 0q0.502 0 0.591-0.007 0.092-0.007 0.161-0.041 0.072-0.038 0.154-0.120 0.085-0.085 0.126-0.161 0.044-0.079 0.044-0.246 0-0.167-0.041-0.253-0.099-0.167-0.280-0.267l-0.085-0.055-1.343 0 0-0.673q0-0.502-0.007-0.591-0.007-0.092-0.034-0.164-0.099-0.181-0.280-0.267-0.085-0.041-0.226-0.048-0.140-0.007-0.181 0.007z" fill="#08745A"/>
+          </svg>
+        </div>
+        <span class="flex-1 text-[13px] font-semibold leading-normal text-[#0F1A17]">
+          Cara daftarkan RT/RW saya
+        </span>
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="shrink-0">
+          <path d="M5.096 2.939q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.253 0 0.167 0.041 0.253 0.044 0.082 1.624 1.665l1.583 1.583-1.583 1.583q-1.579 1.583-1.624 1.668-0.041 0.082-0.041 0.236 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.099 0.096 0.181 0.133 0.085 0.034 0.239 0.034 0.154 0 0.243-0.048 0.092-0.051 1.904-1.863 1.815-1.815 1.863-1.904 0.051-0.092 0.051-0.260 0-0.167-0.044-0.250-0.041-0.085-1.859-1.907l-1.442-1.429q-0.335-0.335-0.461-0.417-0.099-0.072-0.198-0.072l-0.041 0q-0.140 0-0.181 0.014z" fill="#98A29E"/>
+        </svg>
+      </button>
+
+      <!-- Q3: QRIS -->
+      <button
+        type="button"
+        data-popular-question="Warga bisa bayar pakai QRIS?"
+        class="flex w-full shrink-0 cursor-pointer flex-row items-center gap-[10px] rounded-[14px] bg-white px-[12px] py-[11px] text-left transition-colors hover:bg-[#EEFBF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
+        style="outline:1px solid #E3E7E5; outline-offset:-0.5px;"
+      >
+        <div class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px] bg-[#EEFBF5]">
+          <!-- qr-code icon -->
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.030 1.203q-0.226 0.072-0.427 0.232-0.202 0.161-0.301 0.369l-0.014 0.014q-0.072 0.140-0.085 0.212-0.027 0.113-0.027 0.349l0 0.786 0.014 1.036q0 0.167 0.027 0.236 0.085 0.267 0.287 0.472 0.205 0.202 0.472 0.287l0.137 0.041 1.025 0.014q1.036 0 1.145-0.014 0.352-0.072 0.615-0.335 0.267-0.267 0.338-0.619 0.014-0.109 0.014-1.145l-0.014-1.022-0.041-0.140q-0.085-0.267-0.291-0.468-0.202-0.205-0.468-0.291-0.068-0.027-0.236-0.027l-0.954-0.014-0.950 0q-0.167 0.014-0.267 0.027z m4.816-0.014q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.239 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.154 0.154 0.400 0.167 0.246 0.014 0.420-0.161 0.174-0.174 0.174-0.414 0-0.239-0.167-0.400-0.167-0.161-0.393-0.174-0.140 0-0.181 0.014z m2.799 0.014q-0.280 0.058-0.513 0.270-0.229 0.209-0.328 0.502l-0.041 0.140 0 1.959q0 0.222 0.021 0.308 0.021 0.085 0.079 0.209l0.014 0.031q0.055 0.096 0.174 0.229 0.120 0.133 0.219 0.205 0.209 0.140 0.448 0.181 0.109 0.014 1.145 0.014l1.022-0.014 0.140-0.041q0.267-0.085 0.468-0.287 0.205-0.205 0.291-0.455 0.027-0.085 0.027-0.253l0.014-0.954 0-0.868q0-0.236-0.027-0.349-0.014-0.072-0.085-0.212l-0.014-0.014q-0.099-0.222-0.301-0.376-0.202-0.154-0.441-0.226-0.099-0.027-0.267-0.027l-0.896-0.014q-1.036 0-1.148 0.027z m-5.571 2.003l0 0.868-1.750 0 0-1.750 1.750 0 0 0.882z m7.602 0l0 0.868-1.750 0 0-1.750 1.750 0 0 0.882z m-4.816 0.308q-0.113 0.027-0.226 0.120-0.109 0.092-0.167 0.202-0.027 0.072-0.027 0.212l-0.027 1.917-0.041 0.099q-0.140 0.277-0.434 0.335-0.099 0.027-1.036 0.027l-0.813 0q-0.140 0-0.226 0.038-0.082 0.034-0.174 0.120-0.089 0.082-0.133 0.164-0.027 0.072-0.034 0.113-0.007 0.041-0.007 0.140 0 0.154 0.041 0.253 0.113 0.209 0.325 0.294 0.068 0.027 0.222 0.027l0.967 0 0.950-0.014q0.167 0 0.253-0.027 0.967-0.294 1.261-1.261 0.027-0.085 0.027-0.253l0.014-0.950 0-0.967q0-0.154-0.027-0.222-0.085-0.198-0.273-0.301-0.188-0.106-0.414-0.065z m-5.264 2.926q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.239 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.154 0.154 0.400 0.167 0.246 0.014 0.420-0.161 0.174-0.174 0.174-0.414 0-0.239-0.167-0.400-0.167-0.161-0.393-0.174-0.140 0-0.181 0.014z m7.533 0.014q-0.099 0.044-0.191 0.130-0.089 0.082-0.126 0.161-0.034 0.075-0.041 0.116-0.007 0.041-0.007 0.140 0 0.154 0.041 0.253 0.113 0.209 0.325 0.294 0.068 0.014 0.144 0.021 0.079 0.007 0.352 0.007 0.273 0 0.349-0.007 0.079-0.007 0.147-0.021 0.212-0.085 0.325-0.294 0.041-0.099 0.041-0.253 0-0.099-0.007-0.140-0.007-0.041-0.034-0.113-0.044-0.082-0.137-0.164-0.089-0.085-0.188-0.130-0.068-0.014-0.147-0.021-0.075-0.007-0.349-0.007-0.273 0-0.359 0.007-0.082 0.007-0.137 0.021z m2.967-0.014q-0.253 0.085-0.379 0.308-0.041 0.099-0.048 0.232-0.007 0.133 0.034 0.232 0.044 0.096 0.126 0.188 0.085 0.089 0.188 0.140 0.106 0.048 0.232 0.048 0.239 0 0.414-0.174 0.174-0.174 0.161-0.441-0.014-0.226-0.167-0.379-0.154-0.154-0.379-0.167-0.140 0-0.181 0.014z m-9.967 2.324q-0.311 0.055-0.564 0.273-0.250 0.215-0.349 0.526-0.027 0.068-0.027 0.236l-0.014 0.954 0 0.868q0 0.236 0.027 0.349 0.014 0.072 0.085 0.212l0.014 0.014q0.068 0.154 0.209 0.294 0.140 0.140 0.294 0.209l0.014 0.014q0.140 0.072 0.212 0.085 0.113 0.027 0.349 0.027l0.786 0 1.036-0.014q0.167 0 0.236-0.027 0.267-0.085 0.468-0.287 0.205-0.205 0.291-0.472l0.041-0.137 0.014-1.025q0-0.824-0.014-1.025-0.014-0.205-0.072-0.359-0.096-0.226-0.301-0.414-0.202-0.188-0.455-0.273-0.068-0.027-0.250-0.027l-0.899-0.014q-1.049 0-1.131 0.014z m4.717 0.014q-0.195 0.041-0.308 0.205-0.113 0.161-0.113 0.342 0 0.181 0.082 0.321 0.085 0.140 0.239 0.226 0.099 0.041 0.253 0.041 0.154 0 0.253-0.041 0.209-0.113 0.284-0.321 0.079-0.212 0-0.420-0.075-0.212-0.284-0.311-0.085-0.055-0.205-0.062-0.116-0.007-0.202 0.021z m3.374 0q-0.362 0.058-0.694 0.284-0.328 0.222-0.523 0.530-0.154 0.267-0.226 0.574-0.014 0.126-0.027 0.308l0.014 1.931 0.041 0.099q0.126 0.267 0.420 0.314 0.294 0.048 0.506-0.147 0.082-0.085 0.140-0.181l0.041-0.113 0.014-2.044 0.055-0.085q0.085-0.181 0.267-0.267l0.085-0.055 2.044-0.014 0.113-0.041q0.209-0.113 0.291-0.321 0.085-0.212 0.007-0.420-0.075-0.212-0.284-0.325l-0.099-0.041-1.022-0.014q-1.008 0-1.162 0.027z m-6.146 2.017l0 0.882-1.750 0 0-1.750 1.750 0 0 0.868z m2.827 0.308q-0.154 0.014-0.273 0.120-0.116 0.106-0.174 0.232-0.027 0.068-0.027 0.154 0 0.082 0 0.383 0 0.301 0.007 0.379 0.007 0.075 0.041 0.140 0.038 0.062 0.120 0.147 0.085 0.082 0.161 0.126 0.079 0.041 0.246 0.041 0.167 0 0.243-0.041 0.079-0.044 0.161-0.126 0.085-0.085 0.120-0.147 0.038-0.065 0.044-0.140 0.007-0.079 0.007-0.386 0-0.349-0.014-0.455-0.014-0.106-0.106-0.222-0.092-0.120-0.239-0.174-0.147-0.058-0.314-0.031z m5.195 0.588q-0.253 0.085-0.379 0.308-0.041 0.099-0.048 0.232-0.007 0.133 0.034 0.232 0.044 0.096 0.126 0.188 0.085 0.089 0.188 0.140 0.106 0.048 0.232 0.048 0.239 0 0.414-0.174 0.174-0.174 0.161-0.441-0.014-0.226-0.167-0.379-0.154-0.154-0.379-0.167-0.140 0-0.181 0.014z" fill="#08745A"/>
+          </svg>
+        </div>
+        <span class="flex-1 text-[13px] font-semibold leading-normal text-[#0F1A17]">
+          Warga bisa bayar pakai QRIS?
+        </span>
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="shrink-0">
+          <path d="M5.096 2.939q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.253 0 0.167 0.041 0.253 0.044 0.082 1.624 1.665l1.583 1.583-1.583 1.583q-1.579 1.583-1.624 1.668-0.041 0.082-0.041 0.236 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.099 0.096 0.181 0.133 0.085 0.034 0.239 0.034 0.154 0 0.243-0.048 0.092-0.051 1.904-1.863 1.815-1.815 1.863-1.904 0.051-0.092 0.051-0.260 0-0.167-0.044-0.250-0.041-0.085-1.859-1.907l-1.442-1.429q-0.335-0.335-0.461-0.417-0.099-0.072-0.198-0.072l-0.041 0q-0.140 0-0.181 0.014z" fill="#98A29E"/>
+        </svg>
+      </button>
+
+      <!-- Q4: Data aman -->
+      <button
+        type="button"
+        data-popular-question="Apakah data kami aman?"
+        class="flex w-full shrink-0 cursor-pointer flex-row items-center gap-[10px] rounded-[14px] bg-white px-[12px] py-[11px] text-left transition-colors hover:bg-[#EEFBF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
+        style="outline:1px solid #E3E7E5; outline-offset:-0.5px;"
+      >
+        <div class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px] bg-[#EEFBF5]">
+          <!-- shield-check icon -->
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M6.846 0.602q-0.349 0.027-0.687 0.308-0.516 0.420-1.001 0.701-0.482 0.280-1.015 0.475-0.308 0.113-0.588 0.171-0.280 0.055-0.670 0.082-0.239 0.014-0.366 0.072-0.195 0.068-0.379 0.222-0.181 0.154-0.263 0.349l-0.014 0.031q-0.072 0.126-0.085 0.222-0.014 0.154-0.027 0.602l0 1.781q0 2.252 0.014 2.461 0.140 1.654 1.107 2.885 0.140 0.167 0.434 0.461 0.294 0.294 0.489 0.448 0.923 0.742 2.283 1.275 0.461 0.181 0.656 0.239 0.239 0.055 0.434 0.014 0.167-0.027 0.533-0.154 1.357-0.520 2.280-1.203 0.379-0.267 0.714-0.605 1.374-1.371 1.542-3.374 0.014-0.236 0.014-2.461 0-2.229-0.027-2.355-0.072-0.321-0.318-0.564-0.243-0.246-0.550-0.318-0.099-0.027-0.379-0.041-0.489-0.027-0.964-0.181-0.813-0.267-1.555-0.772-0.267-0.181-0.643-0.489-0.420-0.335-0.967-0.280z m0.434 1.343q0.643 0.520 1.330 0.868 1.217 0.619 2.252 0.687l0.212 0-0.014 4.313q0 0.335-0.027 0.502-0.226 1.343-1.142 2.276-0.916 0.930-2.666 1.572l-0.212 0.085-0.181-0.055q-2.324-0.854-3.233-2.229-0.479-0.714-0.632-1.637-0.027-0.181-0.027-0.502l-0.014-4.327 0.195 0q0.868-0.055 1.849-0.482 0.981-0.427 1.835-1.128 0.167-0.140 0.195-0.140 0.027 0 0.280 0.195z m1.330 3.319q-0.068 0.027-0.126 0.051-0.055 0.021-1.063 1.025l-0.995 0.995-0.407-0.403q-0.267-0.267-0.362-0.338-0.126-0.113-0.198-0.140-0.068-0.027-0.195-0.027-0.126 0-0.167 0.014-0.041 0.014-0.099 0.041-0.181 0.099-0.280 0.267-0.041 0.085-0.041 0.253l0 0.014q0 0.140 0.034 0.212 0.038 0.068 0.178 0.222 0.096 0.113 0.489 0.506l0.041 0.041q0.420 0.420 0.554 0.547 0.133 0.123 0.202 0.154 0.140 0.068 0.294 0.055 0.154-0.014 0.280-0.099 0.072-0.055 1.289-1.271 0.868-0.868 1.049-1.063 0.185-0.198 0.212-0.270 0.096-0.277-0.058-0.523-0.154-0.246-0.448-0.260-0.126-0.014-0.181 0z" fill="#08745A"/>
+          </svg>
+        </div>
+        <span class="flex-1 text-[13px] font-semibold leading-normal text-[#0F1A17]">
+          Apakah data kami aman?
+        </span>
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="shrink-0">
+          <path d="M5.096 2.939q-0.253 0.085-0.379 0.308-0.041 0.085-0.041 0.253 0 0.167 0.041 0.253 0.044 0.082 1.624 1.665l1.583 1.583-1.583 1.583q-1.579 1.583-1.624 1.668-0.041 0.082-0.041 0.236 0 0.154 0.034 0.239 0.038 0.082 0.133 0.181 0.099 0.096 0.181 0.133 0.085 0.034 0.239 0.034 0.154 0 0.243-0.048 0.092-0.051 1.904-1.863 1.815-1.815 1.863-1.904 0.051-0.092 0.051-0.260 0-0.167-0.044-0.250-0.041-0.085-1.859-1.907l-1.442-1.429q-0.335-0.335-0.461-0.417-0.099-0.072-0.198-0.072l-0.041 0q-0.140 0-0.181 0.014z" fill="#98A29E"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Handoff row -->
+    <div class="flex w-full shrink-0 flex-row items-center gap-[10px] rounded-[14px] bg-[#EEFBF5] px-[12px] py-[10px]">
+      <!-- headset icon -->
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="shrink-0">
+        <path d="M6.692 0.602q-1.107 0.041-2.116 0.506-1.008 0.461-1.777 1.271-1.230 1.275-1.538 3.025-0.058 0.308-0.072 0.615-0.014 0.308-0.014 1.750l0.014 1.610q0 0.294 0.027 0.366 0.126 0.489 0.448 0.813 0.325 0.321 0.813 0.475 0.085 0.027 0.188 0.034 0.106 0.007 0.472 0.007 0.543 0 0.684-0.027 0.506-0.099 0.861-0.427 0.359-0.328 0.513-0.848l0.041-0.154 0.014-1.063q0-1.066-0.014-1.220-0.085-0.516-0.427-0.909-0.342-0.393-0.861-0.533-0.239-0.068-1.036-0.068l-0.533 0 0-0.041q0-0.126 0.099-0.547 0.209-0.783 0.677-1.470 0.472-0.687 1.142-1.148 0.899-0.643 2.030-0.827 0.253-0.027 0.673-0.027 0.362 0 0.602 0.027 0.239 0.027 0.561 0.099 1.217 0.321 2.126 1.227 0.913 0.902 1.220 2.119 0.113 0.420 0.113 0.547l0 0.041-0.533 0q-0.796 0-1.036 0.068-0.434 0.126-0.766 0.438-0.328 0.308-0.451 0.725-0.058 0.198-0.072 0.424-0.014 0.222-0.014 1.077l0.014 1.063 0.041 0.154q0.154 0.520 0.509 0.848 0.359 0.328 0.865 0.427 0.154 0.041 0.677 0.034 0.526-0.007 0.629-0.041 0.106-0.038 0.099-0.007-0.007 0.027-0.079 0.181-0.068 0.154-0.137 0.253-0.366 0.557-1.094 0.755-0.082 0.014-1.750 0.027l-1.678 0.014-0.099 0.041q-0.267 0.126-0.314 0.420-0.048 0.294 0.147 0.506 0.085 0.082 0.181 0.140l0.113 0.041 1.637 0q1.316 0 1.583-0.007 0.267-0.007 0.533-0.079 0.574-0.154 1.056-0.516 0.482-0.366 0.776-0.882 0.126-0.226 0.226-0.520 0.099-0.294 0.126-0.547 0.014-0.154 0.014-2.587l0-0.294q0-1.682-0.014-2.010-0.014-0.328-0.072-0.636l-0.014-0.058q-0.280-1.384-1.176-2.505-0.209-0.280-0.547-0.588-0.335-0.308-0.643-0.533-0.643-0.461-1.436-0.742-0.790-0.280-1.545-0.308l-0.311-0.014q-0.082 0-0.376 0.014z m-2.939 6.453q0.209 0.113 0.294 0.325 0.027 0.068 0.027 0.222l0 1.890-0.041 0.085q-0.099 0.195-0.308 0.294-0.072 0.027-0.137 0.034-0.062 0.007-0.328 0.014-0.263 0.007-0.390-0.007-0.126-0.014-0.226-0.055-0.167-0.099-0.267-0.294l-0.041-0.099-0.014-2.464 1.330 0.014 0.099 0.041z m7.923 1.176l-0.014 1.234-0.041 0.099q-0.099 0.195-0.267 0.294-0.099 0.041-0.226 0.055-0.126 0.014-0.393 0.007-0.263-0.007-0.328-0.014-0.062-0.007-0.147-0.034-0.195-0.099-0.294-0.294l-0.041-0.085 0-1.890q0-0.154 0.027-0.222 0.058-0.126 0.167-0.232 0.113-0.106 0.239-0.133 0.085-0.014 0.701-0.014l0.615 0 0 1.230z" fill="#08745A"/>
+      </svg>
+      <p class="flex-1 text-[12px] font-medium leading-normal text-[#0F1A17]">
+        Lebih suka ngobrol dengan tim?
+      </p>
+      <a
+        href={WA_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex shrink-0 items-center gap-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76] rounded"
+        aria-label="Chat tim via WhatsApp, buka di tab baru"
+      >
+        <span class="whitespace-nowrap text-[12px] font-bold text-[#08745A]">WhatsApp</span>
+        <!-- arrow-up-right -->
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M3.948 3.514q-0.140 0.041-0.260 0.154-0.120 0.113-0.161 0.253-0.055 0.195 0.027 0.393 0.085 0.195 0.253 0.294 0.085 0.027 0.195 0.041 0.171 0.014 0.660 0.027l3.835 0-2.451 2.451q-1.651 1.651-2.058 2.071-0.403 0.420-0.434 0.475-0.109 0.239-0.014 0.465 0.099 0.222 0.321 0.321 0.226 0.096 0.465-0.014 0.055-0.031 0.475-0.434 0.420-0.407 2.071-2.058l2.451-2.451 0 2.211q0 2.225 0.027 2.311 0.027 0.181 0.154 0.294 0.198 0.195 0.461 0.174 0.267-0.021 0.420-0.246l0.027-0.027q0.044-0.055 0.058-0.181 0.014-0.154 0.027-0.687l0-5.376-0.041-0.096q-0.027-0.113-0.126-0.212-0.099-0.099-0.212-0.126l-0.096-0.041-3.011 0q-2.994 0-3.066 0.014z" fill="#08745A"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Conversation state (shown when messages exist) -->
   <div
     id="sobi-chat-messages"
     role="log"
     aria-label="Riwayat percakapan"
-    class="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-3"
-    style="min-height:220px;max-height:340px;"
+    class="hidden w-full flex-1 flex-col gap-[12px] overflow-y-auto bg-[#F6F7F6] p-[16px] pb-[8px]"
+    style="min-height: 0;"
   >
     <!-- Messages injected by JS -->
   </div>
 
-  <!-- Single polite live region: updated ONCE when an assistant reply completes.
-       Visually hidden; screen readers announce the final message, not each token. -->
+  <!-- SR live region: updated ONCE when assistant reply completes -->
   <p id="sobi-sr-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 
-  <!-- Composer -->
-  <form id="sobi-chat-form" class="border-t border-gray-100 px-3 py-3" autocomplete="off" novalidate>
-    <div class="flex items-end gap-2">
-      <textarea
-        id="sobi-chat-input"
-        rows="1"
-        placeholder="Ketik pesan..."
-        aria-label="Pesan untuk Sobi"
-        class="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus-visible:border-emerald-500 focus-visible:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
-        style="max-height:100px;overflow-y:auto;"
-      ></textarea>
+  <!-- Footer / Composer -->
+  <div
+    class="flex w-full shrink-0 flex-col items-center gap-[8px] bg-white px-[16px] py-[12px]"
+    style="border-top:1px solid #E3E7E5;"
+  >
+    <form id="sobi-chat-form" class="flex w-full flex-row items-center gap-[8px]" autocomplete="off" novalidate>
+      <!-- Attach button (visual only - matches design) -->
       <button
-        id="sobi-chat-send"
-        type="submit"
-        aria-label="Kirim pesan"
-        class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        type="button"
+        aria-label="Lampiran"
+        class="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-[#EEF1EF] transition-colors hover:bg-[#E3E7E5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M14 2L2 7l5 3 2 5 5-13z" fill="currentColor"/>
+        <!-- plus icon -->
+        <svg width="20" height="20" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M6.901 2.352q-0.096 0.014-0.174 0.051-0.075 0.034-0.154 0.126-0.075 0.089-0.113 0.167-0.034 0.075-0.034 0.328l0 3.401-3.667 0-0.085 0.041q-0.222 0.113-0.301 0.338-0.075 0.222 0.007 0.434 0.058 0.096 0.140 0.181 0.085 0.082 0.167 0.120 0.085 0.034 0.338 0.034l3.401 0 0 3.401q0 0.253 0.034 0.338 0.038 0.082 0.120 0.167 0.085 0.082 0.188 0.133 0.106 0.048 0.232 0.048 0.126 0 0.229-0.048 0.106-0.051 0.188-0.133 0.085-0.085 0.120-0.167 0.038-0.085 0.038-0.338l0-3.401 3.401 0q0.253 0 0.335-0.034 0.085-0.038 0.167-0.120 0.085-0.085 0.133-0.188 0.051-0.106 0.051-0.232 0-0.126-0.041-0.239-0.099-0.195-0.294-0.294l-0.085-0.041-3.667 0 0-3.387q0-0.267-0.027-0.321-0.072-0.198-0.253-0.301-0.181-0.106-0.393-0.065z" fill="#0F1A17"/>
         </svg>
       </button>
-    </div>
-  </form>
+
+      <!-- Input wrapper -->
+      <div
+        class="flex flex-1 h-[48px] flex-row items-center gap-[8px] rounded-full bg-white pl-[16px] pr-[6px]"
+        style="outline:1px solid #E3E7E5; outline-offset:-0.5px;"
+      >
+        <textarea
+          id="sobi-chat-input"
+          rows="1"
+          placeholder="Tulis pertanyaan Anda..."
+          aria-label="Pesan untuk Sobi"
+          class="flex-1 resize-none border-0 bg-transparent text-[15px] font-normal leading-normal text-[#0F1A17] placeholder-[#98A29E] focus:outline-none"
+          style="max-height:80px;overflow-y:auto;padding:0;"
+        ></textarea>
+        <button
+          id="sobi-chat-send"
+          type="submit"
+          aria-label="Kirim pesan"
+          class="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-full bg-[#0E9F76] text-white transition-colors hover:bg-[#08745A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <!-- arrow-up icon -->
+          <svg width="18" height="18" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M6.846 2.352q-0.085 0.014-0.157 0.065-0.068 0.048-2.167 2.146l-1.665 1.695q-0.366 0.362-0.465 0.502-0.055 0.085-0.055 0.198l0 0.041q0 0.239 0.181 0.420 0.113 0.113 0.280 0.147 0.167 0.034 0.321-0.021 0.085-0.027 0.321-0.260 0.239-0.232 1.374-1.364 1.583-1.583 1.596-1.583 0.014 0 0.014 3.428l0 3.011q0 0.448 0.034 0.533 0.038 0.082 0.120 0.167 0.085 0.082 0.188 0.133 0.106 0.048 0.232 0.048 0.126 0 0.229-0.048 0.106-0.051 0.188-0.133 0.085-0.085 0.120-0.167 0.038-0.085 0.038-0.533l0-3.011q0-3.428 0.014-3.428 0.014 0 1.596 1.583 1.135 1.131 1.371 1.364 0.239 0.232 0.325 0.260 0.154 0.055 0.321 0.021 0.167-0.034 0.280-0.147 0.181-0.181 0.181-0.420l0-0.041q0-0.113-0.055-0.198-0.099-0.140-0.465-0.516l-1.678-1.682q-2.102-2.112-2.170-2.146-0.068-0.038-0.161-0.065-0.092-0.027-0.140-0.027-0.048 0-0.147 0.027z" fill="#FFFFFF"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- Disclaimer -->
+    <p class="text-[11px] font-normal leading-normal text-[#98A29E]">
+      Sobi didukung AI dan bisa keliru. Info penting? Tanya tim kami.
+    </p>
+  </div>
 </div>
 
 <script>
@@ -104,12 +347,14 @@
 
   const panel = document.getElementById('sobi-chat-panel') as HTMLDivElement | null;
   const closeBtn = document.getElementById('sobi-chat-close') as HTMLButtonElement | null;
+  const minimizeBtn = document.getElementById('sobi-chat-minimize') as HTMLButtonElement | null;
   const form = document.getElementById('sobi-chat-form') as HTMLFormElement | null;
   const input = document.getElementById('sobi-chat-input') as HTMLTextAreaElement | null;
   const sendBtn = document.getElementById('sobi-chat-send') as HTMLButtonElement | null;
   const messageList = document.getElementById('sobi-chat-messages') as HTMLDivElement | null;
-  // Visually-hidden live region: updated ONCE per reply to avoid per-token SR spam.
+  const welcomePanel = document.getElementById('sobi-welcome-panel') as HTMLDivElement | null;
   const srStatus = document.getElementById('sobi-sr-status') as HTMLParagraphElement | null;
+  const headerStatus = document.getElementById('sobi-header-status') as HTMLSpanElement | null;
 
   if (!panel || !closeBtn || !form || !input || !sendBtn || !messageList) {
     console.warn('[SobiChat] Required DOM elements not found');
@@ -121,9 +366,7 @@
    */
   function announceToSR(text: string): void {
     if (!srStatus) return;
-    // Clear first so identical consecutive replies still trigger re-announcement.
     srStatus.textContent = '';
-    // Defer one frame so the clear registers before the new content is set.
     requestAnimationFrame(() => {
       srStatus.textContent = text;
     });
@@ -135,12 +378,23 @@
 
   let isOpen = false;
   let isBusy = false;
-  let greetingShown = false;
+  let hasMessages = false;
   const history: ChatMessage[] = [];
 
-  // Monotonically increasing counter — used to guard delayed idle transitions
-  // from clobbering a newer message's 'thinking' state.
   let _requestId = 0;
+
+  // ---------------------------------------------------------------------------
+  // Welcome / conversation panel switching
+  // ---------------------------------------------------------------------------
+
+  function showConversationPanel(): void {
+    if (!welcomePanel || !messageList) return;
+    if (hasMessages) return; // already switched
+    hasMessages = true;
+    welcomePanel.classList.add('hidden');
+    messageList.classList.remove('hidden');
+    messageList.classList.add('flex');
+  }
 
   // ---------------------------------------------------------------------------
   // Panel open / close
@@ -151,14 +405,6 @@
     isOpen = true;
     panel.style.display = 'flex';
     panel.removeAttribute('aria-hidden');
-
-    if (!greetingShown) {
-      greetingShown = true;
-      appendMessage(
-        'assistant',
-        'Halo! Saya Sobi, asisten Sahabat Warga. Saya dapat membantu Anda soal iuran, pengumuman, dan keamanan lingkungan. Ada yang bisa saya bantu?',
-      );
-    }
 
     // Focus to textarea.
     requestAnimationFrame(() => input?.focus());
@@ -194,36 +440,77 @@
   // Message rendering
   // ---------------------------------------------------------------------------
 
+  function renderSobiAvatar(): HTMLDivElement {
+    const avatar = document.createElement('div');
+    avatar.className = 'relative flex h-[32px] w-[32px] shrink-0 items-center justify-center overflow-hidden rounded-full';
+    avatar.innerHTML = `
+      <div class="absolute inset-0 bg-[#EEFBF5]" style="z-index:0;"></div>
+      <div class="absolute inset-0 overflow-hidden rounded-full" style="z-index:1;">
+        <div class="absolute inset-0" style="background:url('/mascots/sobi-reference.png') no-repeat;background-size:178.6% 178.6%;background-position:-12.576px -6.4px;"></div>
+      </div>
+    `;
+    return avatar;
+  }
+
   function appendMessage(role: ChatRole, text: string): HTMLParagraphElement {
     if (!messageList) return document.createElement('p');
 
+    // Switch to conversation view on first message
+    showConversationPanel();
+
     const isUser = role === 'user';
     const wrapper = document.createElement('div');
-    wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
 
-    const bubble = document.createElement('p');
-    bubble.className = isUser
-      ? 'max-w-[80%] rounded-[18px] rounded-br-sm bg-emerald-600 px-3 py-2 text-sm text-white'
-      : 'max-w-[80%] rounded-[18px] rounded-bl-sm bg-gray-100 px-3 py-2 text-sm text-gray-900';
-    bubble.textContent = text;
+    if (isUser) {
+      wrapper.className = 'flex w-full shrink-0 flex-row justify-end items-start';
+      const bubble = document.createElement('p');
+      bubble.className = 'w-fit shrink-0 rounded-[20px_6px_20px_20px] bg-[#0E9F76] px-[14px] py-[12px] text-[14px] font-normal leading-[21px] text-white';
+      bubble.style.maxWidth = '75%';
+      bubble.textContent = text;
+      wrapper.appendChild(bubble);
+      messageList.appendChild(wrapper);
+      messageList.scrollTop = messageList.scrollHeight;
+      return bubble;
+    } else {
+      wrapper.className = 'flex w-full shrink-0 flex-row items-start gap-[8px] pr-[16px]';
+      const avatar = renderSobiAvatar();
+      const bubbleWrapper = document.createElement('div');
+      bubbleWrapper.className = 'flex flex-1 flex-col gap-[10px] rounded-[6px_20px_20px_20px] bg-[#EEF1EF] px-[14px] py-[12px]';
+      const bubble = document.createElement('p');
+      bubble.className = 'w-full text-[14px] font-normal leading-[21px] text-[#0F1A17]';
+      bubble.textContent = text;
+      bubbleWrapper.appendChild(bubble);
+      wrapper.appendChild(avatar);
+      wrapper.appendChild(bubbleWrapper);
+      messageList.appendChild(wrapper);
+      messageList.scrollTop = messageList.scrollHeight;
+      return bubble;
+    }
+  }
 
-    wrapper.appendChild(bubble);
-    messageList.appendChild(wrapper);
-    messageList.scrollTop = messageList.scrollHeight;
-
-    return bubble;
+  function appendSourceChip(bubbleWrapper: Element, sourceText: string): void {
+    const chip = document.createElement('div');
+    chip.className = 'flex w-fit h-[28px] shrink-0 flex-row items-center gap-[6px] rounded-[8px] bg-white px-[10px]';
+    chip.style.outline = '1px solid #E3E7E5';
+    chip.style.outlineOffset = '-0.5px';
+    chip.innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3.333 0.602q-0.588 0.041-1.022 0.448-0.434 0.407-0.533 0.995-0.027 0.167-0.027 4.956 0 4.789 0.027 4.956 0.099 0.533 0.468 0.926 0.373 0.390 0.906 0.502 0.109 0.014 0.670 0.027l3.179 0 3.179 0q0.561-0.014 0.670-0.027 0.533-0.113 0.902-0.502 0.373-0.393 0.472-0.926 0.027-0.167 0.027-3.801 0-3.633-0.027-3.801-0.085-0.520-0.407-0.923-0.113-0.140-1.248-1.275-0.896-0.882-1.107-1.070-0.209-0.191-0.417-0.291-0.308-0.154-0.673-0.195-0.140-0.027-2.492-0.027-2.352 0-2.546 0.027z m4.255 2.423l0 1.271 0.041 0.140q0.085 0.226 0.246 0.407 0.161 0.181 0.355 0.280 0.140 0.072 0.226 0.085 0.126 0.027 0.407 0.041l2.211 0 0 6.118q0 0.434-0.038 0.520-0.034 0.082-0.120 0.174-0.082 0.089-0.164 0.133l-0.099 0.041-7.308 0-0.099-0.041q-0.082-0.044-0.167-0.133-0.082-0.092-0.120-0.174-0.034-0.085-0.034-0.701l0-4.187 0-4.187q0-0.615 0.027-0.684 0.058-0.126 0.167-0.232 0.113-0.106 0.239-0.133 0.085-0.014 2.143-0.014l2.071 0 0.014 1.275z m2.211 0.014l1.036 1.036-2.085 0 0-1.036q0-1.036 0-1.049l1.049 1.049z m-5.318 1.665q-0.185 0.058-0.291 0.212-0.103 0.154-0.103 0.335 0 0.239 0.181 0.420 0.085 0.082 0.154 0.113 0.072 0.027 0.253 0.041 0.126 0 0.574 0 0.448 0 0.574 0 0.181-0.014 0.250-0.041 0.072-0.031 0.157-0.113 0.181-0.181 0.181-0.420 0-0.239-0.167-0.407-0.072-0.068-0.167-0.126l-0.085-0.041-0.728 0q-0.728 0-0.783 0.027z m0.041 2.311q-0.140 0.041-0.267 0.167-0.167 0.154-0.174 0.373-0.007 0.215 0.126 0.386 0.133 0.167 0.355 0.209 0.099 0.027 2.437 0.027 2.338 0 2.437-0.027 0.236-0.041 0.369-0.236 0.133-0.198 0.092-0.438-0.014-0.096-0.051-0.164-0.034-0.072-0.113-0.140-0.075-0.072-0.157-0.116l-0.099-0.041-2.437-0.014q-2.451 0-2.519 0.014z m0.055 2.324q-0.294 0.055-0.427 0.321-0.130 0.267-0.007 0.533 0.044 0.068 0.120 0.140 0.079 0.068 0.161 0.113l0.099 0.041 4.956 0 0.099-0.041q0.082-0.044 0.157-0.113 0.079-0.072 0.113-0.140 0.038-0.072 0.051-0.181 0.041-0.198-0.051-0.366-0.089-0.167-0.284-0.267l-0.099-0.041-2.410 0q-2.393 0-2.478 0z" fill="#6B7672"/>
+      </svg>
+      <span class="whitespace-nowrap text-[11px] font-semibold text-[#6B7672]">${sourceText}</span>
+    `;
+    bubbleWrapper.appendChild(chip);
   }
 
   function appendErrorMessage(text: string): void {
     if (!messageList) return;
+    showConversationPanel();
     const wrapper = document.createElement('div');
     wrapper.className = 'flex justify-start';
-
     const bubble = document.createElement('p');
-    bubble.className =
-      'max-w-[80%] rounded-[18px] rounded-bl-sm bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200';
+    bubble.className = 'rounded-[18px] rounded-bl-sm bg-red-50 px-[14px] py-[12px] text-[14px] text-red-700 ring-1 ring-red-200';
+    bubble.style.maxWidth = '80%';
     bubble.textContent = text;
-
     wrapper.appendChild(bubble);
     messageList.appendChild(wrapper);
     messageList.scrollTop = messageList.scrollHeight;
@@ -238,20 +525,17 @@
 
     isBusy = true;
     if (sendBtn) sendBtn.disabled = true;
+    if (headerStatus) headerStatus.textContent = 'Sobi sedang mengetik...';
 
-    // Capture a request id so deferred idle transitions don't clobber
-    // a newer message's 'thinking' state (busy-state race guard).
     const myRequestId = ++_requestId;
 
-    // Append user message to UI and history.
     appendMessage('user', text);
     history.push({ role: 'user', content: text });
 
-    // Rive: thinking.
     window.setSobiState?.('thinking' satisfies SobiState);
 
-    // Create an empty assistant bubble that will fill with tokens.
     let assistantBubble: HTMLParagraphElement | null = null;
+    let assistantBubbleWrapper: Element | null = null;
     let assistantText = '';
 
     try {
@@ -262,7 +546,6 @@
       });
 
       if (!res.ok || !res.body) {
-        // Drain the body before throwing so the connection is not left dangling.
         await res.text().catch(() => {});
         throw new Error(`HTTP ${res.status}`);
       }
@@ -278,7 +561,6 @@
 
         buffer += decoder.decode(value, { stream: true });
 
-        // Process complete SSE events (each ends with \n\n).
         const events = buffer.split('\n\n');
         buffer = events.pop() ?? '';
 
@@ -288,15 +570,16 @@
           const data = line.slice(5).trim();
 
           if (data === '[DONE]') {
-            // Stream finished.
             if (assistantText) {
               history.push({ role: 'assistant', content: assistantText });
-              // Announce the completed reply ONCE to screen readers.
               announceToSR(assistantText);
+              // Add source chip to the bubble wrapper
+              if (assistantBubbleWrapper) {
+                appendSourceChip(assistantBubbleWrapper, 'sahabatwarga.id');
+              }
             }
             window.setSobiState?.('success' satisfies SobiState);
             setTimeout(() => {
-              // Only settle to idle if no newer message has started.
               if (myRequestId === _requestId) {
                 window.setSobiState?.('idle' satisfies SobiState);
               }
@@ -317,11 +600,27 @@
           if (firstToken) {
             firstToken = false;
             window.setSobiState?.('speaking' satisfies SobiState);
-            assistantBubble = appendMessage('assistant', '');
+
+            // Build assistant bubble structure
+            showConversationPanel();
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex w-full shrink-0 flex-row items-start gap-[8px] pr-[16px]';
+            const avatar = renderSobiAvatar();
+            const bw = document.createElement('div');
+            bw.className = 'flex flex-1 flex-col gap-[10px] rounded-[6px_20px_20px_20px] bg-[#EEF1EF] px-[14px] py-[12px]';
+            const bubble = document.createElement('p');
+            bubble.className = 'w-full text-[14px] font-normal leading-[21px] text-[#0F1A17]';
+            bw.appendChild(bubble);
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bw);
+            messageList?.appendChild(wrapper);
+            assistantBubble = bubble;
+            assistantBubbleWrapper = bw;
           }
 
           assistantText += token;
           if (assistantBubble) {
+            // textContent only — no innerHTML, no XSS
             assistantBubble.textContent = assistantText;
             messageList?.scrollTo({ top: messageList.scrollHeight, behavior: 'smooth' });
           }
@@ -332,7 +631,6 @@
       window.setSobiState?.('error' satisfies SobiState);
       appendErrorMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
       setTimeout(() => {
-        // Only settle to idle if no newer message has started.
         if (myRequestId === _requestId) {
           window.setSobiState?.('idle' satisfies SobiState);
         }
@@ -340,6 +638,7 @@
     } finally {
       isBusy = false;
       if (sendBtn) sendBtn.disabled = false;
+      if (headerStatus) headerStatus.textContent = 'Asisten Sahabat Warga · Online';
       input?.focus();
     }
   }
@@ -348,8 +647,8 @@
   // Event listeners
   // ---------------------------------------------------------------------------
 
-  // Close button.
   closeBtn?.addEventListener('click', closePanel);
+  minimizeBtn?.addEventListener('click', closePanel);
 
   // Escape key closes panel.
   document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -368,11 +667,25 @@
     void sendMessage(text);
   });
 
+  // Popular question buttons.
+  document.querySelectorAll<HTMLButtonElement>('[data-popular-question]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const question = btn.dataset.popularQuestion ?? '';
+      if (!question) return;
+      // Populate and trigger send
+      if (input) input.value = question;
+      autoResizeTextarea();
+      void sendMessage(question);
+      if (input) input.value = '';
+      autoResizeTextarea();
+    });
+  });
+
   // Textarea: Enter sends, Shift+Enter newline; auto-resize.
   function autoResizeTextarea(): void {
     if (!input) return;
     input.style.height = 'auto';
-    input.style.height = `${input.scrollHeight}px`;
+    input.style.height = `${Math.min(input.scrollHeight, 80)}px`;
   }
 
   input?.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -392,7 +705,7 @@
   panel?.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key !== 'Tab' || !isOpen) return;
     const focusable = panel.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      'button:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
     );
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
