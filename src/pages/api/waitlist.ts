@@ -16,6 +16,19 @@ function json(body: unknown, status = 200) {
   });
 }
 
+/**
+ * Escape Slack mrkdwn / Block Kit text fields.
+ * Required escapes per Slack docs: & < >
+ * Also strips/neutralizes formatting characters that could alter message rendering.
+ */
+function escapeSlack(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/[*_~`]/g, '');
+}
+
 export const POST: APIRoute = async ({ request }) => {
   // Reject non-JSON content types.
   const ct = request.headers.get('content-type') ?? '';
@@ -67,9 +80,18 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ ok: true, note: 'slack not configured' });
   }
 
+  // C1: Validate webhook URL is a legitimate Slack endpoint before fetching it.
+  if (!webhookUrl.startsWith('https://hooks.slack.com/')) {
+    console.error('[waitlist] SLACK_WEBHOOK_URL is set but does not point to hooks.slack.com — refusing to fetch arbitrary URL');
+    return json({ ok: false, error: 'Konfigurasi server tidak valid' }, 502);
+  }
+
   const ts = new Date().toISOString();
-  const emailDisplay = email && String(email).trim() ? String(email).trim() : '-';
-  const komunitasDisplay = komunitas && String(komunitas).trim() ? String(komunitas).trim() : '-';
+  // C2: Escape all free-text user fields before interpolating into mrkdwn.
+  const namaEsc = escapeSlack(String(nama).trim());
+  const whatsappEsc = escapeSlack(String(whatsapp).trim());
+  const emailDisplay = email && String(email).trim() ? escapeSlack(String(email).trim()) : '-';
+  const komunitasDisplay = komunitas && String(komunitas).trim() ? escapeSlack(String(komunitas).trim()) : '-';
 
   const blocks = [
     {
@@ -83,8 +105,8 @@ export const POST: APIRoute = async ({ request }) => {
     {
       type: 'section',
       fields: [
-        { type: 'mrkdwn', text: `*Nama*\n${String(nama).trim()}` },
-        { type: 'mrkdwn', text: `*WhatsApp*\n${String(whatsapp).trim()}` },
+        { type: 'mrkdwn', text: `*Nama*\n${namaEsc}` },
+        { type: 'mrkdwn', text: `*WhatsApp*\n${whatsappEsc}` },
         { type: 'mrkdwn', text: `*Peran*\n${peran}` },
         { type: 'mrkdwn', text: `*Email*\n${emailDisplay}` },
         { type: 'mrkdwn', text: `*Nama Komunitas*\n${komunitasDisplay}` },

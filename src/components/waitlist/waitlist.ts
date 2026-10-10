@@ -21,9 +21,13 @@ declare global {
 // ---------------------------------------------------------------------------
 // Focusable elements for focus-trap
 // ---------------------------------------------------------------------------
+// I1: Exclude [tabindex="-1"] from every clause so the honeypot input (and
+//     any other programmatically-focusable-but-not-tabbable element) is never
+//     captured by the focus trap.
 const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
-  'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'a[href]:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), ' +
+  'input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), ' +
+  'textarea:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])';
 
 function getFocusable(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
@@ -59,6 +63,10 @@ let keydownHandler: ((e: KeyboardEvent) => void) | null = null;
 function openWaitlist() {
   const dialog = document.getElementById('waitlist-dialog') as HTMLElement | null;
   if (!dialog) return;
+
+  // m2: Guard against double-open — if dialog is already visible, do nothing.
+  // This prevents attaching a second keydownHandler on rapid repeated calls.
+  if (!dialog.hasAttribute('hidden')) return;
 
   lastFocused = document.activeElement as HTMLElement;
 
@@ -282,8 +290,12 @@ function init() {
     }
   });
 
-  // Close button inside dialog.
+  // Close button inside dialog (X button).
   document.getElementById('waitlist-close')?.addEventListener('click', closeWaitlist);
+
+  // I5: CSP-safe "Tutup" button in the success view — wired here instead of
+  //     using an inline onclick="window.closeWaitlist()" attribute.
+  document.getElementById('waitlist-success-close')?.addEventListener('click', closeWaitlist);
 
   // Backdrop click closes dialog.
   const dialog = document.getElementById('waitlist-dialog');

@@ -79,6 +79,7 @@
             autocomplete="name"
             placeholder="Nama lengkap"
             class="waitlist-input"
+            aria-describedby="wl-nama-error"
           />
           <p id="wl-nama-error" class="waitlist-field-error" role="alert" hidden></p>
         </div>
@@ -96,6 +97,7 @@
             autocomplete="tel"
             placeholder="08xxxxxxxxxx"
             class="waitlist-input"
+            aria-describedby="wl-whatsapp-error"
           />
           <p id="wl-whatsapp-error" class="waitlist-field-error" role="alert" hidden></p>
         </div>
@@ -130,6 +132,7 @@
             autocomplete="email"
             placeholder="nama@email.com"
             class="waitlist-input"
+            aria-describedby="wl-email-error"
           />
           <p id="wl-email-error" class="waitlist-field-error" role="alert" hidden></p>
         </div>
@@ -182,9 +185,9 @@
           Kami akan menghubungi Anda saat aplikasi siap diluncurkan.
         </p>
         <button
+          id="waitlist-success-close"
           type="button"
           class="waitlist-submit-btn"
-          onclick="window.closeWaitlist()"
         >
           Tutup
         </button>
