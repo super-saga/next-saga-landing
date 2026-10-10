@@ -1,0 +1,433 @@
+---
+/**
+ * WaitlistDialog.astro
+ *
+ * Globally mounted accessible modal for the waitlist sign-up form.
+ * Opened via window.openWaitlist() or any [data-open="waitlist"] click.
+ * Script logic lives in waitlist.ts (imported as an Astro <script>).
+ */
+---
+
+<!--
+  Outer overlay: covers full viewport, handles backdrop click.
+  hidden attribute keeps it out of the accessibility tree until open.
+-->
+<div
+  id="waitlist-dialog"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="waitlist-title"
+  aria-hidden="true"
+  hidden
+  class="waitlist-overlay"
+>
+  <!-- Backdrop (click target) -->
+  <div id="waitlist-backdrop" class="waitlist-backdrop" aria-hidden="true"></div>
+
+  <!-- Panel -->
+  <div class="waitlist-panel" role="document">
+    <!-- Close button -->
+    <button
+      id="waitlist-close"
+      type="button"
+      aria-label="Tutup dialog"
+      class="waitlist-close-btn"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path
+          d="M4 4L16 16M16 4L4 16"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+
+    <!-- Title -->
+    <h2 id="waitlist-title" class="waitlist-title">Gabung Daftar Tunggu</h2>
+    <p class="waitlist-subtitle">
+      Aplikasi segera hadir. Tinggalkan kontak Anda dan kami akan menghubungi saat siap.
+    </p>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Form view                                                            -->
+    <!-- ------------------------------------------------------------------ -->
+    <div id="waitlist-form-view">
+      <form id="waitlist-form" novalidate>
+        <!-- Honeypot (hidden from real users, filled by bots) -->
+        <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+          <label for="wl-website">Website</label>
+          <input
+            type="text"
+            id="wl-website"
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Nama -->
+        <div class="waitlist-field">
+          <label for="wl-nama" class="waitlist-label">
+            Nama <span aria-hidden="true" class="waitlist-required">*</span>
+          </label>
+          <input
+            id="wl-nama"
+            name="nama"
+            type="text"
+            required
+            autocomplete="name"
+            placeholder="Nama lengkap"
+            class="waitlist-input"
+          />
+          <p id="wl-nama-error" class="waitlist-field-error" role="alert" hidden></p>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="waitlist-field">
+          <label for="wl-whatsapp" class="waitlist-label">
+            WhatsApp <span aria-hidden="true" class="waitlist-required">*</span>
+          </label>
+          <input
+            id="wl-whatsapp"
+            name="whatsapp"
+            type="tel"
+            required
+            autocomplete="tel"
+            placeholder="08xxxxxxxxxx"
+            class="waitlist-input"
+          />
+          <p id="wl-whatsapp-error" class="waitlist-field-error" role="alert" hidden></p>
+        </div>
+
+        <!-- Peran -->
+        <div class="waitlist-field">
+          <label for="wl-peran" class="waitlist-label">
+            Peran Anda <span aria-hidden="true" class="waitlist-required">*</span>
+          </label>
+          <select
+            id="wl-peran"
+            name="peran"
+            required
+            class="waitlist-input waitlist-select"
+          >
+            <option value="">Pilih peran...</option>
+            <option value="Pengurus">Pengurus RT/RW</option>
+            <option value="Warga">Warga</option>
+          </select>
+          <p id="wl-peran-error" class="waitlist-field-error" role="alert" hidden></p>
+        </div>
+
+        <!-- Email (optional) -->
+        <div class="waitlist-field">
+          <label for="wl-email" class="waitlist-label">
+            Email <span class="waitlist-optional">(opsional)</span>
+          </label>
+          <input
+            id="wl-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="nama@email.com"
+            class="waitlist-input"
+          />
+          <p id="wl-email-error" class="waitlist-field-error" role="alert" hidden></p>
+        </div>
+
+        <!-- Nama komunitas (optional) -->
+        <div class="waitlist-field">
+          <label for="wl-komunitas" class="waitlist-label">
+            Nama RT/RW atau komunitas <span class="waitlist-optional">(opsional)</span>
+          </label>
+          <input
+            id="wl-komunitas"
+            name="komunitas"
+            type="text"
+            placeholder="Contoh: RT 03 RW 07 Kelurahan Mampang"
+            class="waitlist-input"
+          />
+        </div>
+
+        <!-- Global error message -->
+        <div id="waitlist-error" hidden class="waitlist-global-error" role="alert">
+          <p class="waitlist-error-msg"></p>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="waitlist-submit-btn">
+          Kirim
+        </button>
+      </form>
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Success view                                                         -->
+    <!-- ------------------------------------------------------------------ -->
+    <div id="waitlist-success" hidden class="waitlist-success-view">
+      <div tabindex="-1" class="waitlist-success-inner">
+        <div class="waitlist-success-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="20" fill="#C9F5E4" />
+            <path
+              d="M12 20.5L17.5 26L28 14"
+              stroke="#0E9F76"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <h3 class="waitlist-success-title">Terima kasih!</h3>
+        <p class="waitlist-success-msg">
+          Kami akan menghubungi Anda saat aplikasi siap diluncurkan.
+        </p>
+        <button
+          type="button"
+          class="waitlist-submit-btn"
+          onclick="window.closeWaitlist()"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import './waitlist.ts';
+</script>
+
+<style>
+  .waitlist-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .waitlist-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 26, 23, 0.6);
+    backdrop-filter: blur(2px);
+  }
+
+  .waitlist-panel {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    border-radius: 1.25rem;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    max-width: 28rem;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(15, 26, 23, 0.25);
+  }
+
+  @media (min-width: 640px) {
+    .waitlist-panel {
+      padding: 2.5rem 2rem;
+    }
+  }
+
+  .waitlist-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #6B7672;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .waitlist-close-btn:hover {
+    background: #EEF1EF;
+  }
+
+  .waitlist-close-btn:focus-visible {
+    outline: 3px solid #46607E;
+    outline-offset: 2px;
+  }
+
+  .waitlist-title {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #0F1A17;
+    margin: 0 0 0.375rem;
+    padding-right: 2.5rem;
+  }
+
+  .waitlist-subtitle {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9rem;
+    color: #6B7672;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .waitlist-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-bottom: 1.125rem;
+  }
+
+  .waitlist-label {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0F1A17;
+  }
+
+  .waitlist-required {
+    color: #E5484D;
+    margin-left: 0.1em;
+  }
+
+  .waitlist-optional {
+    font-weight: 400;
+    color: #98A29E;
+    margin-left: 0.25em;
+  }
+
+  .waitlist-input {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1rem;
+    color: #0F1A17;
+    background: #ffffff;
+    border: 1.5px solid #E3E7E5;
+    border-radius: 0.625rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+
+  .waitlist-input:focus {
+    outline: none;
+    border-color: #0E9F76;
+    box-shadow: 0 0 0 3px rgba(14, 159, 118, 0.2);
+  }
+
+  .waitlist-input[aria-invalid="true"] {
+    border-color: #E5484D;
+  }
+
+  .waitlist-input[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.15);
+  }
+
+  .waitlist-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%236B7672' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  .waitlist-field-error {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.8125rem;
+    color: #E5484D;
+    margin: 0;
+  }
+
+  .waitlist-global-error {
+    background: #FEF2F2;
+    border: 1px solid #E5484D;
+    border-radius: 0.625rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .waitlist-error-msg {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.875rem;
+    color: #E5484D;
+    margin: 0;
+  }
+
+  .waitlist-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.875rem;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: #0E9F76;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-top: 0.5rem;
+  }
+
+  .waitlist-submit-btn:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  .waitlist-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .waitlist-submit-btn:focus-visible {
+    outline: 3px solid #46607E;
+    outline-offset: 2px;
+  }
+
+  /* Success view */
+  .waitlist-success-view {
+    padding: 0.5rem 0;
+  }
+
+  .waitlist-success-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .waitlist-success-inner:focus {
+    outline: none;
+  }
+
+  .waitlist-success-icon {
+    margin-bottom: 0.25rem;
+  }
+
+  .waitlist-success-title {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0F1A17;
+    margin: 0;
+  }
+
+  .waitlist-success-msg {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9375rem;
+    color: #6B7672;
+    margin: 0 0 0.5rem;
+    line-height: 1.55;
+  }
+</style>
