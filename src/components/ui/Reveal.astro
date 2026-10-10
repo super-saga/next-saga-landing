@@ -1,4 +1,6 @@
 ---
+// Depends on the [data-reveal] transition defined in global.css.
+
 interface Props {
   as?: string;
   class?: string;
@@ -6,18 +8,21 @@ interface Props {
 }
 
 const {
-  as: tag = 'div',
+  as: tagRaw = 'div',
   class: className,
   delay,
 } = Astro.props as Props;
 
-const style = delay != null ? `transition-delay:${delay}ms` : undefined;
+const ALLOWED_TAGS = ['div', 'section', 'article', 'aside', 'header', 'footer', 'ul', 'ol', 'li', 'figure', 'span'] as const;
+type AllowedTag = typeof ALLOWED_TAGS[number];
 
-// Build attribute string for the dynamic tag
-const classAttr = className ? ` class="${className}"` : '';
-const styleAttr = style ? ` style="${style}"` : '';
+const Tag: AllowedTag = (ALLOWED_TAGS as readonly string[]).includes(tagRaw)
+  ? (tagRaw as AllowedTag)
+  : 'div';
+
+const style = delay != null ? `transition-delay:${delay}ms` : undefined;
 ---
 
-<Fragment set:html={`<${tag} data-reveal${classAttr}${styleAttr}>`} />
-<slot />
-<Fragment set:html={`</${tag}>`} />
+<Tag class={className} data-reveal style={style}>
+  <slot />
+</Tag>
