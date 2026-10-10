@@ -107,6 +107,19 @@ async function buildProxyStream(
   agentKey: string | undefined,
   messages: ChatMessage[],
 ): Promise<Response | ReadableStream<Uint8Array>> {
+  // SECURITY: validate URL — must be https: to prevent SSRF via file://, http://, etc.
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(agentUrl);
+  } catch (err) {
+    console.error('[sobi/chat] invalid SOBI_AGENT_URL:', err);
+    return jsonError('Konfigurasi layanan Sobi tidak valid', 502);
+  }
+  if (parsedUrl.protocol !== 'https:') {
+    console.error('[sobi/chat] SOBI_AGENT_URL must use https:, got:', parsedUrl.protocol);
+    return jsonError('Konfigurasi layanan Sobi tidak valid', 502);
+  }
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     Accept: 'text/event-stream',
@@ -127,12 +140,22 @@ async function buildProxyStream(
     return jsonError('Gagal menghubungi layanan Sobi', 502);
   }
 
-  if (!upstream.ok || !upstream.body) {
-    console.error('[sobi/chat] upstream returned', upstream.status);
+  // Only pipe through when upstream is ok AND content-type is event-stream.
+  // Any other case (error status or unexpected content-type) must surface as a 502
+  // so the client shows an error rather than silently discarding a JSON error payload.
+  const upstreamCt = upstream.headers.get('content-type') ?? '';
+  if (!upstream.ok || !upstreamCt.includes('text/event-stream') || !upstream.body) {
+    console.error(
+      '[sobi/chat] upstream returned status=%d content-type=%s',
+      upstream.status,
+      upstreamCt,
+    );
+    // Drain the upstream body so the connection is released cleanly.
+    await upstream.body?.cancel().catch(() => {});
     return jsonError('Layanan Sobi tidak tersedia', 502);
   }
 
-  // Pipe the upstream body straight through — it must already be SSE.
+  // Pipe the upstream body straight through — confirmed SSE.
   return upstream.body;
 }
 

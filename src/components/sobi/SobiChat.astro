@@ -119,6 +119,10 @@
   let greetingShown = false;
   const history: ChatMessage[] = [];
 
+  // Monotonically increasing counter — used to guard delayed idle transitions
+  // from clobbering a newer message's 'thinking' state.
+  let _requestId = 0;
+
   // ---------------------------------------------------------------------------
   // Panel open / close
   // ---------------------------------------------------------------------------
@@ -216,6 +220,10 @@
     isBusy = true;
     if (sendBtn) sendBtn.disabled = true;
 
+    // Capture a request id so deferred idle transitions don't clobber
+    // a newer message's 'thinking' state (busy-state race guard).
+    const myRequestId = ++_requestId;
+
     // Append user message to UI and history.
     appendMessage('user', text);
     history.push({ role: 'user', content: text });
@@ -235,6 +243,8 @@
       });
 
       if (!res.ok || !res.body) {
+        // Drain the body before throwing so the connection is not left dangling.
+        await res.text().catch(() => {});
         throw new Error(`HTTP ${res.status}`);
       }
 
@@ -265,7 +275,10 @@
             }
             window.setSobiState?.('success' satisfies SobiState);
             setTimeout(() => {
-              if (!isBusy) window.setSobiState?.('idle' satisfies SobiState);
+              // Only settle to idle if no newer message has started.
+              if (myRequestId === _requestId) {
+                window.setSobiState?.('idle' satisfies SobiState);
+              }
             }, 1500);
             continue;
           }
@@ -298,7 +311,10 @@
       window.setSobiState?.('error' satisfies SobiState);
       appendErrorMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
       setTimeout(() => {
-        window.setSobiState?.('idle' satisfies SobiState);
+        // Only settle to idle if no newer message has started.
+        if (myRequestId === _requestId) {
+          window.setSobiState?.('idle' satisfies SobiState);
+        }
       }, 2000);
     } finally {
       isBusy = false;
