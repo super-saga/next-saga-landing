@@ -30,7 +30,7 @@ const { size = 96, class: className = '', id } = Astro.props;
     data-sobi-fallback
     width={size}
     height={size}
-    loading="lazy"
+    loading="eager"
     decoding="async"
   />
 </div>
@@ -39,65 +39,108 @@ const { size = 96, class: className = '', id } = Astro.props;
   import { registerSobiInputs } from './sobi.ts';
   import { Rive, Fit, Alignment, Layout } from '@rive-app/canvas';
 
-  function initSobi() {
-    const wrapper = document.querySelector('[data-sobi-canvas]')?.closest('[role="img"]');
-    if (!wrapper) return;
+  /**
+   * Initialise every Sobi canvas found in the document.
+   * Each canvas gets its own Rive instance, ResizeObserver, and registered
+   * inputs — all independent from one another.
+   */
+  function initAllSobi() {
+    const canvases = document.querySelectorAll<HTMLCanvasElement>('[data-sobi-canvas]');
 
-    const canvas = wrapper.querySelector<HTMLCanvasElement>('[data-sobi-canvas]');
-    const fallback = wrapper.querySelector<HTMLImageElement>('[data-sobi-fallback]');
+    canvases.forEach((canvas) => {
+      // Guard: skip canvases that have already been initialised.
+      if (canvas.dataset.sobiInit === 'true') return;
+      canvas.dataset.sobiInit = 'true';
 
-    if (!canvas || !fallback) return;
+      const wrapper = canvas.closest('[role="img"]');
+      const fallback = wrapper?.querySelector<HTMLImageElement>('[data-sobi-fallback]');
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!wrapper || !fallback) return;
 
-    if (prefersReducedMotion) {
-      // Show static reference image; skip Rive entirely.
-      canvas.classList.add('hidden');
-      fallback.classList.remove('hidden');
-      return;
-    }
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function showFallback() {
-      if (!canvas || !fallback) return;
-      canvas.classList.add('hidden');
-      fallback.classList.remove('hidden');
-    }
+      if (prefersReducedMotion) {
+        // Show static reference image; skip Rive entirely.
+        canvas.classList.add('hidden');
+        fallback.classList.remove('hidden');
+        return;
+      }
 
-    let riveInstance: InstanceType<typeof Rive> | null = null;
+      function showFallback() {
+        canvas.classList.add('hidden');
+        fallback!.classList.remove('hidden');
+      }
 
-    try {
-      riveInstance = new Rive({
-        src: '/mascots/sobi.riv',
-        canvas,
-        artboard: 'Sobi',
-        stateMachine: 'SobiStateMachine',
-        autoplay: true,
-        layout: new Layout({
-          fit: Fit.Contain,
-          alignment: Alignment.Center,
-        }),
-        onLoad: () => {
-          if (!riveInstance) return;
-          riveInstance.resizeDrawingSurfaceToCanvas();
-          const inputs = riveInstance.stateMachineInputs('SobiStateMachine');
-          if (inputs && inputs.length > 0) {
-            registerSobiInputs(inputs);
+      let riveInstance: InstanceType<typeof Rive> | null = null;
+      let resizeObserver: ResizeObserver | null = null;
+
+      try {
+        riveInstance = new Rive({
+          src: '/mascots/sobi.riv',
+          canvas,
+          artboard: 'Sobi',
+          stateMachine: 'SobiStateMachine',
+          autoplay: true,
+          layout: new Layout({
+            fit: Fit.Contain,
+            alignment: Alignment.Center,
+          }),
+          onLoad: () => {
+            if (!riveInstance) return;
+
+            riveInstance.resizeDrawingSurfaceToCanvas();
+
+            const inputs = riveInstance.stateMachineInputs('SobiStateMachine');
+            if (inputs && inputs.length > 0) {
+              registerSobiInputs(inputs);
+            }
+
+            // Wire a ResizeObserver so the drawing surface stays crisp after
+            // any viewport or orientation change.
+            if (typeof ResizeObserver !== 'undefined') {
+              resizeObserver = new ResizeObserver(() => {
+                riveInstance?.resizeDrawingSurfaceToCanvas();
+              });
+              resizeObserver.observe(canvas);
+            } else {
+              // Fallback for environments without ResizeObserver.
+              const onResize = () => riveInstance?.resizeDrawingSurfaceToCanvas();
+              window.addEventListener('resize', onResize);
+              // Store cleanup reference on the canvas element so we can remove
+              // it if needed (e.g. view-transitions).
+              (canvas as HTMLCanvasElement & { _sobiResizeCleanup?: () => void })
+                ._sobiResizeCleanup = () => window.removeEventListener('resize', onResize);
+            }
+          },
+          onLoadError: () => {
+            showFallback();
+          },
+        });
+      } catch {
+        showFallback();
+      }
+
+      // Clean up the ResizeObserver when the canvas leaves the DOM (e.g. after
+      // Astro view transitions remove the element).
+      if (typeof MutationObserver !== 'undefined') {
+        const mo = new MutationObserver(() => {
+          if (!document.contains(canvas)) {
+            resizeObserver?.disconnect();
+            const c = canvas as HTMLCanvasElement & { _sobiResizeCleanup?: () => void };
+            c._sobiResizeCleanup?.();
+            mo.disconnect();
           }
-        },
-        onLoadError: () => {
-          showFallback();
-        },
-      });
-    } catch {
-      showFallback();
-    }
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+      }
+    });
   }
 
   if (document.readyState !== 'loading') {
-    initSobi();
+    initAllSobi();
   } else {
-    document.addEventListener('DOMContentLoaded', initSobi);
+    document.addEventListener('DOMContentLoaded', initAllSobi);
   }
 </script>

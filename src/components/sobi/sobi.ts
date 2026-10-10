@@ -8,6 +8,10 @@
  *   window.setSobiState(state)
  *   CustomEvent 'sobi:state' with detail = state string
  *   window.__sobiUpdateBubble(state) — set by SobiLauncher to update speech bubble text
+ *
+ * Supports multiple Sobi instances on the same page. Every Rive canvas that
+ * loads successfully registers its inputs via registerSobiInputs(); setSobiState
+ * then drives ALL registered instances simultaneously.
  */
 
 export type SobiState =
@@ -25,25 +29,19 @@ type RiveInput = {
   fire?: () => void;
 };
 
-// Module-level Rive instance reference populated by Sobi.astro after load.
-let _inputs: RiveInput[] | null = null;
+// Registry of all loaded Rive input sets — one entry per Sobi instance.
+const _registry: RiveInput[][] = [];
 let _pendingState: SobiState | null = null;
 
-function findInput(name: string): RiveInput | undefined {
-  return _inputs?.find((i) => i.name === name);
+function findInput(inputs: RiveInput[], name: string): RiveInput | undefined {
+  return inputs.find((i) => i.name === name);
 }
 
-function applyState(state: SobiState): void {
-  if (!_inputs) {
-    // Queue the request; will be applied once Rive loads.
-    _pendingState = state;
-    return;
-  }
-
-  // Clear all booleans first.
-  const isListening = findInput('isListening');
-  const isThinking = findInput('isThinking');
-  const isSpeaking = findInput('isSpeaking');
+function applyStateToInputs(inputs: RiveInput[], state: SobiState): void {
+  // Clear all boolean flags first.
+  const isListening = findInput(inputs, 'isListening');
+  const isThinking = findInput(inputs, 'isThinking');
+  const isSpeaking = findInput(inputs, 'isSpeaking');
 
   if (isListening) isListening.value = false;
   if (isThinking) isThinking.value = false;
@@ -60,17 +58,17 @@ function applyState(state: SobiState): void {
       if (isSpeaking) isSpeaking.value = true;
       break;
     case 'greeting': {
-      const greet = findInput('greet');
+      const greet = findInput(inputs, 'greet');
       if (greet?.fire) greet.fire();
       break;
     }
     case 'success': {
-      const celebrate = findInput('celebrate');
+      const celebrate = findInput(inputs, 'celebrate');
       if (celebrate?.fire) celebrate.fire();
       break;
     }
     case 'error': {
-      const showError = findInput('showError');
+      const showError = findInput(inputs, 'showError');
       if (showError?.fire) showError.fire();
       break;
     }
@@ -78,6 +76,19 @@ function applyState(state: SobiState): void {
     default:
       // All booleans already cleared above.
       break;
+  }
+}
+
+function applyState(state: SobiState): void {
+  if (_registry.length === 0) {
+    // Queue the request; will be applied once the first Rive instance loads.
+    _pendingState = state;
+    return;
+  }
+
+  // Drive every registered instance.
+  for (const inputs of _registry) {
+    applyStateToInputs(inputs, state);
   }
 
   // Update speech bubble if the launcher registered its updater.
@@ -97,15 +108,17 @@ function applyState(state: SobiState): void {
 }
 
 /**
- * Called by Sobi.astro once Rive has loaded and inputs are available.
- * Replays any pending state that arrived before load completed.
+ * Called by each Sobi.astro instance once its Rive has loaded and inputs are
+ * available. Replays any pending state that arrived before the first load.
  */
 export function registerSobiInputs(inputs: RiveInput[]): void {
-  _inputs = inputs;
+  _registry.push(inputs);
   if (_pendingState !== null) {
     const queued = _pendingState;
     _pendingState = null;
-    applyState(queued);
+    // Apply to the newly registered instance (others already received it via
+    // applyState at registration time or had no pending state).
+    applyStateToInputs(inputs, queued);
   }
 }
 
