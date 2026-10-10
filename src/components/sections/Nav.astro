@@ -1,0 +1,114 @@
+---
+import Button from '../ui/Button.astro';
+import { nav } from '../../data/content.id';
+---
+
+<header class="sticky top-0 z-40 bg-surface border-b border-border">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Navigasi utama">
+    <div class="flex items-center justify-between h-16">
+      <!-- Brand -->
+      <a
+        href="/"
+        class="font-sans font-bold text-lg text-text-primary no-underline shrink-0"
+      >
+        {nav.brand}
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="hidden lg:flex items-center gap-6 list-none m-0 p-0">
+        {nav.links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="font-sans text-sm font-medium text-text-secondary hover:text-text-primary transition-colors no-underline"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Desktop CTA -->
+      <div class="hidden lg:flex items-center">
+        <Button
+          href="#mulai"
+          label={nav.primaryCta.label}
+          data-open="waitlist"
+        />
+      </div>
+
+      <!-- Mobile: hamburger -->
+      <button
+        id="nav-toggle"
+        class="lg:hidden flex items-center justify-center w-11 h-11 rounded-md text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        aria-expanded="false"
+        aria-controls="nav-mobile-menu"
+        aria-label="Buka menu navigasi"
+        type="button"
+      >
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" class="nav-icon-open">
+          <rect y="3" width="22" height="2.5" rx="1.25" fill="currentColor" />
+          <rect y="9.75" width="22" height="2.5" rx="1.25" fill="currentColor" />
+          <rect y="16.5" width="22" height="2.5" rx="1.25" fill="currentColor" />
+        </svg>
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" class="nav-icon-close hidden">
+          <path d="M3 3L19 19M19 3L3 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div
+      id="nav-mobile-menu"
+      class="lg:hidden hidden"
+      role="region"
+      aria-label="Menu navigasi mobile"
+    >
+      <ul class="flex flex-col gap-1 list-none m-0 p-0 pb-4">
+        {nav.links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="block py-2.5 px-2 font-sans text-base font-medium text-text-secondary hover:text-text-primary transition-colors no-underline"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+        <li class="pt-2">
+          <Button
+            href="#mulai"
+            label={nav.primaryCta.label}
+            data-open="waitlist"
+            class="w-full"
+          />
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('nav-mobile-menu');
+  const iconOpen = toggle?.querySelector('.nav-icon-open');
+  const iconClose = toggle?.querySelector('.nav-icon-close');
+
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    menu?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden');
+    iconClose?.classList.toggle('hidden');
+  });
+
+  // Close mobile menu when a link is clicked
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      toggle?.setAttribute('aria-expanded', 'false');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+    });
+  });
+</script>

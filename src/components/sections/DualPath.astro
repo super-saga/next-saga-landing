@@ -1,0 +1,71 @@
+---
+import Button from '../ui/Button.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import Reveal from '../ui/Reveal.astro';
+import { dualPath } from '../../data/content.id';
+---
+
+<section id="fitur" class="bg-bg">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        title={dualPath.title}
+        align="center"
+        class="mb-12"
+      />
+    </Reveal>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Pengurus card: DOMINANT — ink surface -->
+      <Reveal delay={60}>
+        <article
+          class="rounded-[var(--radius-lg)] bg-ink-800 text-text-inverse flex flex-col gap-6 p-8 lg:p-10"
+        >
+          <div class="flex flex-col gap-3">
+            <h3 class="font-sans font-bold text-2xl lg:text-3xl text-text-inverse leading-tight">
+              {dualPath.pengurus.title}
+            </h3>
+            <p class="font-sans text-base leading-relaxed text-text-inverse opacity-80">
+              {dualPath.pengurus.body}
+            </p>
+          </div>
+          <div class="mt-auto pt-2">
+            <Button
+              href="#mulai"
+              label={dualPath.pengurus.cta}
+              variant="primary"
+              data-open="waitlist"
+            />
+          </div>
+        </article>
+      </Reveal>
+
+      <!-- Warga card: secondary — mint surface -->
+      <Reveal delay={120}>
+        <article
+          class="rounded-[var(--radius-lg)] bg-accent text-on-accent flex flex-col gap-6 p-8 lg:p-10"
+        >
+          <div class="flex flex-col gap-3">
+            <h3 class="font-sans font-bold text-2xl lg:text-3xl text-on-accent leading-tight">
+              {dualPath.warga.title}
+            </h3>
+            <p class="font-sans text-base leading-relaxed text-on-accent opacity-80">
+              {dualPath.warga.body}
+            </p>
+          </div>
+          <div class="mt-auto pt-2">
+            <Button
+              href="#mulai"
+              label={dualPath.warga.cta}
+              variant="secondary"
+              data-open="waitlist"
+            />
+          </div>
+        </article>
+      </Reveal>
+
+    </div>
+  </div>
+</section>

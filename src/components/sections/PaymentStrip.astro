@@ -1,0 +1,22 @@
+---
+import Badge from '../ui/Badge.astro';
+import Reveal from '../ui/Reveal.astro';
+import { payment } from '../../data/content.id';
+---
+
+<section class="bg-surface-muted">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <Reveal>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+        <p class="font-sans text-sm font-medium text-text-secondary shrink-0">
+          {payment.title}
+        </p>
+        <div class="flex flex-wrap items-center gap-2">
+          {payment.methods.map((method) => (
+            <Badge label={method} tone="mint" />
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  </div>
+</section>

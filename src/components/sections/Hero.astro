@@ -1,0 +1,74 @@
+---
+import Button from '../ui/Button.astro';
+import PhoneMockup from '../ui/PhoneMockup.astro';
+import Reveal from '../ui/Reveal.astro';
+import { hero } from '../../data/content.id';
+import { WA_URL } from '../../config';
+---
+
+<section
+  id="beranda"
+  class="bg-surface"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-28">
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+
+      <!-- Left: copy + CTAs -->
+      <div class="flex-1 flex flex-col gap-6 lg:max-w-xl">
+        <Reveal>
+          <h1 class="font-sans font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight text-ink-900">
+            {hero.headline}
+          </h1>
+        </Reveal>
+
+        <Reveal delay={80}>
+          <p class="font-sans text-lg leading-relaxed text-text-secondary">
+            {hero.subhead}
+          </p>
+        </Reveal>
+
+        <!-- CTA group: buyer-first order -->
+        <Reveal delay={160}>
+          <div class="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+            <Button
+              href="#mulai"
+              label={hero.ctaPrimary}
+              variant="primary"
+              data-open="waitlist"
+            />
+            <Button
+              href="#mulai"
+              label={hero.ctaSecondary}
+              variant="secondary"
+              data-open="waitlist"
+            />
+            <Button
+              href={WA_URL}
+              label={hero.ctaTertiary}
+              variant="ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            />
+          </div>
+        </Reveal>
+
+        <Reveal delay={220}>
+          <p class="font-sans text-sm text-text-tertiary">
+            {hero.microcopy}
+          </p>
+        </Reveal>
+      </div>
+
+      <!-- Right: phone mockup -->
+      <Reveal delay={120} class="flex-1 flex justify-center lg:justify-end">
+        <PhoneMockup
+          src="/screens/dashboard-pengurus.png"
+          alt="Pratinjau dashboard pengurus Sahabat Warga"
+          width={300}
+          class="lg:w-80 xl:w-96"
+        />
+      </Reveal>
+
+    </div>
+  </div>
+</section>

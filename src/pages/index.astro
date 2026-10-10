@@ -1,22 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
-import Reveal from '../components/ui/Reveal.astro';
+import Nav from '../components/sections/Nav.astro';
+import Hero from '../components/sections/Hero.astro';
+import PaymentStrip from '../components/sections/PaymentStrip.astro';
+import DualPath from '../components/sections/DualPath.astro';
 ---
 
 <Base
   title="Sahabat Warga, kelola lingkungan lebih mudah"
   description="Satu aplikasi untuk iuran, data warga, komunikasi, dan pembayaran lingkungan."
 >
-  <main class="min-h-screen flex flex-col items-center justify-center gap-8 px-4">
-    <Reveal>
-      <h1 class="text-4xl font-bold text-center text-primary">
-        Sahabat Warga
-      </h1>
-    </Reveal>
-    <Reveal delay={100}>
-      <p class="text-lg text-center text-text-secondary max-w-md">
-        Satu aplikasi untuk iuran, data warga, komunikasi, dan pembayaran lingkungan.
-      </p>
-    </Reveal>
+  <Nav />
+  <main>
+    <Hero />
+    <PaymentStrip />
+    <DualPath />
   </main>
 </Base>
