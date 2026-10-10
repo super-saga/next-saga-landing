@@ -1,0 +1,56 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+import Reveal from '../ui/Reveal.astro';
+import { finalCta } from '../../data/content.id';
+import { WA_URL } from '../../config';
+---
+
+<!--
+  bg-surface-inverse = #0F1A17 (ink). All text must be text-text-inverse for AA contrast.
+  Section id="mulai" — waitlist modal target and fallback href anchor.
+-->
+<section id="mulai" class="bg-surface-inverse">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+
+    <Reveal>
+      <div class="flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
+
+        <SectionHeader
+          title={finalCta.headline}
+          subtitle={finalCta.subtext}
+          align="center"
+          tone="inverse"
+        />
+
+        <!-- CTA buttons -->
+        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 mt-2">
+          <!-- Primary: open waitlist modal -->
+          <Button
+            href="#mulai"
+            variant="primary"
+            label={finalCta.ctaPrimary}
+            data-open="waitlist"
+          />
+
+          <!-- Secondary: WhatsApp consultation — ghost on ink bg for contrast -->
+          <Button
+            href={WA_URL}
+            variant="ghost"
+            label={finalCta.ctaSecondary}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-text-inverse hover:text-text-inverse"
+          />
+        </div>
+
+        <!-- Invite line: small reassurance text -->
+        <p class="font-sans text-sm text-text-inverse mt-1" style="opacity:0.75">
+          {finalCta.inviteLine}
+        </p>
+
+      </div>
+    </Reveal>
+
+  </div>
+</section>

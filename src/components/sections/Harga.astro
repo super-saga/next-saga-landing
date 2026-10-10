@@ -1,0 +1,109 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+import Reveal from '../ui/Reveal.astro';
+import { harga } from '../../data/content.id';
+import { WA_URL } from '../../config';
+
+// cards[0] = Gratis, cards[1] = Langganan
+const [gratis, langganan] = harga.cards;
+---
+
+<section id="harga" class="bg-bg">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        eyebrow="Harga"
+        title={harga.heading}
+        subtitle={harga.intro}
+        align="center"
+        class="mb-14 mx-auto max-w-2xl"
+      />
+    </Reveal>
+
+    <!-- 2-card layout: Gratis + Langganan, side by side on md+ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+
+      <!-- Card 1: Gratis -->
+      <Reveal delay={60}>
+        <article
+          class="rounded-[var(--radius-lg)] bg-surface border border-border flex flex-col gap-6 p-7 lg:p-8 h-full"
+          aria-labelledby="harga-gratis-name"
+        >
+          <div class="flex flex-col gap-2">
+            <h3
+              id="harga-gratis-name"
+              class="font-sans font-bold text-2xl text-text-primary leading-tight"
+            >
+              {gratis.name}
+            </h3>
+            <p class="font-sans text-base leading-relaxed text-text-secondary">
+              {gratis.body}
+            </p>
+          </div>
+
+          <div class="mt-auto">
+            <Button
+              href="#mulai"
+              variant="primary"
+              label={gratis.cta}
+              data-open="waitlist"
+              class="w-full justify-center"
+            />
+          </div>
+        </article>
+      </Reveal>
+
+      <!-- Card 2: Langganan -->
+      <Reveal delay={120}>
+        <article
+          class="rounded-[var(--radius-lg)] bg-ink-800 border border-ink-700 flex flex-col gap-6 p-7 lg:p-8 h-full"
+          aria-labelledby="harga-langganan-name"
+        >
+          <div class="flex flex-col gap-2">
+            <h3
+              id="harga-langganan-name"
+              class="font-sans font-bold text-2xl text-text-inverse leading-tight"
+            >
+              {langganan.name}
+            </h3>
+            <p class="font-sans text-base leading-relaxed text-text-inverse">
+              {langganan.body}
+            </p>
+          </div>
+
+          <div class="mt-auto">
+            <Button
+              href={WA_URL}
+              variant="primary"
+              label={langganan.cta}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full justify-center"
+            />
+          </div>
+        </article>
+      </Reveal>
+
+    </div>
+
+    <!-- Contact band: enterprise / complex cases -->
+    <Reveal delay={180}>
+      <div class="mt-10 max-w-3xl mx-auto rounded-[var(--radius-md)] bg-surface border border-border flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5">
+        <p class="font-sans text-base text-text-primary text-center sm:text-left">
+          {harga.contactBand.text}
+        </p>
+        <Button
+          href={WA_URL}
+          variant="secondary"
+          label={harga.contactBand.cta}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-shrink-0"
+        />
+      </div>
+    </Reveal>
+
+  </div>
+</section>

@@ -1,0 +1,83 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Reveal from '../ui/Reveal.astro';
+import { testimoni } from '../../data/content.id';
+
+// Derive initials from full name for geometric avatar
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+// Deterministic avatar background per index (tokens only)
+const avatarBg = [
+  'bg-primary text-on-primary',
+  'bg-secondary text-text-inverse',
+  'bg-ink-700 text-text-inverse',
+];
+---
+
+<section id="testimoni" class="bg-surface">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-12">
+        <SectionHeader
+          eyebrow="Testimoni"
+          title={testimoni.heading}
+          align="left"
+        />
+        <!-- Visible sample notice — honesty requirement -->
+        <span
+          class="inline-flex items-center self-start sm:self-auto rounded-md px-3 py-1.5 text-xs font-bold font-sans uppercase tracking-wide bg-warning text-text-primary border border-warning flex-shrink-0"
+          role="note"
+          aria-label="Status konten"
+        >
+          {testimoni.note}
+        </span>
+      </div>
+    </Reveal>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {testimoni.items.map((item, i) => (
+        <Reveal delay={i * 80}>
+          <article
+            class="rounded-[var(--radius-lg)] bg-bg border border-border flex flex-col gap-5 p-6 h-full"
+            aria-labelledby={`testimoni-name-${i}`}
+          >
+            <!-- Quote -->
+            <blockquote class="flex-1">
+              <p class="font-sans text-base leading-relaxed text-text-primary">
+                "{item.quote}"
+              </p>
+            </blockquote>
+
+            <!-- Avatar + attribution -->
+            <div class="flex items-center gap-3">
+              <!-- Geometric avatar: circle with initials, NO photo -->
+              <div
+                class={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-sans font-bold text-sm ${avatarBg[i % avatarBg.length]}`}
+                aria-hidden="true"
+              >
+                {initials(item.name)}
+              </div>
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <p
+                  id={`testimoni-name-${i}`}
+                  class="font-sans font-semibold text-sm text-text-primary leading-snug truncate"
+                >
+                  {item.name}
+                </p>
+                <p class="font-sans text-xs text-text-secondary leading-snug truncate">
+                  {item.role}
+                </p>
+              </div>
+            </div>
+          </article>
+        </Reveal>
+      ))}
+    </div>
+
+  </div>
+</section>

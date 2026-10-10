@@ -1,0 +1,79 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Reveal from '../ui/Reveal.astro';
+import { faq } from '../../data/content.id';
+---
+
+<style>
+  /* Chevron marker: rotate open, hide default disclosure triangle */
+  details summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  details[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-chevron {
+      transition: none;
+    }
+  }
+</style>
+
+<section id="faq" class="bg-surface">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+
+    <Reveal>
+      <SectionHeader
+        eyebrow="FAQ"
+        title={faq.heading}
+        align="center"
+        class="mb-12 mx-auto max-w-2xl"
+      />
+    </Reveal>
+
+    <div class="max-w-2xl mx-auto flex flex-col divide-y divide-border">
+      {faq.items.map((item, i) => (
+        <Reveal delay={i * 40}>
+          <details class="group py-4 first:pt-0 last:pb-0">
+            <summary class="flex items-center justify-between gap-4 text-left">
+              <span class="font-sans font-semibold text-base text-text-primary leading-snug">
+                {item.q}
+              </span>
+              <!-- Chevron icon: CSS-rotated when open -->
+              <svg
+                class="faq-chevron w-5 h-5 text-text-secondary"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M5 7.5l5 5 5-5"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </summary>
+            <!-- Answer: text interpolation only — Astro auto-escapes & characters -->
+            <p class="font-sans text-sm leading-relaxed text-text-secondary mt-3 pr-9">
+              {item.a}
+            </p>
+          </details>
+        </Reveal>
+      ))}
+    </div>
+
+  </div>
+</section>
