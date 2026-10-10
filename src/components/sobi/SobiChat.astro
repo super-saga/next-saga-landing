@@ -1,0 +1,376 @@
+---
+/**
+ * SobiChat.astro — Floating AI chat panel for Sobi
+ *
+ * Opens via window.openSobiChat() / closes via window.closeSobiChat().
+ * Streams tokens from /api/sobi/chat via SSE.
+ * Drives Sobi Rive state: thinking -> speaking -> success|error -> idle.
+ *
+ * Accessibility:
+ *   - role="dialog" + aria-modal + aria-label
+ *   - Escape closes the panel
+ *   - Focus moves to textarea on open; returns to launcher button on close
+ *   - aria-live="polite" on the message list for incoming assistant text
+ *   - Enter sends; Shift+Enter inserts newline
+ */
+---
+
+<div
+  id="sobi-chat-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Chat dengan Sobi"
+  aria-hidden="true"
+  class="sobi-chat-panel fixed bottom-[108px] right-5 z-50 flex w-[340px] max-w-[calc(100vw-2.5rem)] flex-col rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 transition-all duration-200"
+  style="display:none;"
+>
+  <!-- Header -->
+  <header class="flex items-center justify-between rounded-t-2xl bg-emerald-600 px-4 py-3">
+    <div class="flex items-center gap-2">
+      <span class="text-base font-semibold text-white">Sobi</span>
+      <span
+        class="rounded-full bg-emerald-800/50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-100"
+        aria-label="Versi demo"
+      >
+        versi demo
+      </span>
+    </div>
+    <button
+      id="sobi-chat-close"
+      type="button"
+      aria-label="Tutup chat"
+      class="flex h-7 w-7 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-emerald-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Message list -->
+  <div
+    id="sobi-chat-messages"
+    role="log"
+    aria-live="polite"
+    aria-label="Riwayat percakapan"
+    aria-relevant="additions"
+    class="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-3"
+    style="min-height:220px;max-height:340px;"
+  >
+    <!-- Messages injected by JS -->
+  </div>
+
+  <!-- Composer -->
+  <form id="sobi-chat-form" class="border-t border-gray-100 px-3 py-3" autocomplete="off" novalidate>
+    <div class="flex items-end gap-2">
+      <textarea
+        id="sobi-chat-input"
+        rows="1"
+        placeholder="Ketik pesan..."
+        aria-label="Pesan untuk Sobi"
+        class="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus-visible:border-emerald-500 focus-visible:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
+        style="max-height:100px;overflow-y:auto;"
+      ></textarea>
+      <button
+        id="sobi-chat-send"
+        type="submit"
+        aria-label="Kirim pesan"
+        class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M14 2L2 7l5 3 2 5 5-13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  import type { SobiState } from './sobi.ts';
+
+  // ---------------------------------------------------------------------------
+  // Types
+  // ---------------------------------------------------------------------------
+
+  type ChatRole = 'user' | 'assistant' | 'system';
+  type ChatMessage = { role: ChatRole; content: string };
+
+  // ---------------------------------------------------------------------------
+  // DOM refs
+  // ---------------------------------------------------------------------------
+
+  const panel = document.getElementById('sobi-chat-panel') as HTMLDivElement | null;
+  const closeBtn = document.getElementById('sobi-chat-close') as HTMLButtonElement | null;
+  const form = document.getElementById('sobi-chat-form') as HTMLFormElement | null;
+  const input = document.getElementById('sobi-chat-input') as HTMLTextAreaElement | null;
+  const sendBtn = document.getElementById('sobi-chat-send') as HTMLButtonElement | null;
+  const messageList = document.getElementById('sobi-chat-messages') as HTMLDivElement | null;
+
+  if (!panel || !closeBtn || !form || !input || !sendBtn || !messageList) {
+    console.warn('[SobiChat] Required DOM elements not found');
+  }
+
+  // ---------------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------------
+
+  let isOpen = false;
+  let isBusy = false;
+  let greetingShown = false;
+  const history: ChatMessage[] = [];
+
+  // ---------------------------------------------------------------------------
+  // Panel open / close
+  // ---------------------------------------------------------------------------
+
+  function openPanel(): void {
+    if (!panel) return;
+    isOpen = true;
+    panel.style.display = 'flex';
+    panel.removeAttribute('aria-hidden');
+
+    if (!greetingShown) {
+      greetingShown = true;
+      appendMessage(
+        'assistant',
+        'Halo! Saya Sobi, asisten Sahabat Warga. Saya dapat membantu Anda soal iuran, pengumuman, dan keamanan lingkungan. Ada yang bisa saya bantu?',
+      );
+    }
+
+    // Focus to textarea.
+    requestAnimationFrame(() => input?.focus());
+
+    // Drive Sobi mascot.
+    window.setSobiState?.('greeting' satisfies SobiState);
+    setTimeout(() => {
+      if (isOpen && !isBusy) {
+        window.setSobiState?.('idle' satisfies SobiState);
+      }
+    }, 2000);
+  }
+
+  function closePanel(): void {
+    if (!panel) return;
+    isOpen = false;
+    panel.style.display = 'none';
+    panel.setAttribute('aria-hidden', 'true');
+
+    // Return focus to launcher button.
+    const launcher = document.getElementById('sobi-launcher-btn');
+    launcher?.focus();
+
+    // Settle mascot.
+    window.setSobiState?.('idle' satisfies SobiState);
+  }
+
+  // Expose globally for SobiLauncher + sobi.ts.
+  window.openSobiChat = openPanel;
+  window.closeSobiChat = closePanel;
+
+  // ---------------------------------------------------------------------------
+  // Message rendering
+  // ---------------------------------------------------------------------------
+
+  function appendMessage(role: ChatRole, text: string): HTMLParagraphElement {
+    if (!messageList) return document.createElement('p');
+
+    const isUser = role === 'user';
+    const wrapper = document.createElement('div');
+    wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+
+    const bubble = document.createElement('p');
+    bubble.className = isUser
+      ? 'max-w-[80%] rounded-[18px] rounded-br-sm bg-emerald-600 px-3 py-2 text-sm text-white'
+      : 'max-w-[80%] rounded-[18px] rounded-bl-sm bg-gray-100 px-3 py-2 text-sm text-gray-900';
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+    messageList.appendChild(wrapper);
+    messageList.scrollTop = messageList.scrollHeight;
+
+    return bubble;
+  }
+
+  function appendErrorMessage(text: string): void {
+    if (!messageList) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex justify-start';
+
+    const bubble = document.createElement('p');
+    bubble.className =
+      'max-w-[80%] rounded-[18px] rounded-bl-sm bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200';
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+    messageList.appendChild(wrapper);
+    messageList.scrollTop = messageList.scrollHeight;
+  }
+
+  // ---------------------------------------------------------------------------
+  // SSE streaming send
+  // ---------------------------------------------------------------------------
+
+  async function sendMessage(text: string): Promise<void> {
+    if (isBusy || !text.trim()) return;
+
+    isBusy = true;
+    if (sendBtn) sendBtn.disabled = true;
+
+    // Append user message to UI and history.
+    appendMessage('user', text);
+    history.push({ role: 'user', content: text });
+
+    // Rive: thinking.
+    window.setSobiState?.('thinking' satisfies SobiState);
+
+    // Create an empty assistant bubble that will fill with tokens.
+    let assistantBubble: HTMLParagraphElement | null = null;
+    let assistantText = '';
+
+    try {
+      const res = await fetch('/api/sobi/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history }),
+      });
+
+      if (!res.ok || !res.body) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let firstToken = true;
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Process complete SSE events (each ends with \n\n).
+        const events = buffer.split('\n\n');
+        buffer = events.pop() ?? '';
+
+        for (const event of events) {
+          const line = event.trim();
+          if (!line.startsWith('data:')) continue;
+          const data = line.slice(5).trim();
+
+          if (data === '[DONE]') {
+            // Stream finished.
+            if (assistantText) {
+              history.push({ role: 'assistant', content: assistantText });
+            }
+            window.setSobiState?.('success' satisfies SobiState);
+            setTimeout(() => {
+              if (!isBusy) window.setSobiState?.('idle' satisfies SobiState);
+            }, 1500);
+            continue;
+          }
+
+          let parsed: { token?: string };
+          try {
+            parsed = JSON.parse(data);
+          } catch {
+            continue;
+          }
+
+          const token = parsed.token ?? '';
+          if (!token) continue;
+
+          if (firstToken) {
+            firstToken = false;
+            window.setSobiState?.('speaking' satisfies SobiState);
+            assistantBubble = appendMessage('assistant', '');
+          }
+
+          assistantText += token;
+          if (assistantBubble) {
+            assistantBubble.textContent = assistantText;
+            messageList?.scrollTo({ top: messageList.scrollHeight, behavior: 'smooth' });
+          }
+        }
+      }
+    } catch (err) {
+      console.error('[SobiChat] stream error:', err);
+      window.setSobiState?.('error' satisfies SobiState);
+      appendErrorMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
+      setTimeout(() => {
+        window.setSobiState?.('idle' satisfies SobiState);
+      }, 2000);
+    } finally {
+      isBusy = false;
+      if (sendBtn) sendBtn.disabled = false;
+      input?.focus();
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Event listeners
+  // ---------------------------------------------------------------------------
+
+  // Close button.
+  closeBtn?.addEventListener('click', closePanel);
+
+  // Escape key closes panel.
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && isOpen) {
+      closePanel();
+    }
+  });
+
+  // Form submit.
+  form?.addEventListener('submit', (e: Event) => {
+    e.preventDefault();
+    const text = input?.value ?? '';
+    if (!text.trim()) return;
+    if (input) input.value = '';
+    autoResizeTextarea();
+    void sendMessage(text);
+  });
+
+  // Textarea: Enter sends, Shift+Enter newline; auto-resize.
+  function autoResizeTextarea(): void {
+    if (!input) return;
+    input.style.height = 'auto';
+    input.style.height = `${input.scrollHeight}px`;
+  }
+
+  input?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      const text = input.value;
+      if (!text.trim()) return;
+      input.value = '';
+      autoResizeTextarea();
+      void sendMessage(text);
+    }
+  });
+
+  input?.addEventListener('input', autoResizeTextarea);
+
+  // Focus trap: Tab should stay within the panel while it is open.
+  panel?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key !== 'Tab' || !isOpen) return;
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+</script>

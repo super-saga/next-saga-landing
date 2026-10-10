@@ -138,7 +138,9 @@ declare global {
     setSobiState?: (state: SobiState) => void;
     /** Registered by SobiLauncher to update speech bubble DOM */
     __sobiUpdateBubble?: (text: string) => void;
-    /** Registered by Task 11 chat panel */
+    /** Registered by SobiChat to open the chat panel */
     openSobiChat?: () => void;
+    /** Registered by SobiChat to close the chat panel */
+    closeSobiChat?: () => void;
   }
 }
