@@ -1,0 +1,46 @@
+---
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  href: string;
+  label?: string;
+  target?: string;
+  rel?: string;
+  id?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  href,
+  label,
+  target,
+  rel,
+  id,
+  class: className,
+  ...rest
+} = Astro.props as Props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-full font-sans font-bold px-6 py-3.5 text-base leading-none transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 no-underline';
+
+const variants: Record<string, string> = {
+  primary:
+    'bg-primary text-on-primary hover:opacity-90',
+  secondary:
+    'bg-transparent border border-border text-text-primary hover:bg-surface-muted',
+  ghost:
+    'bg-transparent text-text-primary underline-offset-4 hover:underline',
+};
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  id={id}
+  class={[base, variants[variant], className].filter(Boolean).join(' ')}
+  {...rest}
+>
+  {label ?? <slot />}
+</a>

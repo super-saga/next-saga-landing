@@ -1,0 +1,23 @@
+---
+interface Props {
+  as?: string;
+  class?: string;
+  delay?: number;
+}
+
+const {
+  as: tag = 'div',
+  class: className,
+  delay,
+} = Astro.props as Props;
+
+const style = delay != null ? `transition-delay:${delay}ms` : undefined;
+
+// Build attribute string for the dynamic tag
+const classAttr = className ? ` class="${className}"` : '';
+const styleAttr = style ? ` style="${style}"` : '';
+---
+
+<Fragment set:html={`<${tag} data-reveal${classAttr}${styleAttr}>`} />
+<slot />
+<Fragment set:html={`</${tag}>`} />

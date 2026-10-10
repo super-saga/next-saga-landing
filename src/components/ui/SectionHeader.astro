@@ -1,0 +1,41 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+  tone?: 'default' | 'inverse';
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  subtitle,
+  align = 'left',
+  tone = 'default',
+  class: className,
+} = Astro.props as Props;
+
+const isInverse = tone === 'inverse';
+const alignClass = align === 'center' ? 'text-center' : 'text-left';
+const titleColor = isInverse ? 'text-text-inverse' : 'text-ink-900';
+const eyebrowColor = isInverse ? 'text-emerald-300' : 'text-primary';
+const subtitleColor = isInverse ? 'text-text-inverse opacity-70' : 'text-text-secondary';
+---
+
+<div class={['flex flex-col gap-3', alignClass, className].filter(Boolean).join(' ')}>
+  {eyebrow && (
+    <p class={['text-sm font-bold tracking-widest uppercase', eyebrowColor].join(' ')}>
+      {eyebrow}
+    </p>
+  )}
+  <h2 class={['font-sans font-bold text-3xl leading-tight md:text-4xl', titleColor].join(' ')}>
+    {title}
+  </h2>
+  {subtitle && (
+    <p class={['text-base leading-relaxed mt-1', subtitleColor].join(' ')}>
+      {subtitle}
+    </p>
+  )}
+</div>

@@ -1,0 +1,29 @@
+---
+interface Props {
+  label: string;
+  tone?: 'neutral' | 'mint' | 'soon';
+  class?: string;
+}
+
+const {
+  label,
+  tone = 'neutral',
+  class: className,
+} = Astro.props as Props;
+
+const toneClasses: Record<string, string> = {
+  neutral: 'bg-surface-muted text-text-primary border border-border',
+  mint:    'bg-accent text-on-accent border border-transparent',
+  soon:    'bg-surface-muted text-text-tertiary border border-border',
+};
+---
+
+<span
+  class={[
+    'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold font-sans',
+    toneClasses[tone],
+    className,
+  ].filter(Boolean).join(' ')}
+>
+  {label}
+</span>
