@@ -1,0 +1,69 @@
+---
+import Sobi from './Sobi.astro';
+---
+
+<div class="sobi-launcher-root fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
+  <!-- Speech bubble -->
+  <div
+    id="sobi-bubble"
+    role="status"
+    aria-live="polite"
+    class="sobi-bubble max-w-[180px] rounded-2xl rounded-br-sm bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-lg ring-1 ring-black/5 select-none"
+  >
+    Siap membantu!
+  </div>
+
+  <!-- Launcher button -->
+  <button
+    type="button"
+    id="sobi-launcher-btn"
+    aria-label="Buka chat dengan Sobi"
+    class="sobi-launcher-btn group relative flex items-center justify-center rounded-full bg-white p-1 shadow-xl ring-1 ring-black/10 transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 active:scale-95"
+  >
+    <Sobi size={80} id="sobi-mascot" />
+  </button>
+</div>
+
+<script>
+  import type { SobiState } from './sobi.ts';
+
+  // Register speech bubble updater so sobi.ts can update DOM.
+  const bubble = document.getElementById('sobi-bubble');
+  if (bubble) {
+    window.__sobiUpdateBubble = (text: string) => {
+      bubble.textContent = text;
+    };
+  }
+
+  // On first load: fire greet, then settle to idle.
+  function greetOnce() {
+    window.setSobiState?.('greeting' satisfies SobiState);
+    setTimeout(() => {
+      window.setSobiState?.('idle' satisfies SobiState);
+    }, 2500);
+  }
+
+  // Greet after Rive inputs are registered (Rive emits no global event here,
+  // so we wait for window load then give Rive ~300 ms to finish).
+  let greetFired = false;
+  function tryGreet() {
+    if (greetFired) return;
+    greetFired = true;
+    greetOnce();
+  }
+
+  // Attempt greet once the page is interactive.
+  if (document.readyState === 'complete') {
+    setTimeout(tryGreet, 300);
+  } else {
+    window.addEventListener('load', () => setTimeout(tryGreet, 300), { once: true });
+  }
+
+  // Launcher button click: open chat (Task 11 wires window.openSobiChat).
+  const btn = document.getElementById('sobi-launcher-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      window.openSobiChat?.();
+    });
+  }
+</script>

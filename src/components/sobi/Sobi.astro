@@ -1,0 +1,103 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+  id?: string;
+}
+
+const { size = 96, class: className = '', id } = Astro.props;
+---
+
+<div
+  role="img"
+  aria-label="Sobi, asisten Sahabat Warga"
+  class:list={['sobi-wrapper relative', className]}
+  style={`width:${size}px;height:${size}px;`}
+  {id}
+>
+  <canvas
+    class="sobi-canvas absolute inset-0 w-full h-full"
+    width={size}
+    height={size}
+    data-sobi-canvas
+    aria-hidden="true"
+  ></canvas>
+  <!-- Static fallback: shown on load error or reduced-motion; hidden by default -->
+  <img
+    src="/mascots/sobi-reference.png"
+    alt="Sobi, asisten Sahabat Warga"
+    class="sobi-fallback absolute inset-0 w-full h-full object-contain hidden"
+    data-sobi-fallback
+    width={size}
+    height={size}
+    loading="lazy"
+    decoding="async"
+  />
+</div>
+
+<script>
+  import { registerSobiInputs } from './sobi.ts';
+  import { Rive, Fit, Alignment, Layout } from '@rive-app/canvas';
+
+  function initSobi() {
+    const wrapper = document.querySelector('[data-sobi-canvas]')?.closest('[role="img"]');
+    if (!wrapper) return;
+
+    const canvas = wrapper.querySelector<HTMLCanvasElement>('[data-sobi-canvas]');
+    const fallback = wrapper.querySelector<HTMLImageElement>('[data-sobi-fallback]');
+
+    if (!canvas || !fallback) return;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      // Show static reference image; skip Rive entirely.
+      canvas.classList.add('hidden');
+      fallback.classList.remove('hidden');
+      return;
+    }
+
+    function showFallback() {
+      if (!canvas || !fallback) return;
+      canvas.classList.add('hidden');
+      fallback.classList.remove('hidden');
+    }
+
+    let riveInstance: InstanceType<typeof Rive> | null = null;
+
+    try {
+      riveInstance = new Rive({
+        src: '/mascots/sobi.riv',
+        canvas,
+        artboard: 'Sobi',
+        stateMachine: 'SobiStateMachine',
+        autoplay: true,
+        layout: new Layout({
+          fit: Fit.Contain,
+          alignment: Alignment.Center,
+        }),
+        onLoad: () => {
+          if (!riveInstance) return;
+          riveInstance.resizeDrawingSurfaceToCanvas();
+          const inputs = riveInstance.stateMachineInputs('SobiStateMachine');
+          if (inputs && inputs.length > 0) {
+            registerSobiInputs(inputs);
+          }
+        },
+        onLoadError: () => {
+          showFallback();
+        },
+      });
+    } catch {
+      showFallback();
+    }
+  }
+
+  if (document.readyState !== 'loading') {
+    initSobi();
+  } else {
+    document.addEventListener('DOMContentLoaded', initSobi);
+  }
+</script>
