@@ -37,8 +37,7 @@ import { warga } from '../../data/content.id';
               <!-- Visual side: tinted panel acting as phone screen placeholder -->
               <div class="w-full lg:w-1/2 flex justify-center">
                 <div
-                  class="rounded-[var(--radius-lg)] bg-surface-muted flex items-center justify-center"
-                  style="width:260px;height:320px;"
+                  class="w-full max-w-[260px] aspect-[4/5] rounded-[var(--radius-lg)] bg-surface-muted flex items-center justify-center"
                   aria-hidden="true"
                 >
                   <PhoneMockup
@@ -52,7 +51,7 @@ import { warga } from '../../data/content.id';
               <!-- Text side -->
               <div class="w-full lg:w-1/2 flex flex-col gap-3">
                 <!-- Step indicator -->
-                <span class="font-sans text-xs font-bold tracking-widest uppercase text-primary">
+                <span class="font-sans text-xs font-bold tracking-widest uppercase text-text-brand">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <h3 class="font-sans font-bold text-2xl lg:text-3xl text-text-primary leading-tight">
