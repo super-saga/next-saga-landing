@@ -1,26 +1,37 @@
 ---
-import Button from '../ui/Button.astro';
 import { nav } from '../../data/content.id';
 ---
 
 <header class="sticky top-0 z-40 bg-surface border-b border-border">
-  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Navigasi utama">
-    <div class="flex items-center justify-between h-16">
-      <!-- Brand -->
-      <a
-        href="/"
-        class="font-sans font-bold text-lg text-text-primary no-underline shrink-0"
-      >
-        {nav.brand}
-      </a>
+  {/* Desktop nav — pixel-matches 01-nav.html reference at 1440px */}
+  <nav
+    class="hidden lg:flex flex-row items-center justify-between h-[79.5px] px-[120px]"
+    aria-label="Navigasi utama"
+  >
+    {/* Logo: mark + wordmark */}
+    <a href="/" class="flex flex-row items-center gap-[10px] no-underline shrink-0">
+      <img
+        src="/brand/icon-tp-sm.png"
+        alt=""
+        aria-hidden="true"
+        width="36"
+        height="36"
+        class="w-[36px] h-[36px] shrink-0"
+      />
+      <span class="text-[20px] leading-normal font-extrabold tracking-[-0.6px] text-text-primary whitespace-nowrap font-sans">
+        {nav.brand.toLowerCase()}
+      </span>
+    </a>
 
-      <!-- Desktop links -->
-      <ul class="hidden lg:flex items-center gap-6 list-none m-0 p-0">
+    {/* Right: links + CTA */}
+    <div class="flex flex-row items-center gap-[40px] shrink-0">
+      {/* Nav links */}
+      <ul class="flex flex-row items-center gap-[32px] list-none m-0 p-0">
         {nav.links.map((link) => (
           <li>
             <a
               href={link.href}
-              class="font-sans text-sm font-medium text-text-secondary hover:text-text-primary transition-colors no-underline"
+              class="text-[15px] leading-normal font-semibold text-ink-700 whitespace-nowrap no-underline hover:text-text-primary transition-colors font-sans"
             >
               {link.label}
             </a>
@@ -28,19 +39,39 @@ import { nav } from '../../data/content.id';
         ))}
       </ul>
 
-      <!-- Desktop CTA -->
-      <div class="hidden lg:flex items-center">
-        <Button
-          href="#mulai"
-          label={nav.primaryCta.label}
-          data-open="waitlist"
-        />
-      </div>
+      {/* CTA — Buat Komunitas */}
+      <a
+        href="#mulai"
+        data-open="waitlist"
+        class="inline-flex items-center justify-center h-[44px] px-[22px] bg-primary rounded-[999px] text-[15px] leading-normal font-bold text-on-primary whitespace-nowrap no-underline hover:opacity-90 transition-opacity shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary font-sans"
+      >
+        {nav.primaryCta.label}
+      </a>
+    </div>
+  </nav>
 
-      <!-- Mobile: hamburger -->
+  {/* Mobile nav */}
+  <nav class="lg:hidden" aria-label="Navigasi utama">
+    <div class="flex items-center justify-between h-16 px-4 sm:px-6">
+      {/* Logo */}
+      <a href="/" class="flex flex-row items-center gap-[10px] no-underline shrink-0">
+        <img
+          src="/brand/icon-tp-sm.png"
+          alt=""
+          aria-hidden="true"
+          width="32"
+          height="32"
+          class="w-8 h-8 shrink-0"
+        />
+        <span class="text-[18px] leading-normal font-extrabold tracking-[-0.5px] text-text-primary whitespace-nowrap font-sans">
+          {nav.brand.toLowerCase()}
+        </span>
+      </a>
+
+      {/* Hamburger */}
       <button
         id="nav-toggle"
-        class="lg:hidden flex items-center justify-center w-11 h-11 rounded-md text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        class="flex items-center justify-center w-11 h-11 rounded-md text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-expanded="false"
         aria-controls="nav-mobile-menu"
         aria-label="Buka menu navigasi"
@@ -57,31 +88,32 @@ import { nav } from '../../data/content.id';
       </button>
     </div>
 
-    <!-- Mobile menu -->
+    {/* Mobile menu */}
     <div
       id="nav-mobile-menu"
-      class="lg:hidden hidden"
+      class="hidden"
       role="region"
       aria-label="Menu navigasi mobile"
     >
-      <ul class="flex flex-col gap-1 list-none m-0 p-0 pb-4">
+      <ul class="flex flex-col gap-1 list-none m-0 px-4 sm:px-6 pb-4">
         {nav.links.map((link) => (
           <li>
             <a
               href={link.href}
-              class="block py-2.5 px-2 font-sans text-base font-medium text-text-secondary hover:text-text-primary transition-colors no-underline"
+              class="block py-2.5 px-2 text-base font-semibold text-ink-700 hover:text-text-primary transition-colors no-underline font-sans"
             >
               {link.label}
             </a>
           </li>
         ))}
         <li class="pt-2">
-          <Button
+          <a
             href="#mulai"
-            label={nav.primaryCta.label}
             data-open="waitlist"
-            class="w-full"
-          />
+            class="inline-flex w-full items-center justify-center h-[44px] px-[22px] bg-primary rounded-[999px] text-[15px] leading-normal font-bold text-on-primary no-underline hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-sans"
+          >
+            {nav.primaryCta.label}
+          </a>
         </li>
       </ul>
     </div>
@@ -102,7 +134,6 @@ import { nav } from '../../data/content.id';
     iconClose?.classList.toggle('hidden');
   });
 
-  // Close mobile menu when a link is clicked
   menu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {
       menu.classList.add('hidden');

@@ -1,53 +1,167 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import Button from '../ui/Button.astro';
 import Reveal from '../ui/Reveal.astro';
 import { finalCta } from '../../data/content.id';
-import { WA_URL } from '../../config';
+import { WA_URL, STORE_LIVE } from '../../config';
 ---
 
 <!--
-  bg-surface-inverse = #0F1A17 (ink). All text must be text-text-inverse for AA contrast.
-  Section id="mulai" — waitlist modal target and fallback href anchor.
+  Final CTA (#mulai) — ink/dark surface, pixel-matched to pen.dev 14-finalcta.
+  bg-[#0F1A17] = surface-inverse / ink-900.
+  All interactive store badges open the waitlist while STORE_LIVE is false.
 -->
-<section id="mulai" class="bg-surface-inverse">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+<section id="mulai" class="bg-[#0F1A17]">
+  <div class="flex flex-col items-center gap-[36px] px-[120px] py-[128px] max-lg:px-8 max-lg:py-20 max-sm:px-4 max-sm:py-16">
 
     <Reveal>
-      <div class="flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
+      <!-- Headline -->
+      <h2 class="text-[56px] leading-[62px] font-extrabold tracking-[-1.6px] text-white text-center w-[880px] max-lg:w-full max-lg:text-[40px] max-lg:leading-[48px] max-lg:tracking-[-1px] max-sm:text-[32px] max-sm:leading-[40px]">
+        {finalCta.headline}
+      </h2>
+    </Reveal>
 
-        <SectionHeader
-          title={finalCta.headline}
-          subtitle={finalCta.subtext}
-          align="center"
-          tone="inverse"
-        />
+    <Reveal>
+      <!-- Subtext -->
+      <p class="text-[20px] leading-[32px] font-normal text-[#E3E7E5] text-center w-[640px] max-lg:w-full max-sm:text-[17px] max-sm:leading-[28px]">
+        {finalCta.subtext}
+      </p>
+    </Reveal>
 
-        <!-- CTA buttons -->
-        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 mt-2">
-          <!-- Primary: open waitlist modal -->
-          <Button
-            href="#mulai"
-            variant="primary"
-            label={finalCta.ctaPrimary}
-            data-open="waitlist"
-          />
+    <Reveal>
+      <!-- CTA Buttons -->
+      <div class="flex flex-row flex-wrap gap-[12px] justify-center items-center max-sm:flex-col max-sm:w-full">
 
-          <!-- Secondary: WhatsApp consultation — ghost-inverse on ink bg for contrast -->
-          <Button
-            href={WA_URL}
-            variant="ghost-inverse"
-            label={finalCta.ctaSecondary}
-            target="_blank"
-            rel="noopener noreferrer"
-          />
+        <!-- Primary: Buat Komunitas — opens waitlist modal -->
+        <a
+          href="#mulai"
+          data-open="waitlist"
+          class="inline-flex items-center justify-center gap-2 h-[56px] px-[32px] bg-[#0E9F76] rounded-[999px] text-[16px] font-bold text-white leading-none whitespace-nowrap hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1A17] max-sm:w-full max-sm:justify-center"
+        >
+          {finalCta.ctaPrimary}
+        </a>
+
+        <!-- Secondary: Konsultasi via WhatsApp -->
+        <a
+          href={WA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-[10px] h-[56px] pl-[20px] pr-[24px] bg-[#1B2724] [outline:1.5px_solid_#2A3733] [outline-offset:-0.75px] rounded-[999px] text-[16px] font-bold text-white leading-none whitespace-nowrap hover:bg-[#243330] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1A17] max-sm:w-full max-sm:justify-center"
+        >
+          <!-- WhatsApp icon (phosphor, fill #5FD4AE) -->
+          <svg
+            viewBox="0 0 14 14"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-[22px] h-[22px] shrink-0"
+            aria-hidden="true"
+          >
+            <path
+              d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+              fill="#5FD4AE"
+            />
+          </svg>
+          {finalCta.ctaSecondary}
+        </a>
+      </div>
+    </Reveal>
+
+    <Reveal>
+      <!-- Download / Invite block -->
+      <div class="flex flex-col items-center gap-[16px] pt-[28px]">
+
+        <!-- Invite line -->
+        <div class="flex flex-row gap-[6px] items-start flex-wrap justify-center">
+          <span class="text-[15px] leading-normal font-medium text-[#E3E7E5] whitespace-nowrap">
+            Sudah diundang pengurus?
+          </span>
+          <!-- Download & gabung: opens waitlist if stores not live -->
+          {STORE_LIVE ? (
+            <a
+              href="https://linktr.ee/sahabatwarga"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-[15px] leading-normal font-bold text-[#5FD4AE] whitespace-nowrap hover:opacity-80 transition-opacity"
+            >
+              Download &amp; gabung
+            </a>
+          ) : (
+            <a
+              href="#mulai"
+              data-open="waitlist"
+              class="text-[15px] leading-normal font-bold text-[#5FD4AE] whitespace-nowrap hover:opacity-80 transition-opacity"
+            >
+              Download &amp; gabung
+            </a>
+          )}
         </div>
 
-        <!-- Invite line: small reassurance text -->
-        <p class="font-sans text-sm text-text-tertiary mt-1">
-          {finalCta.inviteLine}
-        </p>
+        <!-- App store badges -->
+        <div class="flex flex-row gap-[12px] items-start flex-wrap justify-center">
 
+          <!-- App Store badge -->
+          {STORE_LIVE ? (
+            <a
+              href="https://apps.apple.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-[10px] h-[52px] pl-[16px] pr-[20px] bg-[#1B2724] [outline:1px_solid_#2A3733] [outline-offset:-0.5px] rounded-[12px] hover:bg-[#243330] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <svg viewBox="0 0 14 14" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="w-[26px] h-[26px] shrink-0" aria-hidden="true">
+                <path d="M7.16406 1.64063q0.21875-0.65625 0.79297-1.03907 0.57422-0.38281 1.23047-0.38281 0.16406 0 0.30078 0.13672 0.13672 0.13672 0.13672 0.30078 0 0.16406-0.13672 0.30078-0.13672 0.13672-0.30078 0.13672-0.38281 0-0.73828 0.21875-0.35547 0.21875-0.46484 0.57422-0.10938 0.35547-0.4375 0.30078l-0.16407 0q-0.16406-0.05469-0.24609-0.21875-0.08203-0.16406 0.02734-0.32813z m5.19531 7.4375q-0.60156 1.42188-1.53125 2.29687-0.92969 0.875-1.85937 0.875l-3.9375 0q-0.65625 0-1.36719-0.49219-0.71094-0.49219-1.3125-1.36719-1.25781-1.85938-1.25781-4.04687 0-1.03906 0.54688-1.94141 0.54688-0.90234 1.47656-1.36718 0.92969-0.46484 1.96875-0.38282 1.03906 0.08203 1.91406 0.6836 0.82031-0.60156 1.77734-0.71094 0.95703-0.10938 1.83203 0.27344 0.875 0.38281 1.53125 1.14844 0.10938 0.16406 0.05469 0.35546-0.05469 0.19141-0.21875 0.30079-0.49219 0.27344-0.76562 0.82031-0.27344 0.54688-0.27344 1.14844 0 0.60156 0.32812 1.09375 0.32813 0.49219 0.875 0.76562 0.16406 0.05469 0.21875 0.21875 0.05469 0.16406 0 0.32813z m-0.98437 0q-0.54688-0.38281-0.90234-1.01172-0.35547-0.62891-0.41016-1.33985-0.05469-0.71094 0.21875-1.36718 0.27344-0.65625 0.82031-1.09375-0.82031-0.76563-1.91406-0.76563-1.09375 0-1.85938 0.71094-0.16406 0.10938-0.32812 0.10937-0.16406 0-0.27344-0.10937-0.65625-0.54688-1.47656-0.6836-0.82031-0.13672-1.58594 0.21875-0.76563 0.35547-1.23047 1.06641-0.46484 0.71094-0.46484 1.53125 0 1.3125 0.54688 2.51563 0.4375 1.09375 1.17578 1.80468 0.73828 0.71094 1.33984 0.71094l3.9375 0q0.60156 0 1.28516-0.65625 0.68359-0.65625 1.12109-1.64063z" fill="#FFFFFF" />
+              </svg>
+              <div class="flex flex-col gap-0 items-start">
+                <span class="text-[11px] leading-normal font-medium text-[#E3E7E5] whitespace-nowrap">Download di</span>
+                <span class="text-[16px] leading-normal font-bold text-white whitespace-nowrap">App Store</span>
+              </div>
+            </a>
+          ) : (
+            <button
+              type="button"
+              data-open="waitlist"
+              class="inline-flex items-center gap-[10px] h-[52px] pl-[16px] pr-[20px] bg-[#1B2724] [outline:1px_solid_#2A3733] [outline-offset:-0.5px] rounded-[12px] hover:bg-[#243330] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <svg viewBox="0 0 14 14" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="w-[26px] h-[26px] shrink-0" aria-hidden="true">
+                <path d="M7.16406 1.64063q0.21875-0.65625 0.79297-1.03907 0.57422-0.38281 1.23047-0.38281 0.16406 0 0.30078 0.13672 0.13672 0.13672 0.13672 0.30078 0 0.16406-0.13672 0.30078-0.13672 0.13672-0.30078 0.13672-0.38281 0-0.73828 0.21875-0.35547 0.21875-0.46484 0.57422-0.10938 0.35547-0.4375 0.30078l-0.16407 0q-0.16406-0.05469-0.24609-0.21875-0.08203-0.16406 0.02734-0.32813z m5.19531 7.4375q-0.60156 1.42188-1.53125 2.29687-0.92969 0.875-1.85937 0.875l-3.9375 0q-0.65625 0-1.36719-0.49219-0.71094-0.49219-1.3125-1.36719-1.25781-1.85938-1.25781-4.04687 0-1.03906 0.54688-1.94141 0.54688-0.90234 1.47656-1.36718 0.92969-0.46484 1.96875-0.38282 1.03906 0.08203 1.91406 0.6836 0.82031-0.60156 1.77734-0.71094 0.95703-0.10938 1.83203 0.27344 0.875 0.38281 1.53125 1.14844 0.10938 0.16406 0.05469 0.35546-0.05469 0.19141-0.21875 0.30079-0.49219 0.27344-0.76562 0.82031-0.27344 0.54688-0.27344 1.14844 0 0.60156 0.32812 1.09375 0.32813 0.49219 0.875 0.76562 0.16406 0.05469 0.21875 0.21875 0.05469 0.16406 0 0.32813z m-0.98437 0q-0.54688-0.38281-0.90234-1.01172-0.35547-0.62891-0.41016-1.33985-0.05469-0.71094 0.21875-1.36718 0.27344-0.65625 0.82031-1.09375-0.82031-0.76563-1.91406-0.76563-1.09375 0-1.85938 0.71094-0.16406 0.10938-0.32812 0.10937-0.16406 0-0.27344-0.10937-0.65625-0.54688-1.47656-0.6836-0.82031-0.13672-1.58594 0.21875-0.76563 0.35547-1.23047 1.06641-0.46484 0.71094-0.46484 1.53125 0 1.3125 0.54688 2.51563 0.4375 1.09375 1.17578 1.80468 0.73828 0.71094 1.33984 0.71094l3.9375 0q0.60156 0 1.28516-0.65625 0.68359-0.65625 1.12109-1.64063z" fill="#FFFFFF" />
+              </svg>
+              <div class="flex flex-col gap-0 items-start">
+                <span class="text-[11px] leading-normal font-medium text-[#E3E7E5] whitespace-nowrap">Download di</span>
+                <span class="text-[16px] leading-normal font-bold text-white whitespace-nowrap">App Store</span>
+              </div>
+            </button>
+          )}
+
+          <!-- Google Play badge -->
+          {STORE_LIVE ? (
+            <a
+              href="https://play.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-[10px] h-[52px] pl-[16px] pr-[20px] bg-[#1B2724] [outline:1px_solid_#2A3733] [outline-offset:-0.5px] rounded-[12px] hover:bg-[#243330] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <svg viewBox="0 0 14 14" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="w-[26px] h-[26px] shrink-0" aria-hidden="true">
+                <path d="M12.25 6.23438l-9.1875-5.25q-0.21875-0.10938-0.4375-0.10938-0.21875 0-0.4375 0.10938-0.21875 0.10938-0.32813 0.32812-0.10938 0.21875-0.10937 0.4375l0 10.5q0 0.38281 0.24609 0.62891 0.24609 0.24609 0.62891 0.24609 0.21875 0 0.4375-0.10937l9.1875-5.25q0.16406-0.10938 0.30078-0.32813 0.13672-0.21875 0.13672-0.4375 0-0.21875-0.13672-0.4375-0.13672-0.21875-0.30078-0.32812z m-9.625 5.41406l0-9.29688 4.64844 4.64844-4.64844 4.64844z m5.25-4.04688l1.03906 1.03906-4.8125 2.78907 3.77344-3.82813z m-3.77344-5.03125l4.8125 2.78906-1.03906 1.03907-3.77344-3.82813z m5.57813 5.63281l-1.20313-1.20312 1.20313-1.20313 2.13281 1.20313-2.13281 1.20312z" fill="#FFFFFF" />
+              </svg>
+              <div class="flex flex-col gap-0 items-start">
+                <span class="text-[11px] leading-normal font-medium text-[#E3E7E5] whitespace-nowrap">Tersedia di</span>
+                <span class="text-[16px] leading-normal font-bold text-white whitespace-nowrap">Google Play</span>
+              </div>
+            </a>
+          ) : (
+            <button
+              type="button"
+              data-open="waitlist"
+              class="inline-flex items-center gap-[10px] h-[52px] pl-[16px] pr-[20px] bg-[#1B2724] [outline:1px_solid_#2A3733] [outline-offset:-0.5px] rounded-[12px] hover:bg-[#243330] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <svg viewBox="0 0 14 14" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="w-[26px] h-[26px] shrink-0" aria-hidden="true">
+                <path d="M12.25 6.23438l-9.1875-5.25q-0.21875-0.10938-0.4375-0.10938-0.21875 0-0.4375 0.10938-0.21875 0.10938-0.32813 0.32812-0.10938 0.21875-0.10937 0.4375l0 10.5q0 0.38281 0.24609 0.62891 0.24609 0.24609 0.62891 0.24609 0.21875 0 0.4375-0.10937l9.1875-5.25q0.16406-0.10938 0.30078-0.32813 0.13672-0.21875 0.13672-0.4375 0-0.21875-0.13672-0.4375-0.13672-0.21875-0.30078-0.32812z m-9.625 5.41406l0-9.29688 4.64844 4.64844-4.64844 4.64844z m5.25-4.04688l1.03906 1.03906-4.8125 2.78907 3.77344-3.82813z m-3.77344-5.03125l4.8125 2.78906-1.03906 1.03907-3.77344-3.82813z m5.57813 5.63281l-1.20313-1.20312 1.20313-1.20313 2.13281 1.20313-2.13281 1.20312z" fill="#FFFFFF" />
+              </svg>
+              <div class="flex flex-col gap-0 items-start">
+                <span class="text-[11px] leading-normal font-medium text-[#E3E7E5] whitespace-nowrap">Tersedia di</span>
+                <span class="text-[16px] leading-normal font-bold text-white whitespace-nowrap">Google Play</span>
+              </div>
+            </button>
+          )}
+
+        </div>
       </div>
     </Reveal>
 

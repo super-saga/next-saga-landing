@@ -1,74 +1,270 @@
 ---
-import Button from '../ui/Button.astro';
-import PhoneMockup from '../ui/PhoneMockup.astro';
 import Reveal from '../ui/Reveal.astro';
 import { hero } from '../../data/content.id';
 import { WA_URL } from '../../config';
 ---
 
-<section
-  id="beranda"
-  class="bg-surface"
->
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-28">
-    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+<!--
+  Hero section — pixel-matched to pen.dev reference (desktop 1440px).
+  Desktop: two-column flex, copy left / visual right.
+  Mobile (<lg): stacks vertically; visual scales down via CSS transform.
+-->
+<section id="beranda" class="bg-white">
 
-      <!-- Left: copy + CTAs -->
-      <div class="flex-1 flex flex-col gap-6 lg:max-w-xl">
+  <!--
+    Content wrapper: on the 1440px canvas the hero has p-[72px_120px_96px_120px].
+    We replicate this with max-w-[1200px] + horizontal padding and vertical py.
+  -->
+  <div class="mx-auto w-full max-w-[1200px] px-5 lg:px-0 pt-[72px] pb-[96px] lg:pt-[72px] lg:pb-[96px] md:pt-12 md:pb-16 sm:pt-10 sm:pb-12">
+
+    <div class="flex flex-col lg:flex-row items-center gap-[64px] lg:gap-[64px] gap-10">
+
+      <!-- ─── LEFT: Copy + CTAs ─── -->
+      <div class="flex-1 min-w-0 flex flex-col gap-[28px]">
+
         <Reveal>
-          <h1 class="font-sans font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight text-text-primary">
+          <h1
+            class="font-extrabold tracking-[-2.2px] text-[#0F1A17] w-full
+                   text-[68px] leading-[71px]
+                   md:text-[48px] md:leading-[54px] md:tracking-[-1.5px]
+                   sm:text-[36px] sm:leading-[42px] sm:tracking-[-1px]
+                   max-sm:text-[30px] max-sm:leading-[36px] max-sm:tracking-[-0.6px]"
+          >
             {hero.headline}
           </h1>
         </Reveal>
 
         <Reveal delay={80}>
-          <p class="font-sans text-lg leading-relaxed text-text-secondary">
+          <p
+            class="font-normal text-[#6B7672]
+                   text-[20px] leading-[32px]
+                   md:text-[17px] md:leading-[28px]
+                   sm:text-[15px] sm:leading-[24px]"
+          >
             {hero.subhead}
           </p>
         </Reveal>
 
-        <!-- CTA group: buyer-first order -->
+        <!-- CTAs -->
         <Reveal delay={160}>
-          <div class="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
-            <Button
-              href="#mulai"
-              label={hero.ctaPrimary}
-              variant="primary"
-              data-open="waitlist"
-            />
-            <Button
-              href="#mulai"
-              label={hero.ctaSecondary}
-              variant="secondary"
-              data-open="waitlist"
-            />
-            <Button
+          <div class="flex flex-col gap-[16px] pt-[12px]">
+
+            <!-- Row: Primary + Secondary -->
+            <div class="flex flex-row flex-wrap gap-[12px] items-center">
+              <a
+                href="#mulai"
+                data-open="waitlist"
+                class="inline-flex items-center justify-center whitespace-nowrap
+                       h-[52px] px-[28px] rounded-full
+                       bg-[#0E9F76] text-white text-[16px] font-bold leading-none
+                       transition-opacity duration-150 hover:opacity-90
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76] focus-visible:ring-offset-2
+                       sm:h-[48px] sm:px-[22px] sm:text-[15px]"
+              >
+                {hero.ctaPrimary}
+              </a>
+              <a
+                href="#mulai"
+                data-open="waitlist"
+                class="inline-flex items-center justify-center whitespace-nowrap
+                       h-[52px] px-[28px] rounded-full
+                       bg-white text-[#0F1A17] text-[16px] font-bold leading-none
+                       [outline:1.5px_solid_#E3E7E5] [outline-offset:-0.75px]
+                       transition-colors duration-150 hover:bg-[#F6F7F6]
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76] focus-visible:ring-offset-2
+                       sm:h-[48px] sm:px-[22px] sm:text-[15px]"
+              >
+                {hero.ctaSecondary}
+              </a>
+            </div>
+
+            <!-- Tertiary: WhatsApp -->
+            <a
               href={WA_URL}
-              label={hero.ctaTertiary}
-              variant="ghost"
               target="_blank"
               rel="noopener noreferrer"
-            />
+              class="inline-flex items-center gap-[8px] h-[52px] px-[4px]
+                     text-[16px] font-bold text-[#08745A] leading-none whitespace-nowrap
+                     transition-opacity duration-150 hover:opacity-80
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#08745A] focus-visible:ring-offset-2
+                     sm:text-[15px]"
+            >
+              <!-- WhatsApp logo (phosphor) -->
+              <svg
+                viewBox="0 0 14 14"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-[20px] h-[20px] shrink-0"
+                aria-hidden="true"
+              >
+                <path
+                  d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+                  fill="#08745A"
+                />
+              </svg>
+              {hero.ctaTertiary}
+              <!-- Arrow forward (Material Symbols Rounded) -->
+              <svg
+                viewBox="0 0 14 14"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-[18px] h-[18px] shrink-0"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.96338 7.29053l-6.75391 0q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l6.75391 0-3.17188-3.17187q-0.08545-0.08545-0.09228-0.20166-0.00342-0.11621 0.0957-0.21192 0.0957-0.0957 0.20508-0.0957 0.10938-0.00342 0.20508 0.0957l3.54785 3.54785q0.0752 0.0752 0.10596 0.15381 0.03418 0.07861 0.03418 0.17432 0 0.0957-0.03418 0.17432-0.03076 0.07861-0.10596 0.1538l-3.54785 3.54786q-0.08203 0.08203-0.19824 0.08886-0.11621 0.00684-0.21192-0.08886-0.09912-0.0957-0.09912-0.20508 0-0.11279 0.09912-0.2085l3.16846-3.17187z"
+                  fill="#08745A"
+                />
+              </svg>
+            </a>
+
           </div>
         </Reveal>
 
+        <!-- Microcopy -->
         <Reveal delay={220}>
-          <p class="font-sans text-sm text-text-secondary">
-            {hero.microcopy}
-          </p>
+          <div class="flex flex-row items-center gap-[8px]">
+            <!-- check_circle (Material Symbols Rounded) -->
+            <svg
+              viewBox="0 0 14 14"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[18px] h-[18px] shrink-0"
+              aria-hidden="true"
+            >
+              <path
+                d="M6.1626 8.45264l-1.45948-1.45606q-0.07861-0.08203-0.19824-0.08545-0.11963-0.00684-0.21191 0.08545-0.0957 0.0957-0.0957 0.2085 0 0.11279 0.0957 0.20508l1.53808 1.53808q0.14014 0.14355 0.32813 0.14356 0.19141 0 0.33154-0.14356l3.1958-3.19238q0.08203-0.08203 0.08545-0.20166 0.00684-0.11963-0.08545-0.21191-0.0957-0.09229-0.20849-0.09229-0.11279 0-0.20508 0.09229l-3.11035 3.11035z m0.84082 3.79736q-1.09033 0-2.05078-0.41357-0.95703-0.41357-1.66797-1.1211-0.70752-0.70752-1.1211-1.66455-0.41357-0.96045-0.41357-2.04736 0-1.09033 0.41357-2.04737 0.41357-0.96045 1.1211-1.66796 0.70752-0.71094 1.66455-1.12452 0.96045-0.41357 2.04736-0.41357 1.09033 0 2.04737 0.41357 0.96045 0.41357 1.66796 1.1211 0.71094 0.70752 1.12452 1.66797 0.41357 0.95703 0.41357 2.04394 0 1.09033-0.41357 2.05078-0.41357 0.95703-1.1211 1.66797-0.70752 0.70752-1.66797 1.1211-0.95703 0.41357-2.04394 0.41357z m-0.00342-0.58447q1.95508 0 3.30859-1.35352 1.35693-1.35693 1.35694-3.31201 0-1.95508-1.35694-3.30859-1.35352-1.35693-3.30859-1.35694-1.95508 0-3.31201 1.35694-1.35352 1.35352-1.35352 3.30859 0 1.95508 1.35352 3.31201 1.35693 1.35352 3.31201 1.35352z"
+                fill="#0E9F76"
+              />
+            </svg>
+            <span class="text-[14px] leading-normal font-medium text-[#6B7672] whitespace-nowrap">
+              {hero.microcopy}
+            </span>
+          </div>
         </Reveal>
-      </div>
 
-      <!-- Right: phone mockup -->
-      <Reveal delay={120} class="flex-1 flex justify-center lg:justify-end">
-        <PhoneMockup
-          src="/screens/dashboard-pengurus.png"
-          alt="Pratinjau dashboard pengurus Sahabat Warga"
-          width={300}
-          class="lg:w-80 xl:w-96"
-        />
+      </div>
+      <!-- ─── END LEFT ─── -->
+
+      <!-- ─── RIGHT: Visual — two overlapping phones + floating notice ─── -->
+      <Reveal delay={120} class="shrink-0 flex items-end justify-center lg:justify-end hero-visual-wrapper">
+        <!--
+          The visual panel is 520×620px on desktop (matches reference exactly).
+          On mobile we use CSS transform scale so the composition stays intact
+          but fits within the viewport width without causing overflow.
+        -->
+        <div class="hero-visual-scale">
+          <div
+            class="relative overflow-hidden rounded-[32px] bg-[#EEFBF5] w-[520px] h-[620px] pt-[48px]"
+            role="img"
+            aria-label="Pratinjau aplikasi Sahabat Warga"
+          >
+
+            <!-- Phone · Beranda Warga (back, left, z=0) -->
+            <img
+              src="/screens/home-warga.png"
+              alt="Beranda Warga"
+              class="absolute z-0"
+              style="width:256px;height:auto;left:36px;top:132px;"
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+            />
+
+            <!-- Phone · Beranda Pengurus (front, right, z=1) -->
+            <img
+              src="/screens/dashboard-pengurus.png"
+              alt="Beranda Pengurus"
+              class="absolute z-10"
+              style="width:300px;height:auto;left:196px;top:56px;"
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+            />
+
+            <!-- Floating Notice: Iuran diterima (z=2) -->
+            <div
+              class="absolute flex flex-row items-center gap-[12px] bg-white rounded-[16px] z-20"
+              style="left:24px;top:486px;padding:12px 16px 12px 12px;box-shadow:0px 12px 32px #0F1A171F;"
+              aria-hidden="true"
+            >
+              <!-- Green tile -->
+              <div class="w-[36px] h-[36px] shrink-0 flex items-center justify-center bg-[#0E9F76] rounded-[12px]">
+                <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+                  <path
+                    d="M5.57129 9.2627l5.13379-5.13379q0.08545-0.08545 0.20166-0.08887 0.11621-0.00684 0.21191 0.08887 0.0957 0.0957 0.0957 0.20849 0 0.11279-0.0957 0.2085l-5.21924 5.21924q-0.14014 0.14355-0.32812 0.14355-0.18799 0-0.33154-0.14355l-2.36182-2.36182q-0.08545-0.08545-0.08887-0.20166-0.00342-0.11621 0.09229-0.21533 0.0957-0.0957 0.20849-0.09571 0.11279 0 0.2085 0.09571l2.27295 2.27637z"
+                    fill="#FFFFFF"
+                  />
+                </svg>
+              </div>
+              <!-- Text stack -->
+              <div class="flex flex-col gap-[2px] shrink-0">
+                <span class="text-[13px] leading-normal font-bold text-[#0F1A17] whitespace-nowrap">
+                  Iuran diterima
+                </span>
+                <span class="text-[11px] leading-normal font-medium text-[#6B7672] whitespace-nowrap">
+                  Langsung tercatat di laporan kas
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </Reveal>
+      <!-- ─── END RIGHT ─── -->
 
     </div>
   </div>
+
 </section>
+
+<style>
+  /*
+    On desktop (>=1024px): visual is exactly 520x620px, no scaling.
+    On smaller screens: scale the 520x620 block proportionally so it fits
+    without causing horizontal overflow. Transform-origin: top center keeps
+    it aligned with the column.
+  */
+  .hero-visual-scale {
+    transform-origin: top center;
+  }
+
+  /* ≥ 1024px: full size, wrapper takes 520px naturally */
+  @media (min-width: 1024px) {
+    .hero-visual-wrapper {
+      width: 520px;
+    }
+  }
+
+  /* 640px – 1023px: scale so width fits the available column width */
+  @media (max-width: 1023px) {
+    .hero-visual-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .hero-visual-scale {
+      /* scale down to ~80% on tablet */
+      transform: scale(0.75);
+      transform-origin: top center;
+      /* Reserve the scaled height so the section doesn't collapse */
+      height: calc(620px * 0.75);
+      width: calc(520px * 0.75);
+    }
+  }
+
+  /* < 480px (mobile): scale further so 520px fits within ~375px viewport */
+  @media (max-width: 480px) {
+    .hero-visual-scale {
+      transform: scale(0.64);
+      height: calc(620px * 0.64);
+      width: calc(520px * 0.64);
+    }
+  }
+
+  /* < 400px: even smaller */
+  @media (max-width: 400px) {
+    .hero-visual-scale {
+      transform: scale(0.56);
+      height: calc(620px * 0.56);
+      width: calc(520px * 0.56);
+    }
+  }
+</style>

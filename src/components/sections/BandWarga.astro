@@ -1,11 +1,9 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import PhoneMockup from '../ui/PhoneMockup.astro';
-import Reveal from '../ui/Reveal.astro';
 import Sobi from '../sobi/Sobi.astro';
 import { warga } from '../../data/content.id';
 
-// Real app screens per warga feature row (exported from the pen.dev design).
+// Real app screens per warga feature row — order matches reference row order.
+// Row 1: Bayar Iuran  Row 2: Pengumuman  Row 3: Laporan  Row 4: QR Akses  Row 5: Polling
 const wargaScreens = [
   '/screens/tagihan.png',
   '/screens/pengumuman.png',
@@ -13,89 +11,144 @@ const wargaScreens = [
   '/screens/qr-akses.png',
   '/screens/polling.png',
 ];
+
+// Icon SVG paths extracted from pen.dev reference (Material Symbols Rounded, fill #08745A)
+const icons = [
+  // Bayar Iuran Gampang — account_balance_wallet
+  `<path d="M2.91553 9.91553l0 0.81006q0 0.15723 0 0.25976 0 0.09912 0 0.09912 0 0 0-0.09912 0-0.10254 0-0.25976l0-7.45118q0-0.15723 0-0.25634 0-0.10254 0-0.10254 0 0 0 0.10254 0 0.09912 0 0.25634l0 0.81006q0 0 0 0.41358 0 0.41357 0 1.11084l0 2.78222q0 0.69727 0 1.11084 0 0.41357 0 0.41358z m0.35888 1.75q-0.38965 0-0.6665-0.27344-0.27344-0.27686-0.27344-0.6665l0-7.45118q0-0.38965 0.27344-0.66308 0.27686-0.27686 0.6665-0.27686l7.45118 0q0.38965 0 0.66308 0.27686 0.27686 0.27344 0.27686 0.66308l0 1.71924-0.58106 0 0-1.71924q0-0.15723-0.10254-0.25634-0.09912-0.10254-0.25634-0.10254l-7.45118 0q-0.15723 0-0.25976 0.10254-0.09912 0.09912-0.09912 0.25634l0 7.45118q0 0.15723 0.09912 0.25976 0.10254 0.09912 0.25976 0.09912l7.45118 0q0.15723 0 0.25634-0.09912 0.10254-0.10254 0.10254-0.25976l0-1.71924 0.58106 0 0 1.71924q0 0.38965-0.27686 0.6665-0.27344 0.27344-0.66308 0.27344l-7.45118 0z m4.66895-2.33106q-0.39307 0-0.66992-0.27343-0.27344-0.27686-0.27344-0.66993l0-2.78222q0-0.39307 0.27344-0.66651 0.27686-0.27686 0.66992-0.27685l3.36328 0q0.39307 0 0.66651 0.27685 0.27685 0.27344 0.27685 0.66651l0 2.78222q0 0.39307-0.27685 0.66993-0.27344 0.27344-0.66651 0.27343l-3.36328 0z m3.36328-0.58447q0.15723 0 0.25635-0.09912 0.10254-0.10254 0.10254-0.25977l0-2.78222q0-0.15723-0.10254-0.25635-0.09912-0.10254-0.25635-0.10254l-3.36328 0q-0.15723 0-0.25977 0.10254-0.09912 0.09912-0.09912 0.25635l0 2.78222q0 0.15723 0.09912 0.25977 0.10254 0.09912 0.25977 0.09912l3.36328 0z m-1.97217-0.875q0.3623 0 0.61866-0.25293 0.25635-0.25635 0.25634-0.62207 0-0.36572-0.25634-0.61865-0.25635-0.25635-0.61866-0.25635-0.36572 0-0.62207 0.25635-0.25293 0.25293-0.25293 0.61865 0 0.36572 0.25293 0.62207 0.25635 0.25293 0.62207 0.25293z" fill="#08745A"/>`,
+  // Info & Pengumuman Real-time — notifications
+  `<path d="M3.20947 10.94775q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.20849 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l0.64942 0 0-4.62451q0-1.1416 0.72119-2.00977 0.72461-0.86816 1.83545-1.08008l0-0.31787q0-0.24268 0.1709-0.41357 0.1709-0.1709 0.41357-0.1709 0.24268 0 0.41357 0.1709 0.1709 0.1709 0.1709 0.41357l0 0.31787q1.11084 0.21191 1.83203 1.08008 0.72461 0.86816 0.72461 2.00977l0 4.62451 0.64942 0q0.12646 0 0.20849 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12305-0.08545 0.20849-0.08203 0.08203-0.20849 0.08203l-7.58106 0z m3.78711 1.52784q-0.38965 0-0.6665-0.27686-0.27344-0.27685-0.27344-0.6665l1.88672 0q0 0.38965-0.28027 0.6665-0.27686 0.27686-0.66651 0.27686z m-2.55322-2.10889l5.11328 0 0-4.62451q0-1.06299-0.74853-1.80811-0.74512-0.74854-1.80811-0.74853-1.06299 0-1.81152 0.74853-0.74512 0.74512-0.74512 1.80811l0 4.62451z" fill="#08745A"/>`,
+  // Lapor Keluhan — report
+  `<path d="M7 9.58057q0.15381 0 0.25635-0.10254 0.10254-0.10596 0.10254-0.25635 0-0.15381-0.10254-0.25635-0.10254-0.10254-0.25635-0.10254-0.15381 0-0.25635 0.10254-0.10254 0.10254-0.10254 0.25635 0 0.15039 0.10254 0.25635 0.10254 0.10254 0.25635 0.10254z m0-1.7295q0.12305 0 0.20508-0.08203 0.08545-0.08545 0.08545-0.20849l0-2.95996q0-0.12646-0.08545-0.2085-0.08203-0.08545-0.20508-0.08545-0.12305 0-0.2085 0.08545-0.08203 0.08203-0.08203 0.2085l0 2.95996q0 0.12305 0.08203 0.20849 0.08545 0.08203 0.2085 0.08203z m-1.54834 3.81446q-0.19482 0-0.36914-0.0752-0.17432-0.0752-0.3042-0.20166l-2.16699-2.16699q-0.12646-0.12988-0.20166-0.3042-0.0752-0.17432-0.0752-0.36914l0-3.09668q0-0.19482 0.0752-0.36914 0.0752-0.17432 0.20166-0.3042l2.16699-2.16699q0.12988-0.12646 0.3042-0.20166 0.17432-0.0752 0.36914-0.0752l3.09668 0q0.19482 0 0.36914 0.0752 0.17432 0.0752 0.3042 0.20166l2.16699 2.16699q0.12646 0.12988 0.20166 0.3042 0.0752 0.17432 0.0752 0.36914l0 3.09668q0 0.19482-0.0752 0.36914-0.0752 0.17432-0.20166 0.3042l-2.16699 2.16699q-0.12988 0.12646-0.3042 0.20166-0.17432 0.0752-0.36914 0.0752l-3.09668 0z m-0.14355-0.58106l3.38378 0 2.39258-2.39258 0-3.38378-2.39258-2.39258-3.38378 0-2.39258 2.39258 0 3.38378 2.39258 2.39258z" fill="#08745A"/>`,
+  // QR Akses & Undang Tamu — qr_code_2
+  `<path d="M7.58447 11.68945l0-1.05615 1.05274 0 0 1.05615-1.05274 0z m-1.05615-1.05615l0-2.57715 1.05615 0 0 2.57715-1.05615 0z m4.10498-1.97217l0-1.66113 1.05615 0 0 1.66113-1.05615 0z m-1.05273-1.66113l0-1.05615 1.05273 0 0 1.05615-1.05273 0z m-6.21387 1.05615l0-1.05615 1.05273 0 0 1.05615-1.05273 0z m-1.05615-1.05615l0-1.05615 1.05615 0 0 1.05615-1.05615 0z m4.68945-3.6333l0-1.05615 1.05615 0 0 1.05615-1.05615 0z m-4.17334 1.59277l2.13281 0 0-2.13281-2.13281 0 0 2.13281z m-0.51611 0.04444l0-2.22168q0-0.20166 0.1333-0.33496 0.13672-0.13672 0.33838-0.13672l2.22168 0q0.19824 0 0.33496 0.13672 0.13672 0.1333 0.13672 0.33496l0 2.22168q0 0.19824-0.13672 0.33496-0.13672 0.13672-0.33496 0.13672l-2.22168 0q-0.20166 0-0.33838-0.13672-0.1333-0.13672-0.1333-0.33496z m0.51611 6.16943l2.22168 0 0-2.13281-2.22168 0 0 2.13281z m-0.51611 0.04443l0-2.22168q0-0.19824 0.1333-0.33496 0.13672-0.13672 0.33838-0.13672l2.31054 0q0.20166 0 0.33496 0.13672 0.13672 0.13672 0.13672 0.33496l0 2.22168q0 0.20166-0.13672 0.33838-0.1333 0.1333-0.33496 0.1333l-2.31054 0q-0.20166 0-0.33838-0.1333-0.1333-0.13672-0.1333-0.33838z m6.72998-6.2583l2.13281 0 0-2.13281-2.13281 0 0 2.13281z m-0.51612 0.04444l0-2.22168q0-0.20166 0.13672-0.33496 0.13672-0.13672 0.33496-0.13672l2.22168 0q0.20166 0 0.33496 0.13672 0.13672 0.1333 0.13672 0.33496l0 2.22168q0 0.19824-0.13672 0.33496-0.1333 0.13672-0.33496 0.13672l-2.22168 0q-0.19824 0-0.33496-0.13672-0.13672-0.13672-0.13672-0.33496z m1.05616 6.68554l0-1.97558-1.05616 0 0-1.05274 2.10889 0 0 1.97217 1.05615 0 0 1.05615-2.10888 0z m-1.9961-3.6333l0-1.05615 1.9961 0 0 1.05615-1.9961 0z m-2.10888 0l0-1.05615-1.05616 0 0-1.05615 3.16504 0 0 1.05615-1.05615 0 0 1.05615-1.05273 0z m0.46826-2.58056l0-2.10889 1.05615 0 0 1.05273 1.05615 0 0 1.05616-2.1123 0z m-2.41992-1.21338l0-0.73828 0.73828 0 0 0.73828-0.73828 0z m0.07861 6.13525l0-0.73828 0.73828 0 0 0.73828-0.73828 0z m6.13525-6.13525l0-0.73828 0.73828 0 0 0.73828-0.73828 0z" fill="#08745A"/>`,
+  // Ikut Acara & Polling — how_to_vote
+  `<path d="M3.14111 12.3833q-0.40332 0-0.67334-0.2666-0.27002-0.27002-0.27002-0.67334l0-1.51074q0-0.1709 0.05469-0.33496 0.05811-0.16406 0.18115-0.29395l1.43213-1.61328q0.08203-0.09912 0.2085-0.09912 0.12646-0.00342 0.22217 0.09228 0.08203 0.08203 0.08545 0.19141 0.00342 0.10938-0.07862 0.20508l-1.49707 1.70215 8.3877 0-1.46631-1.67139q-0.08203-0.0957-0.07861-0.20508 0.00342-0.11279 0.08544-0.19482 0.0957-0.0957 0.22217-0.09229 0.12646 0 0.2085 0.09912l1.40137 1.58594q0.12305 0.12988 0.17773 0.29395 0.0581 0.16406 0.05811 0.33496l0 1.51074q0 0.40332-0.27002 0.67334-0.27002 0.2666-0.67334 0.2666l-7.71778 0z m0-0.58105l7.71778 0q0.14697 0 0.25293-0.10596 0.10596-0.10938 0.10595-0.25293l0-1.07666-8.43554 0 0 1.07666q0 0.14356 0.10595 0.25293 0.10596 0.10596 0.25293 0.10596z m3.21289-3.68457l-1.73974-1.76709q-0.28027-0.27686-0.27344-0.66309 0.00684-0.38965 0.28711-0.66992l2.55322-2.55664q0.28027-0.27686 0.66309-0.28028 0.38623-0.00342 0.66308 0.27344l1.75342 1.75342q0.28027 0.28027 0.28369 0.66309 0.00342 0.37939-0.27685 0.65625l-2.59082 2.59423q-0.27686 0.27686-0.65967 0.27686-0.38281-0.00342-0.66309-0.28027z m3.48291-2.98731q0.09229-0.08887 0.09229-0.25635 0-0.1709-0.09229-0.25976l-1.72949-1.73291q-0.08887-0.08887-0.25976-0.08887-0.16748 0-0.25635 0.08887l-2.56348 2.56347q-0.08887 0.08887-0.08887 0.25977 0 0.16748 0.08887 0.25635l1.73291 1.73291q0.08887 0.08887 0.25635 0.08886 0.16748 0 0.25977-0.08886l2.56005-2.56348z m-7.05468 6.67188q0 0 0-0.10596 0-0.10938 0-0.25293l0-1.07666 0 1.07666q0 0.14356 0 0.25293 0 0.10596 0 0.10596z" fill="#08745A"/>`,
+];
+
+// Row layout: true = visual on left, false = visual on right (text left)
+const visualLeft = [true, false, true, false, true];
 ---
 
-<!--
-  BandWarga uses ALTERNATING zig-zag rows (image left / text right, text left / image right)
-  — compositionally distinct from BandPengurus (flagship card + compact list).
--->
-<section id="untuk-warga" class="bg-bg">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+<section id="untuk-warga" class="bg-[#F6F7F6]">
+  <!-- Desktop: 112px top/bottom, 120px left/right. Mobile: scaled down. -->
+  <div class="px-4 sm:px-8 lg:px-[120px] py-12 sm:py-16 lg:py-[112px] flex flex-col gap-12 lg:gap-[72px]">
 
-    <Reveal>
-      <SectionHeader
-        eyebrow="Untuk Warga"
-        title={warga.heading}
-        align="center"
-        class="mb-16 mx-auto max-w-2xl"
-      />
-    </Reveal>
+    <!-- Header -->
+    <div class="w-full lg:max-w-[880px] flex flex-col gap-[16px]">
+      <p class="text-[13px] leading-normal font-bold tracking-[1.2px] uppercase text-text-brand">
+        UNTUK WARGA
+      </p>
+      <h2 class="text-[28px] lg:text-[40px] leading-tight lg:leading-[48px] font-bold tracking-[-0.8px] text-ink-900">
+        {warga.heading}
+      </h2>
+      <p class="text-[16px] lg:text-[18px] leading-[29px] text-text-secondary font-normal">
+        Warga bergabung lewat undangan pengurus, lalu semua urusan sehari-hari bisa diselesaikan
+        tanpa antre atau tanya sana-sini.
+      </p>
+    </div>
 
-    <!-- Alternating zig-zag rows -->
-    <div class="flex flex-col gap-16 lg:gap-20">
+    <!-- Feature Rows -->
+    <div class="flex flex-col gap-10 lg:gap-[56px]">
       {warga.features.map((feat, i) => {
-        const isEven = i % 2 === 0;
+        const isVisualLeft = visualLeft[i];
+        const isQrRow = i === 3;
+
         return (
-          <Reveal delay={i * 60}>
-            <div
-              class:list={[
-                'flex flex-col gap-8 items-center',
-                isEven ? 'lg:flex-row' : 'lg:flex-row-reverse',
-              ]}
-            >
-              <!-- Visual side: real app screen for this feature -->
-              <div class="w-full lg:w-1/2 flex justify-center">
-                <PhoneMockup
-                  src={wargaScreens[i] ?? ''}
-                  alt={`Pratinjau layar ${feat.title} di aplikasi Sahabat Warga`}
-                  width={240}
+          <div class:list={[
+            'flex flex-col gap-8 items-center',
+            isVisualLeft ? 'lg:flex-row' : 'lg:flex-row-reverse',
+            'lg:gap-[96px]',
+          ]}>
+
+            {/* Visual card */}
+            <div class="w-full lg:w-[580px] lg:shrink-0 h-[320px] lg:h-[440px] flex flex-row gap-[28px] pt-[32px] lg:pt-[52px] justify-center items-start bg-[#EEFBF5] rounded-[24px] overflow-hidden">
+              {isQrRow ? (
+                /* Row 4: two narrower phones side by side */
+                <>
+                  <img
+                    src={wargaScreens[i]}
+                    alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
+                    class="block h-auto w-[160px] lg:w-[200px] shrink-0"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    src={wargaScreens[i]}
+                    alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
+                    class="block h-auto w-[160px] lg:w-[200px] shrink-0"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </>
+              ) : (
+                /* Rows 1,2,3,5: single large phone */
+                <img
+                  src={wargaScreens[i]}
+                  alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
+                  class="block h-auto w-[220px] lg:w-[300px] shrink-0"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+            </div>
+
+            {/* Text side */}
+            <div class="w-full lg:flex-1 flex flex-col gap-[16px]">
+              {/* Icon tile */}
+              <div class="w-[48px] h-[48px] shrink-0 flex items-center justify-center bg-white rounded-[14px] [outline:1px_solid_#E3E7E5] [outline-offset:-0.5px]">
+                <svg
+                  viewBox="0 0 14 14"
+                  preserveAspectRatio="xMidYMid meet"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-[24px] h-[24px] shrink-0"
+                  aria-hidden="true"
+                  set:html={icons[i]}
                 />
               </div>
-
-              <!-- Text side -->
-              <div class="w-full lg:w-1/2 flex flex-col gap-3">
-                <!-- Step indicator -->
-                <span class="font-sans text-xs font-bold tracking-widest uppercase text-text-brand">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 class="font-sans font-bold text-2xl lg:text-3xl text-text-primary leading-tight">
-                  {feat.title}
-                </h3>
-                <p class="font-sans text-base leading-relaxed text-text-secondary">
-                  {feat.body}
-                </p>
-              </div>
+              <h3 class="text-[22px] lg:text-[28px] leading-[35px] font-bold tracking-[-0.4px] text-ink-900 w-full">
+                {feat.title}
+              </h3>
+              <p class="text-[16px] lg:text-[18px] leading-[29px] text-text-secondary font-normal w-full">
+                {feat.body}
+              </p>
             </div>
-          </Reveal>
+
+          </div>
         );
       })}
     </div>
 
-    <!-- Sobi highlight block: ink surface, inline mascot -->
-    <Reveal delay={80} class="mt-20">
-      <div
-        class="rounded-[var(--radius-lg)] bg-ink-800 flex flex-col sm:flex-row items-center gap-8 p-8 lg:p-10"
-        aria-labelledby="sobi-highlight-title"
-      >
-        <!-- Inline Sobi instance (second on the page alongside the floating launcher) -->
-        <div class="flex-shrink-0 flex items-center justify-center">
-          <Sobi size={120} />
-        </div>
+    <!-- Sobi Highlight Block -->
+    <!-- Desktop: h-[460px] dark emerald bg, text left + phone right -->
+    <div class="w-full lg:h-[460px] flex flex-col lg:flex-row items-center lg:items-center gap-8 lg:gap-[64px] px-6 py-10 lg:pl-[72px] lg:pr-[56px] lg:py-0 bg-[#06372A] rounded-[32px] overflow-hidden">
 
-        <!-- Copy -->
-        <div class="flex flex-col gap-2 text-center sm:text-left">
-          <h3
-            id="sobi-highlight-title"
-            class="font-sans font-bold text-xl lg:text-2xl text-text-inverse leading-tight"
-          >
-            {warga.sobi.title}
-          </h3>
-          <p class="font-sans text-base leading-relaxed text-text-inverse">
-            {warga.sobi.body}
-          </p>
+      {/* Copy */}
+      <div class="w-full lg:flex-1 flex flex-col gap-[18px] text-center lg:text-left items-center lg:items-start">
+        {/* Sobi mascot tile */}
+        <div class="w-[132px] h-[132px] shrink-0 flex items-center justify-center">
+          <Sobi size={132} />
         </div>
+        <h3 class="text-[24px] lg:text-[32px] leading-[38px] font-bold tracking-[-0.5px] text-white w-full">
+          {warga.sobi.title}
+        </h3>
+        <p class="text-[16px] lg:text-[18px] leading-[29px] text-[#C9F5E4] font-normal w-full">
+          {warga.sobi.body}
+        </p>
       </div>
-    </Reveal>
+
+      {/* Phone area */}
+      <div class="w-full lg:w-[460px] lg:h-full shrink-0 flex justify-center items-start pt-0 lg:pt-[56px]">
+        <img
+          src="/screens/tagihan.png"
+          alt="Sobi membantu cek tagihan di aplikasi Sahabat Warga"
+          class="block h-auto w-[220px] lg:w-[300px] shrink-0"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+    </div>
 
   </div>
 </section>

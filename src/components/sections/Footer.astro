@@ -1,106 +1,179 @@
 ---
-import Button from '../ui/Button.astro';
-import { footer } from '../../data/content.id';
+import { footer, nav } from '../../data/content.id';
 import { WA_URL } from '../../config';
 ---
 
 <footer class="bg-surface border-t border-border">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+  {/* Desktop layout — pixel-matches 15-footer.html reference at 1440px */}
+  <div class="flex flex-col gap-[56px] px-[120px] pt-[72px] pb-[40px]">
 
-    <div class="flex flex-col gap-10">
+    {/* ── Top row: brand block (left) + links block (right) ── */}
+    <div class="flex flex-row justify-between items-start w-full">
 
-      <!-- Top: brand tagline + primary CTA -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-        <div class="flex flex-col gap-1">
-          <span class="font-sans font-bold text-xl text-text-primary">Sahabat Warga</span>
-          <p class="font-sans text-sm text-text-secondary">{footer.tagline}</p>
-        </div>
-        <Button
-          href="#mulai"
-          variant="primary"
-          label="Buat Komunitas"
-          data-open="waitlist"
-          class="self-start sm:self-auto flex-shrink-0"
-        />
-      </div>
-
-      <!-- Middle: nav links + contact -->
-      <nav aria-label="Tautan footer">
-      <div class="flex flex-col sm:flex-row gap-8 sm:gap-16">
-
-        <!-- Link groups: only real section anchors -->
-        {footer.linkGroups.map((group) => (
-          <div class="flex flex-col gap-3">
-            <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-secondary">
-              {group.heading}
-            </p>
-            <ul class="flex flex-col gap-2" role="list">
-              {group.links.map((link) => (
-                <li>
-                  <!-- Text interpolation: Astro auto-escapes & in labels -->
-                  <a
-                    href={link.href}
-                    class="font-sans text-sm text-text-secondary hover:text-text-primary transition-colors duration-150"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
-        <!-- Contact -->
-        <div class="flex flex-col gap-3">
-          <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-secondary">
-            Kontak
-          </p>
-          <ul class="flex flex-col gap-2" role="list">
-            <li>
-              <a
-                href={WA_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="font-sans text-sm text-text-secondary hover:text-text-primary transition-colors duration-150"
-              >
-                WhatsApp
-              </a>
-            </li>
-            <li>
-              <a
-                href={`mailto:${footer.contact.email}`}
-                class="font-sans text-sm text-text-secondary hover:text-text-primary transition-colors duration-150"
-              >
-                {footer.contact.email}
-              </a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-      </nav>
-
-      <!-- Bottom: legal + copyright -->
-      <div class="border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <p class="font-sans text-xs text-text-secondary">
-          {footer.copyright}
+      {/* Brand block */}
+      <div class="flex flex-col gap-[20px] items-start shrink-0">
+        {/* Logo mark + wordmark */}
+        <a href="/" class="flex flex-row items-center gap-[10px] no-underline" aria-label="Sahabat Warga beranda">
+          <img
+            src="/brand/icon-tp-sm.png"
+            alt=""
+            aria-hidden="true"
+            width="36"
+            height="36"
+            class="w-[36px] h-[36px] shrink-0"
+          />
+          <span class="text-[20px] leading-normal font-extrabold tracking-[-0.6px] text-text-primary whitespace-nowrap font-sans">
+            {nav.brand.toLowerCase()}
+          </span>
+        </a>
+        {/* Tagline */}
+        <p class="text-[18px] leading-normal font-medium text-text-secondary whitespace-nowrap font-sans m-0">
+          {footer.tagline}
         </p>
-        <ul class="flex flex-wrap gap-4" role="list">
-          {footer.legal.map((link) => (
-            <li>
-              <!-- Text interpolation: Astro auto-escapes & in "Syarat & Ketentuan" -->
-              <a
-                href={link.href}
-                class="font-sans text-xs text-text-secondary hover:text-text-primary transition-colors duration-150"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {/* Primary CTA */}
+        <a
+          href="#mulai"
+          data-open="waitlist"
+          class="inline-flex items-center justify-center h-[52px] px-[28px] bg-primary text-white font-sans font-bold text-base leading-none rounded-full whitespace-nowrap no-underline hover:opacity-90 transition-opacity duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+        >
+          Buat Komunitas
+        </a>
       </div>
 
+      {/* Links block — nav row stacked above contact row, aligned end */}
+      <div class="flex flex-col gap-[36px] items-end shrink-0">
+
+        {/* Nav links — single flat row */}
+        <nav aria-label="Tautan footer">
+          <ul class="flex flex-row items-center gap-[36px] list-none m-0 p-0">
+            {footer.linkGroups[0].links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-[16px] leading-normal font-semibold text-text-primary whitespace-nowrap font-sans no-underline hover:text-text-brand transition-colors duration-150"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Contact row */}
+        <div class="flex flex-row items-center gap-[24px]">
+          {/* "Kontak" label */}
+          <span class="text-[14px] leading-normal font-semibold text-text-tertiary whitespace-nowrap font-sans">
+            Kontak
+          </span>
+
+          {/* WhatsApp */}
+          <a
+            href={WA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex flex-row items-center gap-[8px] no-underline group"
+            aria-label="Hubungi via WhatsApp"
+          >
+            <svg
+              viewBox="0 0 14 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[20px] h-[20px] shrink-0"
+              aria-hidden="true"
+            >
+              <path
+                d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+                fill="#08745A"
+              ></path>
+            </svg>
+            <span class="text-[16px] leading-normal font-semibold text-text-brand whitespace-nowrap font-sans">
+              WhatsApp
+            </span>
+          </a>
+
+          {/* Email */}
+          <a
+            href={`mailto:${footer.contact.email}`}
+            class="flex flex-row items-center gap-[8px] no-underline group"
+            aria-label={`Email ${footer.contact.email}`}
+          >
+            <svg
+              viewBox="0 0 14.000015258789062 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[20px] h-[20px] shrink-0"
+              aria-hidden="true"
+            >
+              <path
+                d="M2.69336 11.08447q-0.40332 0-0.67334-0.27002-0.27002-0.27002-0.27002-0.67334l0-6.28222q0-0.40332 0.27002-0.67334 0.27002-0.27002 0.67334-0.27002l8.61328 0q0.40332 0 0.67334 0.27002 0.27002 0.27002 0.27002 0.67334l0 6.28222q0 0.40332-0.27002 0.67334-0.27002 0.27002-0.67334 0.27002l-8.61328 0z m8.97217-7.06836l-4.40576 2.88477q-0.06152 0.03076-0.12647 0.05469-0.06152 0.02051-0.1333 0.0205-0.07178 0-0.13672-0.0205-0.06152-0.02393-0.12305-0.05469l-4.40576-2.88477 0 6.125q0 0.15723 0.09912 0.25977 0.10254 0.09912 0.25977 0.09912l8.61328 0q0.15723 0 0.25635-0.09912 0.10254-0.10254 0.10254-0.25977l0-6.125z m-4.66553 2.39942l4.48779-2.91553-8.97558 0 4.48779 2.91553z m-4.66553-2.39942l0 0.12305q0-0.05127 0-0.13672 0-0.08887 0-0.17431 0-0.11279 0-0.16065 0-0.05127 0 0.01709l0-0.18457 0 0.18457q0-0.06836 0-0.02734 0 0.04102 0 0.16064 0 0.08887 0 0.18115 0 0.09229 0 0.14014l0-0.12305 0 6.125q0 0.15723 0 0.25977 0 0.09912 0 0.09912 0 0 0-0.09912 0-0.10254 0-0.25977l0-6.125z"
+                fill="#08745A"
+              ></path>
+            </svg>
+            <span class="text-[16px] leading-normal font-semibold text-text-brand whitespace-nowrap font-sans">
+              Email
+            </span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    {/* ── Bottom row: copyright (left) + legal links (right) ── */}
+    <div class="w-full border-t border-border pt-[24px] flex flex-row items-center justify-between">
+      <p class="text-[14px] leading-normal font-medium text-text-secondary whitespace-nowrap font-sans m-0">
+        {footer.copyright}
+      </p>
+      <ul class="flex flex-row items-center gap-[28px] list-none m-0 p-0">
+        {footer.legal.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-[14px] leading-normal font-medium text-text-secondary whitespace-nowrap font-sans no-underline hover:text-text-primary transition-colors duration-150"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
 
   </div>
+
+  {/* ── Mobile layout (<lg) — stacked, no overflow at 375px ── */}
+  <style>
+    @media (max-width: 1023px) {
+      footer > div {
+        padding-left: 24px;
+        padding-right: 24px;
+        padding-top: 48px;
+        padding-bottom: 32px;
+        gap: 40px;
+      }
+      /* Top row: stack vertically */
+      footer > div > div:first-child {
+        flex-direction: column;
+        gap: 32px;
+      }
+      /* Links block: align start on mobile */
+      footer > div > div:first-child > div:last-child {
+        align-items: flex-start;
+      }
+      /* Nav links: wrap on mobile */
+      footer > div > div:first-child > div:last-child nav ul {
+        flex-wrap: wrap;
+        gap: 16px 24px;
+      }
+      /* Contact row: wrap on mobile */
+      footer > div > div:first-child > div:last-child > div:last-child {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      /* Bottom row: stack on mobile */
+      footer > div > div:last-child {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
 </footer>

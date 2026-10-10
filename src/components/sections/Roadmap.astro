@@ -1,40 +1,103 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import Badge from '../ui/Badge.astro';
 import Reveal from '../ui/Reveal.astro';
 import { roadmap } from '../../data/content.id';
+
+// Per-item icon SVG paths from the pen.dev reference (Material Symbols Rounded)
+const itemIcons: Record<string, { path: string; label: string }> = {
+  ppob: {
+    label: "Ikon tagihan / kwitansi",
+    path: "M3.5 12.25q-0.49219 0-0.83057-0.33496-0.33496-0.33838-0.33496-0.83057l0-0.69726q0-0.20166 0.1333-0.33496 0.1333-0.13672 0.33838-0.13672l1.27832 0 0-7.71436q0-0.07861 0.05811-0.10254 0.05811-0.02734 0.12304 0.01026l0.43409 0.29052q0.06494 0.04102 0.12304 0.04102 0.06152 0 0.12647-0.04102l0.51269-0.33154q0.06494-0.04443 0.12305-0.04443 0.06152 0 0.12647 0.04443l0.51269 0.33154q0.06494 0.04102 0.12305 0.04102 0.06152 0 0.12646-0.04102l0.5127-0.33154q0.06494-0.04443 0.12646-0.04443 0.06152 0 0.12647 0.04443l0.50928 0.33154q0.06494 0.04102 0.12646 0.04102 0.06152 0 0.12646-0.04102l0.50928-0.33154q0.06494-0.04443 0.12647-0.04443 0.06152 0 0.12646 0.04443l0.5127 0.33154q0.06494 0.04102 0.12304 0.04102 0.06152 0 0.12647-0.04102l0.51269-0.33154q0.06494-0.04443 0.12305-0.04443 0.06152 0 0.12647 0.04443l0.51269 0.33154q0.06494 0.04102 0.12305 0.04102 0.06152 0 0.12646-0.04102l0.43409-0.29052q0.06494-0.0376 0.12304-0.01026 0.05811 0.02393 0.05811 0.10254l0 8.8833q0 0.49219-0.33838 0.83057-0.33496 0.33496-0.82715 0.33496l-7 0z m7-0.58447q0.24951 0 0.41699-0.16748 0.16748-0.16748 0.16748-0.41358l0-8.16894-6.41894 0 0 7 4.77832 0q0.20508 0 0.33838 0.13672 0.1333 0.1333 0.1333 0.33496l0 0.69726q0 0.24609 0.16748 0.41358 0.16748 0.16748 0.41699 0.16748z m-4.73389-7.29053l2.53614 0q0.12305 0 0.20507 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12646-0.08545 0.21191-0.08203 0.08203-0.20507 0.08203l-2.53614 0q-0.12305 0-0.20849-0.08203-0.08203-0.08545-0.08203-0.21191 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.20849-0.08545z m0 1.75l2.53614 0q0.12305 0 0.20507 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12646-0.08545 0.21191-0.08203 0.08203-0.20507 0.08203l-2.53614 0q-0.12305 0-0.20849-0.08203-0.08203-0.08545-0.08203-0.21191 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.20849-0.08545z m4.08448-1.0083q-0.18115 0-0.31788-0.1333-0.1333-0.13672-0.1333-0.31787 0-0.18115 0.1333-0.31446 0.13672-0.1333 0.31788-0.1333 0.17773 0 0.31103 0.1333 0.13672 0.1333 0.13672 0.31446 0 0.18115-0.13672 0.31787-0.1333 0.1333-0.31103 0.1333z m0 1.75q-0.18115 0-0.31788-0.1333-0.1333-0.13672-0.1333-0.31787 0-0.18115 0.1333-0.31446 0.13672-0.1333 0.31788-0.1333 0.17773 0 0.31103 0.1333 0.13672 0.1333 0.13672 0.31446 0 0.18115-0.13672 0.31787-0.1333 0.1333-0.31103 0.1333z m-6.35059 4.79883l5.83447 0 0-1.16553-6.41894 0 0 0.58447q0 0.24609 0.16748 0.41358 0.16748 0.16748 0.41699 0.16748z m-0.58447 0q0 0 0-0.16748 0-0.16748 0-0.41358l0-0.58447 0 1.16553z",
+  },
+  keamanan: {
+    label: "Ikon keamanan / perisai",
+    path: "M7 11.60742q1.41504-0.4375 2.36182-1.72607 0.9502-1.29199 1.10742-2.88135l-3.46924 0 0-4.5835-3.26416 1.21338q-0.11279 0.04443-0.17432 0.1333-0.06152 0.08887-0.06152 0.20166l0 2.50879q0 0.14014 0 0.25293 0 0.11279 0.03076 0.27344l3.46924 0 0 4.60742z m0 0.5503q-0.07861 0-0.16748-0.01368-0.08887-0.01367-0.16406-0.04443-1.72266-0.65625-2.7378-2.2251-1.01514-1.57227-1.01513-3.40088l0-2.49853q0-0.29395 0.1709-0.53662 0.17432-0.24268 0.44433-0.34864l3.14112-1.16894q0.16748-0.06152 0.32812-0.06152 0.16064 0 0.32813 0.06152l3.14111 1.16894q0.27002 0.10596 0.44092 0.34864 0.17432 0.24268 0.17431 0.53662l0 2.49853q0 1.82861-1.01513 3.40088-1.01514 1.56885-2.7378 2.2251-0.0752 0.03076-0.16406 0.04443-0.08887 0.01367-0.16748 0.01368z",
+  },
+};
+
+const iconKeys = ["ppob", "keamanan"];
 ---
 
 <section id="roadmap" class="bg-surface-muted">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+  <!--
+    Desktop: 2-column flex row with gap-[64px], padding px-[120px] py-[96px]
+    Mobile:  single column, reduced padding
+  -->
+  <div class="flex flex-col lg:flex-row gap-[64px] px-6 py-16 lg:px-[120px] lg:py-[96px]">
 
+    <!-- Left: Header block fixed at 420px on desktop -->
     <Reveal>
-      <SectionHeader
-        eyebrow="Roadmap"
-        title={roadmap.heading}
-        align="left"
-        class="mb-12 max-w-xl"
-      />
+      <div class="flex flex-col gap-[16px] w-full lg:w-[420px] lg:shrink-0">
+        <!-- Eyebrow -->
+        <p
+          class="text-[13px] font-bold tracking-[1.2px] text-text-brand uppercase"
+          aria-label="Kategori bagian"
+        >
+          {roadmap.eyebrow}
+        </p>
+
+        <!-- Heading -->
+        <h2 class="text-[40px] leading-[48px] font-bold tracking-[-0.8px] text-text-primary">
+          {roadmap.heading}
+        </h2>
+
+        <!-- Subhead -->
+        <p class="text-[18px] leading-[29px] font-normal text-text-secondary">
+          {roadmap.subhead}
+        </p>
+      </div>
     </Reveal>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <!-- Right: Items stack -->
+    <div class="flex flex-col gap-[16px] flex-1">
       {roadmap.items.map((item, i) => (
         <Reveal delay={i * 80}>
           <article
-            class="rounded-[var(--radius-lg)] bg-surface border border-border flex flex-col gap-4 p-7"
+            class="flex flex-row gap-[20px] p-[32px] bg-white rounded-[24px] items-start"
             aria-labelledby={`roadmap-item-${i}`}
           >
-            <!-- Badge always shown — these are never presented as existing -->
-            <Badge label="Segera hadir" tone="soon" />
+            <!-- Icon tile -->
+            <div
+              class="w-[52px] h-[52px] shrink-0 flex items-center justify-center bg-surface-muted rounded-[16px]"
+              aria-hidden="true"
+            >
+              <svg
+                viewBox="0 0 14 14"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-[26px] h-[26px]"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d={itemIcons[iconKeys[i]]?.path}
+                  fill="#6B7672"
+                />
+              </svg>
+            </div>
 
-            <div class="flex flex-col gap-2">
+            <!-- Text block -->
+            <div class="flex flex-col gap-[10px] flex-1">
+              <!-- "Segera hadir" badge — R-38: always visible -->
+              <div
+                class="inline-flex w-fit px-[10px] py-[5px] bg-accent rounded-[8px]"
+                role="status"
+                aria-label="Status fitur: segera hadir"
+              >
+                <span class="text-[12px] font-bold text-on-accent whitespace-nowrap leading-normal">
+                  Segera hadir
+                </span>
+              </div>
+
+              <!-- Title -->
               <h3
                 id={`roadmap-item-${i}`}
-                class="font-sans font-semibold text-lg text-text-primary leading-snug"
+                class="text-[20px] leading-[27px] font-semibold text-text-primary"
               >
                 {item.title}
               </h3>
-              <p class="font-sans text-sm leading-relaxed text-text-secondary">
+
+              <!-- Body -->
+              <p class="text-[16px] leading-[26px] font-normal text-text-secondary">
                 {item.body}
               </p>
             </div>

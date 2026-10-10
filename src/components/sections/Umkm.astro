@@ -1,59 +1,256 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
 import Badge from '../ui/Badge.astro';
 import Reveal from '../ui/Reveal.astro';
-import PhoneMockup from '../ui/PhoneMockup.astro';
 import { umkm } from '../../data/content.id';
 import { UMKM_LIVE } from '../../config';
 ---
 
-<section id="umkm" class="bg-surface">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-    <Reveal>
-      <div class="max-w-2xl mx-auto flex flex-col gap-6 text-center items-center">
+<section id="umkm" class="bg-white w-full">
+  <Reveal>
+    <div class="umkm-layout">
 
-        {!UMKM_LIVE && (
-          <Badge label={umkm.comingSoonLabel} tone="soon" />
+      <!-- Visual column: mint card housing the phone mockup -->
+      <div class="umkm-visual-card">
+        {UMKM_LIVE ? (
+          <img
+            src="/screens/umkm.png"
+            alt="Jelajah UMKM dan ekonomi warga di aplikasi Sahabat Warga"
+            class="umkm-phone-img block h-auto"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div class="umkm-phone">
+            <div class="umkm-phone-screen umkm-phone-soon">
+              <Badge label={umkm.comingSoonLabel} tone="soon" />
+              <p class="font-sans text-xs text-text-secondary text-center px-4 mt-2">
+                Fitur ini sedang dalam pengembangan.
+              </p>
+            </div>
+          </div>
         )}
+      </div>
 
-        <SectionHeader
-          eyebrow="Ekonomi Warga"
-          title={umkm.heading}
-          align="center"
-        />
+      <!-- Copy column -->
+      <div class="umkm-copy">
 
-        <p class="font-sans text-base leading-relaxed text-text-secondary max-w-xl">
+        <!-- Eyebrow -->
+        <span class="umkm-eyebrow">
+          EKONOMI WARGA
+        </span>
+
+        <!-- Heading -->
+        <h2 class="umkm-heading">
+          {umkm.heading}
+        </h2>
+
+        <!-- Body -->
+        <p class="umkm-body">
           {umkm.body}
         </p>
 
-        {UMKM_LIVE ? (
-          <div class="w-full flex justify-center pt-4">
-            <PhoneMockup
-              src="/screens/umkm.png"
-              alt="Jelajah UMKM dan ekonomi warga di aplikasi Sahabat Warga"
-              width={240}
-            />
-          </div>
-        ) : (
-          <div
-            class="relative w-full rounded-[var(--radius-lg)] overflow-hidden border border-border bg-surface-muted flex items-center justify-center"
-            style="height:240px;"
-            aria-label="Fitur UMKM segera hadir"
-            role="img"
-          >
-            <div
-              class="absolute inset-0 opacity-30"
-              style="background-image: repeating-linear-gradient(0deg, var(--color-border) 0px, var(--color-border) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--color-border) 0px, var(--color-border) 1px, transparent 1px, transparent 40px);"
-              aria-hidden="true"
-            />
-            <div class="relative flex flex-col items-center gap-3">
-              <Badge label={umkm.comingSoonLabel} tone="soon" />
-              <p class="font-sans text-sm text-text-secondary">Fitur ini sedang dalam pengembangan.</p>
-            </div>
+        {!UMKM_LIVE && (
+          <div class="mt-1">
+            <Badge label={umkm.comingSoonLabel} tone="soon" />
           </div>
         )}
 
       </div>
-    </Reveal>
-  </div>
+    </div>
+  </Reveal>
 </section>
+
+<style>
+  /* ── Section layout ─────────────────────────────────────── */
+  .umkm-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    padding: 64px 16px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-layout {
+      padding: 80px 24px;
+      gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-layout {
+      flex-direction: row;
+      gap: 96px;
+      padding: 112px 120px;
+    }
+  }
+
+  /* ── Mint visual card ───────────────────────────────────── */
+  .umkm-visual-card {
+    width: 100%;
+    height: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #C9F5E4; /* accent/mint */
+    border-radius: 32px;
+    overflow: hidden;
+    padding-top: 28px;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-visual-card {
+      height: 360px;
+      padding-top: 40px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-visual-card {
+      width: 600px;
+      height: 460px;
+      padding-top: 56px;
+    }
+  }
+
+  /* ── Phone image (direct PNG with built-in bezel) ──────── */
+  .umkm-phone-img {
+    flex-shrink: 0;
+    width: 140px;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-phone-img {
+      width: 220px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-phone-img {
+      width: 300px;
+    }
+  }
+
+  /* ── Coming-soon phone bezel (placeholder only) ─────────── */
+  .umkm-phone {
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+    width: 140px;
+    height: 293px;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-phone {
+      width: 220px;
+      height: 460px;
+      border-radius: 36px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-phone {
+      width: 300px;
+      height: 626px;
+      border-radius: 46px;
+    }
+  }
+
+  /* ── Phone screen ───────────────────────────────────────── */
+  .umkm-phone-screen {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 23px;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-phone-screen {
+      border-radius: 30px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-phone-screen {
+      border-radius: 38px;
+    }
+  }
+
+  .umkm-phone-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-surface-muted, #EEF1EF);
+  }
+
+  /* ── Copy ───────────────────────────────────────────────── */
+  .umkm-copy {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  /* ── Eyebrow ────────────────────────────────────────────── */
+  .umkm-eyebrow {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 13px;
+    line-height: normal;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #08745A; /* text-brand */
+    white-space: nowrap;
+  }
+
+  /* ── Heading ────────────────────────────────────────────── */
+  .umkm-heading {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    color: #0F1A17; /* text-primary */
+    width: 100%;
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  @media (min-width: 640px) {
+    .umkm-heading {
+      font-size: 34px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-heading {
+      font-size: 40px;
+      line-height: 48px;
+    }
+  }
+
+  /* ── Body ───────────────────────────────────────────────── */
+  .umkm-body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 400;
+    color: #6B7672; /* text-secondary */
+    width: 100%;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 1024px) {
+    .umkm-body {
+      font-size: 18px;
+      line-height: 29px;
+    }
+  }
+</style>

@@ -1,11 +1,10 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import Reveal from '../ui/Reveal.astro';
 import { faq } from '../../data/content.id';
+import { WA_URL } from '../../config';
 ---
 
 <style>
-  /* Chevron marker: rotate open, hide default disclosure triangle */
+  /* Remove native disclosure marker */
   details summary {
     list-style: none;
     cursor: pointer;
@@ -14,11 +13,11 @@ import { faq } from '../../data/content.id';
     display: none;
   }
 
+  /* Chevron: points down by default, rotates 180° when open */
   .faq-chevron {
     flex-shrink: 0;
     transition: transform 0.2s ease;
   }
-
   details[open] .faq-chevron {
     transform: rotate(180deg);
   }
@@ -30,48 +29,80 @@ import { faq } from '../../data/content.id';
   }
 </style>
 
-<section id="faq" class="bg-surface">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+<section id="faq" class="bg-white w-full">
+  <div class="flex flex-col lg:flex-row gap-[80px] px-6 py-16 lg:py-[112px] lg:px-[120px] items-start justify-start">
 
-    <Reveal>
-      <SectionHeader
-        eyebrow="FAQ"
-        title={faq.heading}
-        align="center"
-        class="mb-12 mx-auto max-w-2xl"
-      />
-    </Reveal>
+    {/* Side — left column, 380px on desktop */}
+    <div class="w-full lg:w-[380px] lg:shrink-0 flex flex-col gap-[32px]">
+      {/* Header */}
+      <div class="flex flex-col gap-[16px]">
+        <span class="text-[13px] font-bold tracking-[1.2px] text-[#08745A] font-sans leading-normal whitespace-nowrap">
+          {faq.heading}
+        </span>
+        <h2 class="text-[32px] lg:text-[40px] lg:leading-[48px] font-bold tracking-[-0.8px] text-[#0F1A17] font-sans text-left w-full">
+          Pertanyaan yang sering ditanya.
+        </h2>
+        <p class="text-[16px] lg:text-[18px] lg:leading-[29px] font-normal text-[#6B7672] font-sans text-left w-full">
+          Belum menemukan jawabannya? Tim kami siap bantu.
+        </p>
+      </div>
 
-    <div class="max-w-2xl mx-auto flex flex-col divide-y divide-border">
-      {faq.items.map((item, i) => (
-        <Reveal delay={i * 40}>
-          <details class="group py-4 first:pt-0 last:pb-0">
-            <summary class="flex items-center justify-between gap-4 text-left">
-              <span class="font-sans font-semibold text-base text-text-primary leading-snug">
-                {item.q}
-              </span>
-              <!-- Chevron icon: CSS-rotated when open -->
-              <svg
-                class="faq-chevron w-5 h-5 text-text-secondary"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M5 7.5l5 5 5-5"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </summary>
-            <!-- Answer: text interpolation only — Astro auto-escapes & characters -->
-            <p class="font-sans text-sm leading-relaxed text-text-secondary mt-3 pr-9">
-              {item.a}
-            </p>
-          </details>
-        </Reveal>
+      {/* WhatsApp CTA */}
+      <a
+        href={WA_URL}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex w-fit h-[52px] shrink-0 flex-row gap-[10px] pl-[20px] pr-[24px] justify-center items-center bg-white rounded-[999px]"
+        style="outline: 1.5px solid #E3E7E5; outline-offset: -0.75px;"
+      >
+        {/* WhatsApp icon — phosphor set, filled green */}
+        <svg
+          viewBox="0 0 14 14"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-[22px] h-[22px] shrink-0"
+          aria-hidden="true"
+        >
+          <path
+            d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+            fill="#0E9F76"
+          ></path>
+        </svg>
+        <span class="text-[16px] font-bold text-[#0F1A17] font-sans leading-normal whitespace-nowrap">
+          Tanya via WhatsApp
+        </span>
+      </a>
+    </div>
+
+    {/* FAQ List — right column, flex-1 */}
+    <div class="flex-1 flex flex-col border-t border-[#E3E7E5] w-full">
+      {faq.items.map((item) => (
+        <details class="group flex flex-col border-b border-[#E3E7E5]">
+          <summary class="flex flex-row gap-[24px] justify-between items-start py-[28px] cursor-pointer">
+            <span class="text-[18px] lg:text-[20px] lg:leading-[28px] font-semibold text-[#0F1A17] font-sans text-left flex-1">
+              {item.q}
+            </span>
+            {/* Chevron icon — rotates 180° when open via CSS on details[open] */}
+            <svg
+              class="faq-chevron w-[24px] h-[24px] shrink-0 mt-[2px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 9l6 6 6-6"
+                stroke="#08745A"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </summary>
+          <p class="text-[15px] lg:text-[16px] lg:leading-[26px] font-normal text-[#6B7672] font-sans pb-[28px] pr-[48px]">
+            {item.a}
+          </p>
+        </details>
       ))}
     </div>
 

@@ -1,109 +1,183 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import Button from '../ui/Button.astro';
-import Reveal from '../ui/Reveal.astro';
 import { harga } from '../../data/content.id';
 import { WA_URL } from '../../config';
 
-// cards[0] = Gratis, cards[1] = Langganan
 const [gratis, langganan] = harga.cards;
 ---
 
-<section id="harga" class="bg-bg">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+<section id="harga" class="w-full bg-bg">
+  <!-- Desktop: flex-row gap-[80px] padding-[112px_120px] | Mobile: stacked -->
+  <div class="flex flex-col lg:flex-row lg:gap-[80px] lg:px-[120px] lg:py-[112px] px-4 py-16 gap-10">
 
-    <Reveal>
-      <SectionHeader
-        eyebrow="Harga"
-        title={harga.heading}
-        subtitle={harga.intro}
-        align="center"
-        class="mb-14 mx-auto max-w-2xl"
-      />
-    </Reveal>
-
-    <!-- 2-card layout: Gratis + Langganan, side by side on md+ -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-
-      <!-- Card 1: Gratis -->
-      <Reveal delay={60}>
-        <article
-          class="rounded-[var(--radius-lg)] bg-surface border border-border flex flex-col gap-6 p-7 lg:p-8 h-full"
-          aria-labelledby="harga-gratis-name"
-        >
-          <div class="flex flex-col gap-2">
-            <h3
-              id="harga-gratis-name"
-              class="font-sans font-bold text-2xl text-text-primary leading-tight"
-            >
-              {gratis.name}
-            </h3>
-            <p class="font-sans text-base leading-relaxed text-text-secondary">
-              {gratis.body}
-            </p>
-          </div>
-
-          <div class="mt-auto">
-            <Button
-              href="#mulai"
-              variant="primary"
-              label={gratis.cta}
-              data-open="waitlist"
-              class="w-full justify-center"
-            />
-          </div>
-        </article>
-      </Reveal>
-
-      <!-- Card 2: Langganan -->
-      <Reveal delay={120}>
-        <article
-          class="rounded-[var(--radius-lg)] bg-ink-800 border border-ink-700 flex flex-col gap-6 p-7 lg:p-8 h-full"
-          aria-labelledby="harga-langganan-name"
-        >
-          <div class="flex flex-col gap-2">
-            <h3
-              id="harga-langganan-name"
-              class="font-sans font-bold text-2xl text-text-inverse leading-tight"
-            >
-              {langganan.name}
-            </h3>
-            <p class="font-sans text-base leading-relaxed text-text-inverse">
-              {langganan.body}
-            </p>
-          </div>
-
-          <div class="mt-auto">
-            <Button
-              href={WA_URL}
-              variant="secondary-inverse"
-              label={langganan.cta}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-full justify-center"
-            />
-          </div>
-        </article>
-      </Reveal>
-
+    <!-- LEFT: Copy column -->
+    <div class="flex flex-col gap-5 lg:flex-[1_1_0]">
+      <!-- Eyebrow -->
+      <p
+        class="text-[13px] leading-normal font-bold tracking-[1.2px] text-text-brand uppercase whitespace-nowrap"
+        aria-label="Seksi harga"
+      >
+        HARGA
+      </p>
+      <!-- Heading -->
+      <h2
+        class="text-[48px] leading-[53px] font-extrabold tracking-[-1.2px] text-text-primary w-full"
+      >
+        {harga.heading}
+      </h2>
+      <!-- Body -->
+      <p class="text-[18px] leading-[29px] font-normal text-text-secondary w-full">
+        {harga.intro}
+      </p>
     </div>
 
-    <!-- Contact band: enterprise / complex cases -->
-    <Reveal delay={180}>
-      <div class="mt-10 max-w-3xl mx-auto rounded-[var(--radius-md)] bg-surface border border-border flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5">
-        <p class="font-sans text-base text-text-primary text-center sm:text-left">
-          {harga.contactBand.text}
-        </p>
-        <Button
+    <!-- RIGHT: Plans column -->
+    <div class="flex flex-col gap-4 lg:w-[680px] lg:shrink-0 w-full">
+
+      <!-- Plan: Gratis -->
+      <article
+        aria-labelledby="harga-gratis-name"
+        class="w-full flex flex-col sm:flex-row gap-8 p-9 justify-start items-center bg-white rounded-[24px]"
+        style="outline: 2px solid #0E9F76; outline-offset: -1px;"
+      >
+        <!-- Text -->
+        <div class="flex flex-col gap-2 flex-1 min-w-0">
+          <h3
+            id="harga-gratis-name"
+            class="text-[24px] leading-normal font-bold text-text-primary whitespace-nowrap"
+          >
+            {gratis.name}
+          </h3>
+          <p class="text-[14px] leading-normal font-semibold text-text-brand whitespace-nowrap">
+            Rp0 untuk mulai
+          </p>
+          <p class="text-[16px] leading-[26px] font-normal text-text-secondary w-full">
+            {gratis.body}
+          </p>
+        </div>
+        <!-- CTA -->
+        <a
+          href="#mulai"
+          data-open="waitlist"
+          class="shrink-0 h-[52px] inline-flex flex-row gap-2 px-7 justify-center items-center bg-primary rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <span class="text-[16px] leading-normal font-bold text-white whitespace-nowrap">
+            {gratis.cta}
+          </span>
+        </a>
+      </article>
+
+      <!-- Plan: Langganan -->
+      <article
+        aria-labelledby="harga-langganan-name"
+        class="w-full flex flex-col sm:flex-row gap-8 p-9 justify-start items-center bg-white rounded-[24px]"
+        style="outline: 1px solid #E3E7E5; outline-offset: -0.5px;"
+      >
+        <!-- Text -->
+        <div class="flex flex-col gap-2 flex-1 min-w-0">
+          <h3
+            id="harga-langganan-name"
+            class="text-[24px] leading-normal font-bold text-text-primary whitespace-nowrap"
+          >
+            {langganan.name}
+          </h3>
+          <p class="text-[14px] leading-normal font-semibold text-text-secondary whitespace-nowrap">
+            Detail harga lewat konsultasi
+          </p>
+          <p class="text-[16px] leading-[26px] font-normal text-text-secondary w-full">
+            {langganan.body}
+          </p>
+        </div>
+        <!-- CTA: WhatsApp pill -->
+        <a
           href={WA_URL}
-          variant="secondary"
-          label={harga.contactBand.cta}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex-shrink-0"
-        />
-      </div>
-    </Reveal>
+          class="shrink-0 h-[52px] inline-flex flex-row gap-[10px] pl-5 pr-6 justify-center items-center bg-white rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border"
+          style="outline: 1.5px solid #E3E7E5; outline-offset: -0.75px;"
+        >
+          <!-- WhatsApp icon (phosphor), fill #0E9F76 -->
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 14 14"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-[22px] h-[22px] shrink-0"
+          >
+            <path
+              d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+              fill="#0E9F76"
+            ></path>
+          </svg>
+          <span class="text-[16px] leading-normal font-bold text-text-primary whitespace-nowrap">
+            {langganan.cta}
+          </span>
+        </a>
+      </article>
 
+      <!-- Contact Band -->
+      <a
+        href={WA_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-full flex flex-col sm:flex-row gap-5 px-7 py-6 justify-start items-center bg-accent rounded-[24px] no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        aria-label={`${harga.contactBand.text} — ${harga.contactBand.cta}`}
+      >
+        <!-- Icon Tile -->
+        <div class="w-12 h-12 shrink-0 flex flex-row gap-0 justify-center items-center bg-white rounded-[14px]">
+          <!-- Building / apartment icon (Material Symbols Rounded), fill #08745A -->
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 14 14"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 shrink-0"
+          >
+            <path
+              d="M2.64893 11.75781q-0.25977 0-0.43409-0.17431-0.17432-0.17432-0.17431-0.43409l0-6.37109q0-0.25635 0.17431-0.43066 0.17432-0.17432 0.43409-0.17432l1.72607 0 0-1.72949q0-0.25635 0.17432-0.43067 0.17432-0.17432 0.43066-0.17431l4.04004 0q0.25635 0 0.43066 0.17431 0.17432 0.17432 0.17432 0.43067l0 4.06396 1.72607 0q0.25977 0 0.43409 0.17432 0.17432 0.17432 0.17431 0.43066l0 4.03662q0 0.25977-0.17431 0.43409-0.17432 0.17432-0.43409 0.17431l-3.47607 0 0-2.33447-1.75 0 0 2.33447-3.47607 0z m-0.02393-0.58447l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33447l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33106l1.75 0 0-1.75-1.75 0 0 1.75z m2.33447 2.33106l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33106l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33447l1.75 0 0-1.75-1.75 0 0 1.75z m2.33106 4.66553l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33106l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33447l1.75 0 0-1.75-1.75 0 0 1.75z m2.33447 7l1.75 0 0-1.75-1.75 0 0 1.75z m0-2.33447l1.75 0 0-1.75-1.75 0 0 1.75z"
+              fill="#08745A"
+            ></path>
+          </svg>
+        </div>
+
+        <!-- Text -->
+        <p class="text-[17px] leading-[24px] font-semibold text-on-accent flex-1 min-w-0">
+          {harga.contactBand.text}
+        </p>
+
+        <!-- CTA inline (no pill background) -->
+        <div class="flex flex-row gap-2 px-1 justify-start items-center shrink-0 h-[52px]">
+          <!-- WhatsApp icon, fill #06372A -->
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 14 14"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 shrink-0"
+          >
+            <path
+              d="M7 1.3125q-1.53125 0-2.81641 0.73828-1.28516 0.73828-2.07812 2.05078-0.79297 1.3125-0.79297 2.81641 0 1.50391 0.71094 2.81641l-0.49219 1.64062q-0.05469 0.21875 0 0.46484 0.05469 0.24609 0.21875 0.41016 0.16406 0.16406 0.41016 0.21875 0.24609 0.05469 0.46484 0l1.64063-0.49219q1.58594 0.875 3.33593 0.6836 1.75-0.19141 3.11719-1.36719 1.36719-1.17578 1.80469-2.89844 0.4375-1.72266-0.19141-3.39062-0.62891-1.66797-2.07812-2.67969-1.44922-1.01172-3.25391-1.01172z m0 10.5q-1.3125 0-2.46094-0.65625-0.10938-0.05469-0.21875-0.05469l-1.91406 0.49219 0.49219-1.80469q0.05469-0.16406-0.05469-0.32812-0.82031-1.42188-0.62891-3.03516 0.19141-1.61328 1.33985-2.78906 1.14844-1.17578 2.78906-1.39453 1.64063-0.21875 3.0625 0.57422 1.42188 0.79297 2.05078 2.32422 0.62891 1.53125 0.19141 3.08984-0.4375 1.55859-1.72266 2.57031-1.28516 1.01172-2.92578 1.01172z m2.89844-3.99219l-1.14844-0.65625q-0.21875-0.10938-0.4375-0.10937-0.21875 0-0.4375 0.16406l-0.65625 0.38281q-0.49219-0.32813-0.82031-0.82031l0.38281-0.65625q0.16406-0.21875 0.16406-0.4375 0-0.21875-0.10937-0.4375l-0.65625-1.14844q-0.10938-0.16406-0.30078-0.27344-0.19141-0.10938-0.41016-0.10937-0.82031 0-1.39453 0.57422-0.57422 0.57422-0.57422 1.39453 0 1.3125 0.65625 2.40625 0.65625 1.09375 1.75 1.75 1.09375 0.65625 2.40625 0.65625 0.82031 0 1.39453-0.57422 0.57422-0.57422 0.57422-1.39453 0-0.21875-0.10938-0.41016-0.10938-0.19141-0.32812-0.30078l0.05469 0z m-1.58594 1.80469q-0.76563 0-1.50391-0.30078-0.73828-0.30078-1.28515-0.84766-0.54688-0.54688-0.84766-1.28515-0.30078-0.73828-0.30078-1.50391 0-0.4375 0.30078-0.76563 0.30078-0.32813 0.73828-0.32812l0.65625 1.09375-0.54687 0.82031q-0.10938 0.21875 0 0.4375 0.49219 1.03906 1.53125 1.53125 0.21875 0.10938 0.4375 0l0.82031-0.54687 1.09375 0.65625q0 0.4375-0.32813 0.73828-0.32813 0.30078-0.76562 0.30078z"
+              fill="#06372A"
+            ></path>
+          </svg>
+          <span class="text-[16px] leading-normal font-bold text-on-accent whitespace-nowrap">
+            {harga.contactBand.cta}
+          </span>
+          <!-- Arrow forward icon (Material Symbols Rounded) -->
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 14 14"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-[18px] h-[18px] shrink-0"
+          >
+            <path
+              d="M9.96338 7.29053l-6.75391 0q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l6.75391 0-3.17188-3.17187q-0.08545-0.08545-0.09228-0.20166-0.00342-0.11621 0.0957-0.21192 0.0957-0.0957 0.20508-0.0957 0.10938-0.00342 0.20508 0.0957l3.54785 3.54785q0.0752 0.0752 0.10596 0.15381 0.03418 0.07861 0.03418 0.17432 0 0.0957-0.03418 0.17432-0.03076 0.07861-0.10596 0.1538l-3.54785 3.54786q-0.08203 0.08203-0.19824 0.08886-0.11621 0.00684-0.21192-0.08886-0.09912-0.0957-0.09912-0.20508 0-0.11279 0.09912-0.2085l3.16846-3.17187z"
+              fill="#06372A"
+            ></path>
+          </svg>
+        </div>
+      </a>
+
+    </div>
   </div>
 </section>

@@ -242,12 +242,16 @@ export const umkm: UmkmContent = {
 // ---------------------------------------------------------------------------
 
 export interface RoadmapContent {
+  eyebrow: string;
   heading: string;
+  subhead: string;
   items: RoadmapItem[];
 }
 
 export const roadmap: RoadmapContent = {
+  eyebrow: "ARAH KAMI",
   heading: "Yang sedang kami siapkan.",
+  subhead: "Fitur di samping belum tersedia. Kami tampilkan supaya Anda tahu ke mana Sahabat Warga berkembang.",
   items: [
     {
       title: "Pembayaran tagihan rumah (PPOB)",

@@ -1,81 +1,132 @@
 ---
-import SectionHeader from '../ui/SectionHeader.astro';
-import Reveal from '../ui/Reveal.astro';
 import { testimoni } from '../../data/content.id';
 
-// Derive initials from full name for geometric avatar
+// Derive initials from full name for geometric avatar placeholder
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Deterministic avatar background per index (tokens only)
+// Deterministic avatar background per index
 const avatarBg = [
   'bg-primary text-on-primary',
   'bg-secondary text-text-inverse',
   'bg-ink-700 text-text-inverse',
 ];
+
+// Card backgrounds: bg, mint-50, bg (alternating per reference)
+const cardBg = ['bg-bg', 'bg-mint-50', 'bg-bg'];
+
+// edit_note SVG path (Material Symbols Rounded, 14px viewBox)
+const editNotePathD = "M3.20947 8.16553q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l3.5 0q0.12305 0 0.20508 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12305-0.08545 0.2085-0.08203 0.08203-0.20508 0.08203l-3.5 0z m0-2.33106q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.21191 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l5.83106 0q0.12646 0 0.20849 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12646-0.08545 0.21191-0.08203 0.08203-0.20849 0.08203l-5.83106 0z m0-2.33447q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12646 0.08203-0.20849 0.08545-0.08545 0.21191-0.08545l5.83106 0q0.12646 0 0.20849 0.08545 0.08545 0.08203 0.08545 0.20849 0 0.12305-0.08545 0.2085-0.08203 0.08203-0.20849 0.08203l-5.83106 0z m4.5083 7.11279l0-0.62549q0-0.08887 0.03077-0.17089 0.03418-0.08545 0.10937-0.16407l2.97021-2.95312q0.08545-0.08887 0.17774-0.11621 0.09229-0.03076 0.18457-0.03076 0.09912 0 0.19482 0.03759 0.09912 0.0376 0.17774 0.1128l0.54004 0.55029q0.07178 0.08545 0.10937 0.18115 0.0376 0.09229 0.0376 0.18457 0 0.09229-0.0376 0.18799-0.03418 0.0957-0.10937 0.18115l-2.95313 2.95313q-0.07861 0.07861-0.16406 0.11279-0.08203 0.03076-0.1709 0.03076l-0.62549 0q-0.20166 0-0.33838-0.13672-0.1333-0.13672-0.1333-0.33496z m4.01612-2.99414l-0.54004-0.55029 0.54004 0.55029z m-3.5 2.94971l0.55371 0 2.02343-2.02686-0.27343-0.27685-0.2666-0.28369-2.03711 2.03369 0 0.55371z m2.30371-2.30371l-0.2666-0.28369 0.54003 0.56054-0.27343-0.27685z";
+
+// info SVG path (Material Symbols Rounded, 14px viewBox)
+const infoPathD = "M7 9.625q0.12305 0 0.20508-0.08203 0.08545-0.08545 0.08545-0.2085l0-2.625q0-0.12646-0.08545-0.20849-0.08203-0.08545-0.20508-0.08545-0.12305 0-0.2085 0.08545-0.08203 0.08203-0.08203 0.20849l0 2.625q0 0.12305 0.08203 0.2085 0.08545 0.08203 0.2085 0.08203z m0-4.04004q0.15381 0 0.25635-0.10254 0.10254-0.10254 0.10254-0.25635 0-0.15039-0.10254-0.25293-0.10254-0.10596-0.25635-0.10595-0.15381 0-0.25635 0.10595-0.10254 0.10254-0.10254 0.25293 0 0.15381 0.10254 0.25635 0.10254 0.10254 0.25635 0.10254z m0.00342 6.66504q-1.09033 0-2.05078-0.41357-0.95703-0.41357-1.66797-1.1211-0.70752-0.70752-1.1211-1.66455-0.41357-0.96045-0.41357-2.04736 0-1.09033 0.41357-2.04737 0.41357-0.96045 1.1211-1.66796 0.70752-0.71094 1.66455-1.12452 0.96045-0.41357 2.04736-0.41357 1.09033 0 2.04737 0.41357 0.96045 0.41357 1.66796 1.1211 0.71094 0.70752 1.12452 1.66797 0.41357 0.95703 0.41357 2.04394 0 1.09033-0.41357 2.05078-0.41357 0.95703-1.1211 1.66797-0.70752 0.70752-1.66797 1.1211-0.95703 0.41357-2.04394 0.41357z m-0.00342-0.58447q1.95508 0 3.30859-1.35352 1.35693-1.35693 1.35694-3.31201 0-1.95508-1.35694-3.30859-1.35352-1.35693-3.30859-1.35694-1.95508 0-3.31201 1.35694-1.35352 1.35352-1.35352 3.30859 0 1.95508 1.35352 3.31201 1.35693 1.35352 3.31201 1.35352z";
 ---
 
+<!-- 11 · Testimoni -->
 <section id="testimoni" class="bg-surface">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+  <!-- Desktop: 112px top/bottom, 120px left/right. Mobile: 48px top/bottom, 20px sides -->
+  <div class="flex flex-col gap-[48px] py-[112px] px-[120px] max-lg:py-16 max-lg:px-5 max-md:py-12 max-md:px-4">
 
-    <Reveal>
-      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-12">
-        <SectionHeader
-          eyebrow="Testimoni"
-          title={testimoni.heading}
-          align="left"
-        />
-        <!-- Visible sample notice — honesty requirement -->
-        <span
-          class="inline-flex items-center self-start sm:self-auto rounded-md px-3 py-1.5 text-xs font-bold font-sans uppercase tracking-wide bg-warning text-text-primary border border-warning flex-shrink-0"
-          role="note"
-          aria-label="Status konten"
-        >
-          {testimoni.note}
-        </span>
+    <!-- Head: header left + placeholder notice right -->
+    <div class="flex flex-row justify-between items-end gap-6 max-lg:flex-col max-lg:items-start">
+
+      <!-- Header -->
+      <div class="w-[620px] shrink-0 flex flex-col gap-[16px] max-lg:w-full">
+        <!-- Eyebrow -->
+        <p class="text-[13px] leading-normal text-text-brand font-bold tracking-[1.2px] whitespace-nowrap">
+          TESTIMONI
+        </p>
+        <!-- Heading -->
+        <h2 class="text-[40px] leading-[48px] text-ink-900 font-bold tracking-[-0.8px] max-md:text-[28px] max-md:leading-[36px]">
+          {testimoni.heading}
+        </h2>
       </div>
-    </Reveal>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Placeholder Notice (honesty R-18 — keep visible) -->
+      <div
+        class="w-[420px] shrink-0 flex flex-row gap-[10px] p-[14px_16px] bg-surface-muted rounded-[12px] max-lg:w-full"
+        role="note"
+        aria-label="Status konten"
+      >
+        <!-- Info icon -->
+        <svg
+          viewBox="0 0 14.000015258789062 14"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-[18px] shrink-0 h-[18px] mt-[1px]"
+          aria-hidden="true"
+        >
+          <path d={infoPathD} fill="#6B7672"></path>
+        </svg>
+        <p class="text-[13px] leading-[20px] text-text-secondary font-medium flex-1">
+          Konten contoh. Kutipan di bawah fiktif dan wajib diganti dengan testimoni terverifikasi
+          sebelum halaman terbit.
+        </p>
+      </div>
+    </div>
+
+    <!-- Cards row -->
+    <div class="flex flex-row gap-[24px] max-lg:flex-col">
       {testimoni.items.map((item, i) => (
-        <Reveal delay={i * 80}>
-          <article
-            class="rounded-[var(--radius-lg)] bg-bg border border-border flex flex-col gap-5 p-6 h-full"
-            aria-labelledby={`testimoni-name-${i}`}
-          >
-            <!-- Quote -->
-            <blockquote class="flex-1">
-              <p class="font-sans text-base leading-relaxed text-text-primary">
-                "{item.quote}"
-              </p>
-            </blockquote>
+        <article
+          class={[
+            'flex-1 h-[320px] flex flex-col gap-[24px] p-[32px] justify-between items-start rounded-[24px]',
+            cardBg[i % cardBg.length],
+            'max-lg:h-auto max-lg:min-h-[280px]',
+          ].join(' ')}
+          aria-labelledby={`testimoni-name-${i}`}
+        >
+          <!-- Sample Tag (always visible, honesty R-18) -->
+          <div class="w-fit shrink-0 flex flex-row gap-[6px] px-[10px] py-[6px] items-center bg-surface-muted rounded-[8px]">
+            <!-- edit_note icon -->
+            <svg
+              viewBox="0 0 14.000015258789062 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[16px] shrink-0 h-[16px]"
+              aria-hidden="true"
+            >
+              <path d={editNotePathD} fill="#6B7672"></path>
+            </svg>
+            <span class="text-[12px] leading-normal text-text-secondary font-semibold whitespace-nowrap">
+              Contoh testimoni, ganti sebelum terbit
+            </span>
+          </div>
 
-            <!-- Avatar + attribution -->
-            <div class="flex items-center gap-3">
-              <!-- Geometric avatar: circle with initials, NO photo -->
-              <div
-                class={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-sans font-bold text-sm ${avatarBg[i % avatarBg.length]}`}
-                aria-hidden="true"
-              >
-                {initials(item.name)}
-              </div>
-              <div class="flex flex-col gap-0.5 min-w-0">
-                <p
-                  id={`testimoni-name-${i}`}
-                  class="font-sans font-semibold text-sm text-text-primary leading-snug truncate"
-                >
-                  {item.name}
-                </p>
-                <p class="font-sans text-xs text-text-secondary leading-snug truncate">
-                  {item.role}
-                </p>
-              </div>
+          <!-- Quote -->
+          <blockquote class="w-full text-[18px] leading-[29px] text-ink-900 font-medium flex-1 flex items-center">
+            <p>"{item.quote}"</p>
+          </blockquote>
+
+          <!-- Person -->
+          <div class="w-full flex flex-row gap-[14px] items-center">
+            <!-- Geometric avatar with initials — NO fake photo -->
+            <div
+              class={[
+                'w-[44px] shrink-0 h-[44px] rounded-full flex items-center justify-center font-bold text-[15px] select-none',
+                avatarBg[i % avatarBg.length],
+              ].join(' ')}
+              aria-hidden="true"
+            >
+              {initials(item.name)}
             </div>
-          </article>
-        </Reveal>
+            <!-- Info -->
+            <div class="flex-1 flex flex-col gap-[2px]">
+              <p
+                id={`testimoni-name-${i}`}
+                class="w-full text-[16px] leading-normal text-ink-900 font-semibold"
+              >
+                {item.name}
+              </p>
+              <p class="w-full text-[14px] leading-normal text-text-secondary font-normal">
+                {item.role}
+              </p>
+            </div>
+          </div>
+        </article>
       ))}
     </div>
 
