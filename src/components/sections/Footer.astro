@@ -31,7 +31,7 @@ import { WA_URL } from '../../config';
         <!-- Link groups: only real section anchors -->
         {footer.linkGroups.map((group) => (
           <div class="flex flex-col gap-3">
-            <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-tertiary">
+            <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-secondary">
               {group.heading}
             </p>
             <ul class="flex flex-col gap-2" role="list">
@@ -52,7 +52,7 @@ import { WA_URL } from '../../config';
 
         <!-- Contact -->
         <div class="flex flex-col gap-3">
-          <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-tertiary">
+          <p class="font-sans font-semibold text-xs uppercase tracking-widest text-text-secondary">
             Kontak
           </p>
           <ul class="flex flex-col gap-2" role="list">
@@ -82,7 +82,7 @@ import { WA_URL } from '../../config';
 
       <!-- Bottom: legal + copyright -->
       <div class="border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <p class="font-sans text-xs text-text-tertiary">
+        <p class="font-sans text-xs text-text-secondary">
           {footer.copyright}
         </p>
         <ul class="flex flex-wrap gap-4" role="list">
@@ -91,7 +91,7 @@ import { WA_URL } from '../../config';
               <!-- Text interpolation: Astro auto-escapes & in "Syarat & Ketentuan" -->
               <a
                 href={link.href}
-                class="font-sans text-xs text-text-tertiary hover:text-text-secondary transition-colors duration-150"
+                class="font-sans text-xs text-text-secondary hover:text-text-primary transition-colors duration-150"
               >
                 {link.label}
               </a>
