@@ -1,0 +1,184 @@
+---
+import Base from '../layouts/Base.astro';
+import { footer } from '../data/content.id';
+
+const email = footer.contact.email;
+const wa = footer.contact.whatsapp;
+---
+
+<Base
+  title="Syarat & Ketentuan - Sahabat Warga"
+  description="Syarat dan Ketentuan penggunaan layanan Sahabat Warga untuk pengurus dan warga lingkungan perumahan."
+>
+  <div class="min-h-screen bg-[var(--color-bg)] py-16 px-4">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Back link -->
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors mb-10"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Kembali ke beranda
+      </a>
+
+      <!-- Draft notice -->
+      <div class="rounded-[var(--radius-md)] border border-[var(--color-warning)] bg-amber-50 px-5 py-4 mb-10 flex gap-3 items-start">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shrink-0 mt-0.5 text-[var(--color-warning)]" aria-hidden="true">
+          <path d="M10 3L17.5 16H2.5L10 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 9v3M10 14h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p class="text-sm text-amber-900 leading-relaxed">
+          <strong>Draf.</strong> Dokumen ini masih dalam peninjauan dan akan diperbarui sebelum rilis. Belum berlaku secara hukum.
+        </p>
+      </div>
+
+      <!-- Header -->
+      <header class="mb-12">
+        <p class="text-sm font-semibold text-[var(--color-primary)] uppercase tracking-widest mb-3">Sahabat Warga</p>
+        <h1 class="text-4xl font-extrabold text-[var(--color-ink-900)] leading-tight mb-4">Syarat &amp; Ketentuan</h1>
+        <p class="text-[var(--color-text-secondary)] text-base">
+          Terakhir diperbarui: Oktober 2026 (draf awal)
+        </p>
+      </header>
+
+      <!-- Article body -->
+      <article class="space-y-12">
+
+        <!-- 1. Penerimaan ketentuan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">1. Penerimaan Ketentuan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Dengan mendaftar, mengakses, atau menggunakan aplikasi dan layanan Sahabat Warga ("Layanan"), Anda menyatakan
+            bahwa Anda telah membaca, memahami, dan menyetujui syarat dan ketentuan ini. Syarat ini merupakan perjanjian
+            yang mengikat secara hukum antara Anda dan PT Saga Teknologi Nusantara.
+          </p>
+          <p class="text-[var(--color-text-primary)] leading-relaxed">
+            Jika Anda tidak menyetujui ketentuan ini, Anda tidak diperbolehkan menggunakan Layanan. Penggunaan
+            berkelanjutan setelah perubahan diterbitkan dianggap sebagai persetujuan terhadap ketentuan yang diperbarui.
+          </p>
+        </section>
+
+        <!-- 2. Penggunaan layanan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">2. Penggunaan Layanan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Sahabat Warga dirancang untuk membantu pengelolaan lingkungan perumahan seperti RT, RW, dan kompleks hunian.
+            Anda setuju untuk menggunakan Layanan sesuai dengan tujuannya dan tidak akan:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>Menggunakan Layanan untuk tujuan yang melanggar hukum atau peraturan yang berlaku di Indonesia.</li>
+            <li>Mengunggah konten yang bersifat melecehkan, memfitnah, mengandung ujaran kebencian, atau pornografi.</li>
+            <li>Mencoba mengakses sistem, data, atau akun pengguna lain tanpa izin.</li>
+            <li>Memanipulasi, merekayasa balik, atau menduplikasi fitur atau kode aplikasi.</li>
+            <li>Menggunakan Layanan untuk mengirimkan spam atau komunikasi yang tidak diinginkan.</li>
+          </ul>
+        </section>
+
+        <!-- 3. Akun dan keanggotaan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">3. Akun dan Keanggotaan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Untuk menggunakan fitur utama Sahabat Warga, Anda perlu membuat akun. Anda bertanggung jawab atas:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)] mb-3">
+            <li>Menjaga kerahasiaan kata sandi dan informasi masuk akun Anda.</li>
+            <li>Semua aktivitas yang terjadi di bawah akun Anda.</li>
+            <li>Memberikan informasi yang akurat, terkini, dan lengkap saat mendaftar.</li>
+          </ul>
+          <p class="text-[var(--color-text-primary)] leading-relaxed">
+            Keanggotaan warga dikaitkan dengan unit hunian yang terdaftar. Pengurus lingkungan memiliki kewenangan
+            tambahan untuk mengelola anggota, mengirim pengumuman, dan mengonfigurasi fitur layanan.
+          </p>
+        </section>
+
+        <!-- 4. Pembayaran dan iuran -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">4. Pembayaran dan Iuran</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Sahabat Warga menyediakan fitur pengelolaan iuran lingkungan. Ketentuan terkait pembayaran:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>Nominal dan jenis iuran ditetapkan oleh pengurus lingkungan masing-masing.</li>
+            <li>Pembayaran diproses melalui penyedia layanan pembayaran pihak ketiga yang berizin.</li>
+            <li>Tanda terima digital akan dikirimkan setelah transaksi berhasil dikonfirmasi.</li>
+            <li>Pengembalian dana (refund) diatur berdasarkan kebijakan lingkungan dan penyedia pembayaran yang bersangkutan.</li>
+            <li>Kami tidak menyimpan data kartu kredit atau rekening bank secara langsung.</li>
+          </ul>
+        </section>
+
+        <!-- 5. Pembatasan tanggung jawab -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">5. Pembatasan Tanggung Jawab</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Dalam batas yang diizinkan oleh hukum yang berlaku:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>
+              Layanan disediakan "sebagaimana adanya" tanpa jaminan tersirat mengenai keandalan, ketersediaan, atau
+              kesesuaian untuk tujuan tertentu.
+            </li>
+            <li>
+              Kami tidak bertanggung jawab atas kerugian tidak langsung, kehilangan data, atau gangguan bisnis yang
+              timbul dari penggunaan atau ketidakmampuan menggunakan Layanan.
+            </li>
+            <li>
+              Konten yang dibuat oleh pengguna (pengumuman, laporan, komentar) adalah tanggung jawab pengguna yang
+              bersangkutan, bukan tanggung jawab Sahabat Warga.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 6. Perubahan ketentuan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">6. Perubahan Ketentuan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Kami berhak mengubah syarat dan ketentuan ini sewaktu-waktu. Jika ada perubahan yang signifikan, kami akan
+            memberitahu Anda melalui:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>Notifikasi dalam aplikasi Sahabat Warga.</li>
+            <li>Email ke alamat yang terdaftar di akun Anda.</li>
+            <li>Pembaruan tanggal "Terakhir diperbarui" pada halaman ini.</li>
+          </ul>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mt-3">
+            Anda dianjurkan untuk meninjau ketentuan ini secara berkala. Penggunaan Layanan setelah perubahan berlaku
+            merupakan penerimaan Anda atas ketentuan yang diperbarui.
+          </p>
+        </section>
+
+        <!-- 7. Kontak -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">7. Kontak</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Jika Anda memiliki pertanyaan tentang syarat dan ketentuan ini, silakan hubungi kami:
+          </p>
+          <div class="rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] px-6 py-5 space-y-3">
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              <span class="font-semibold text-[var(--color-text-primary)]">Email:</span>{' '}
+              <a href={`mailto:${email}`} class="text-[var(--color-primary)] hover:underline">{email}</a>
+            </p>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              <span class="font-semibold text-[var(--color-text-primary)]">WhatsApp:</span>{' '}
+              <a href={wa} target="_blank" rel="noopener noreferrer" class="text-[var(--color-primary)] hover:underline">Hubungi kami via WhatsApp</a>
+            </p>
+          </div>
+        </section>
+
+      </article>
+
+      <!-- Footer nav -->
+      <div class="mt-16 pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <a href="/" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
+          Kembali ke beranda
+        </a>
+        <a href="/privasi" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
+          Kebijakan Privasi
+        </a>
+      </div>
+
+    </div>
+  </div>
+</Base>

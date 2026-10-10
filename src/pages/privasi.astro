@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import { footer } from '../data/content.id';
+
+const email = footer.contact.email;
+const wa = footer.contact.whatsapp;
+---
+
+<Base
+  title="Kebijakan Privasi - Sahabat Warga"
+  description="Kebijakan Privasi Sahabat Warga menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda."
+>
+  <div class="min-h-screen bg-[var(--color-bg)] py-16 px-4">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Back link -->
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors mb-10"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Kembali ke beranda
+      </a>
+
+      <!-- Draft notice -->
+      <div class="rounded-[var(--radius-md)] border border-[var(--color-warning)] bg-amber-50 px-5 py-4 mb-10 flex gap-3 items-start">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shrink-0 mt-0.5 text-[var(--color-warning)]" aria-hidden="true">
+          <path d="M10 3L17.5 16H2.5L10 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 9v3M10 14h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p class="text-sm text-amber-900 leading-relaxed">
+          <strong>Draf.</strong> Dokumen ini masih dalam peninjauan dan akan diperbarui sebelum rilis. Belum berlaku secara hukum.
+        </p>
+      </div>
+
+      <!-- Header -->
+      <header class="mb-12">
+        <p class="text-sm font-semibold text-[var(--color-primary)] uppercase tracking-widest mb-3">Sahabat Warga</p>
+        <h1 class="text-4xl font-extrabold text-[var(--color-ink-900)] leading-tight mb-4">Kebijakan Privasi</h1>
+        <p class="text-[var(--color-text-secondary)] text-base">
+          Terakhir diperbarui: Oktober 2026 (draf awal)
+        </p>
+      </header>
+
+      <!-- Article body -->
+      <article class="prose-custom space-y-12">
+
+        <!-- 1. Pendahuluan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">1. Pendahuluan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Sahabat Warga ("kami", "aplikasi") adalah layanan pengelolaan lingkungan perumahan yang dikembangkan oleh
+            PT Saga Teknologi Nusantara. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan,
+            menyimpan, dan melindungi informasi pribadi Anda saat menggunakan aplikasi dan situs web kami.
+          </p>
+          <p class="text-[var(--color-text-primary)] leading-relaxed">
+            Dengan menggunakan layanan kami, Anda menyetujui praktik-praktik yang dijelaskan dalam kebijakan ini.
+            Jika Anda tidak setuju, mohon hentikan penggunaan layanan kami.
+          </p>
+        </section>
+
+        <!-- 2. Data yang dikumpulkan -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">2. Data yang Kami Kumpulkan</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Kami mengumpulkan informasi yang Anda berikan secara langsung maupun yang terkumpul secara otomatis:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li><strong>Informasi akun:</strong> nama lengkap, alamat email, nomor telepon, dan alamat unit/rumah.</li>
+            <li><strong>Data keanggotaan:</strong> status warga, peran dalam lingkungan (pengurus atau warga biasa).</li>
+            <li><strong>Data transaksi:</strong> riwayat pembayaran iuran, tagihan, dan tanda terima.</li>
+            <li><strong>Konten yang Anda buat:</strong> pengumuman, laporan fasilitas, komentar, dan lampiran foto.</li>
+            <li><strong>Data teknis:</strong> alamat IP, jenis perangkat, sistem operasi, dan log penggunaan aplikasi.</li>
+          </ul>
+        </section>
+
+        <!-- 3. Cara kami menggunakan data -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">3. Cara Kami Menggunakan Data</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Data yang kami kumpulkan digunakan untuk tujuan berikut:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>Menyediakan, mengoperasikan, dan meningkatkan fitur aplikasi Sahabat Warga.</li>
+            <li>Memproses pembayaran iuran dan mengirimkan tanda terima atau notifikasi terkait.</li>
+            <li>Mengirimkan pengumuman dan informasi penting dari pengurus lingkungan kepada warga.</li>
+            <li>Mendeteksi dan mencegah penipuan, penyalahgunaan, serta aktivitas mencurigakan.</li>
+            <li>Memenuhi kewajiban hukum yang berlaku di Indonesia.</li>
+          </ul>
+        </section>
+
+        <!-- 4. Keamanan data -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">4. Keamanan Data</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-3">
+            Kami menerapkan langkah-langkah keamanan teknis dan organisasional yang wajar untuk melindungi data pribadi
+            Anda dari akses tidak sah, pengungkapan, pengubahan, atau penghancuran. Langkah-langkah tersebut mencakup:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li>Enkripsi data saat transit (HTTPS/TLS) dan saat penyimpanan.</li>
+            <li>Kontrol akses berbasis peran sehingga hanya personel yang berwenang dapat mengakses data sensitif.</li>
+            <li>Pemantauan sistem secara berkala untuk mendeteksi ancaman keamanan.</li>
+          </ul>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mt-3">
+            Meskipun demikian, tidak ada sistem yang sepenuhnya bebas risiko. Kami menganjurkan Anda menjaga
+            kerahasiaan kata sandi dan segera menghubungi kami jika mencurigai akses tidak sah ke akun Anda.
+          </p>
+        </section>
+
+        <!-- 5. Hak Anda -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">5. Hak Anda</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Sesuai ketentuan peraturan perundang-undangan yang berlaku, Anda memiliki hak untuk:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-[var(--color-text-primary)]">
+            <li><strong>Mengakses</strong> data pribadi yang kami simpan tentang Anda.</li>
+            <li><strong>Memperbaiki</strong> data yang tidak akurat atau tidak lengkap.</li>
+            <li><strong>Menghapus</strong> data Anda dalam kondisi tertentu sesuai hukum yang berlaku.</li>
+            <li><strong>Membatasi</strong> pemrosesan data Anda dalam situasi tertentu.</li>
+            <li><strong>Menarik persetujuan</strong> yang sebelumnya Anda berikan kapan saja.</li>
+          </ul>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mt-3">
+            Untuk mengajukan permintaan terkait hak-hak di atas, silakan hubungi kami melalui informasi kontak di bawah ini.
+          </p>
+        </section>
+
+        <!-- 6. Kontak -->
+        <section>
+          <h2 class="text-2xl font-bold text-[var(--color-ink-900)] mb-4">6. Kontak</h2>
+          <p class="text-[var(--color-text-primary)] leading-relaxed mb-4">
+            Jika Anda memiliki pertanyaan, kekhawatiran, atau permintaan terkait kebijakan privasi ini, hubungi kami:
+          </p>
+          <div class="rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] px-6 py-5 space-y-3">
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              <span class="font-semibold text-[var(--color-text-primary)]">Email:</span>{' '}
+              <a href={`mailto:${email}`} class="text-[var(--color-primary)] hover:underline">{email}</a>
+            </p>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              <span class="font-semibold text-[var(--color-text-primary)]">WhatsApp:</span>{' '}
+              <a href={wa} target="_blank" rel="noopener noreferrer" class="text-[var(--color-primary)] hover:underline">Hubungi kami via WhatsApp</a>
+            </p>
+          </div>
+        </section>
+
+      </article>
+
+      <!-- Footer nav -->
+      <div class="mt-16 pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <a href="/" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
+          Kembali ke beranda
+        </a>
+        <a href="/ketentuan" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
+          Syarat &amp; Ketentuan
+        </a>
+      </div>
+
+    </div>
+  </div>
+</Base>
