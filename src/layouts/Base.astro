@@ -1,0 +1,97 @@
+---
+import '../styles/global.css';
+import { SITE } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
+const ogImage = new URL('/og/og.png', Astro.site ?? SITE).toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'Sahabat Warga',
+      url: SITE,
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Sahabat Warga',
+      applicationCategory: 'LifestyleApplication',
+      operatingSystem: 'Android, iOS',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#0E9F76" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+
+    <!-- SobiLauncher mounted in Task 6 -->
+
+    <script>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+        );
+        const mount = () =>
+          document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+        if (document.readyState !== 'loading') {
+          mount();
+        } else {
+          document.addEventListener('DOMContentLoaded', mount);
+        }
+      } else {
+        document.querySelectorAll('[data-reveal]').forEach((el) =>
+          el.classList.add('is-visible'),
+        );
+      }
+    </script>
+  </body>
+</html>

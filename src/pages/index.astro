@@ -1,17 +1,22 @@
 ---
-import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Reveal from '../components/ui/Reveal.astro';
 ---
 
-<html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Sahabat Warga</title>
-  </head>
-  <body>
-    <h1>Sahabat Warga</h1>
-  </body>
-</html>
+<Base
+  title="Sahabat Warga, kelola lingkungan lebih mudah"
+  description="Satu aplikasi untuk iuran, data warga, komunikasi, dan pembayaran lingkungan."
+>
+  <main class="min-h-screen flex flex-col items-center justify-center gap-8 px-4">
+    <Reveal>
+      <h1 class="text-4xl font-bold text-center text-primary">
+        Sahabat Warga
+      </h1>
+    </Reveal>
+    <Reveal delay={100}>
+      <p class="text-lg text-center text-text-secondary max-w-md">
+        Satu aplikasi untuk iuran, data warga, komunikasi, dan pembayaran lingkungan.
+      </p>
+    </Reveal>
+  </main>
+</Base>
