@@ -47,18 +47,21 @@
     </button>
   </header>
 
-  <!-- Message list -->
+  <!-- Message list: aria-live removed so per-token mutations do not spam screen readers.
+       Announcements are made once on completion via #sobi-sr-status below. -->
   <div
     id="sobi-chat-messages"
     role="log"
-    aria-live="polite"
     aria-label="Riwayat percakapan"
-    aria-relevant="additions"
     class="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-3"
     style="min-height:220px;max-height:340px;"
   >
     <!-- Messages injected by JS -->
   </div>
+
+  <!-- Single polite live region: updated ONCE when an assistant reply completes.
+       Visually hidden; screen readers announce the final message, not each token. -->
+  <p id="sobi-sr-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 
   <!-- Composer -->
   <form id="sobi-chat-form" class="border-t border-gray-100 px-3 py-3" autocomplete="off" novalidate>
@@ -105,9 +108,25 @@
   const input = document.getElementById('sobi-chat-input') as HTMLTextAreaElement | null;
   const sendBtn = document.getElementById('sobi-chat-send') as HTMLButtonElement | null;
   const messageList = document.getElementById('sobi-chat-messages') as HTMLDivElement | null;
+  // Visually-hidden live region: updated ONCE per reply to avoid per-token SR spam.
+  const srStatus = document.getElementById('sobi-sr-status') as HTMLParagraphElement | null;
 
   if (!panel || !closeBtn || !form || !input || !sendBtn || !messageList) {
     console.warn('[SobiChat] Required DOM elements not found');
+  }
+
+  /**
+   * Announce a completed assistant reply to screen readers via the single polite
+   * live region. Called once per reply, never during token streaming.
+   */
+  function announceToSR(text: string): void {
+    if (!srStatus) return;
+    // Clear first so identical consecutive replies still trigger re-announcement.
+    srStatus.textContent = '';
+    // Defer one frame so the clear registers before the new content is set.
+    requestAnimationFrame(() => {
+      srStatus.textContent = text;
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -272,6 +291,8 @@
             // Stream finished.
             if (assistantText) {
               history.push({ role: 'assistant', content: assistantText });
+              // Announce the completed reply ONCE to screen readers.
+              announceToSR(assistantText);
             }
             window.setSobiState?.('success' satisfies SobiState);
             setTimeout(() => {
