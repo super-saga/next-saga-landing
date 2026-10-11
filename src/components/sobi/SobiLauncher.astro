@@ -3,24 +3,37 @@ import Sobi from './Sobi.astro';
 ---
 
 <div class="sobi-launcher-root fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
-  <!-- Speech bubble -->
+  <!-- Speech bubble (only shown for active states; hidden at idle so the pill stands alone) -->
   <div
     id="sobi-bubble"
     role="status"
     aria-live="polite"
+    hidden
     class="sobi-bubble max-w-[180px] rounded-2xl rounded-br-sm bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-lg ring-1 ring-black/5 select-none"
   >
-    Siap membantu!
   </div>
 
-  <!-- Launcher button -->
+  <!-- Launcher pill (matches pen.dev: dark-green pill, mint avatar, title + subtitle) -->
   <button
     type="button"
     id="sobi-launcher-btn"
     aria-label="Buka chat dengan Sobi"
-    class="sobi-launcher-btn group relative flex items-center justify-center rounded-full bg-white p-1 shadow-xl ring-1 ring-black/10 transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 active:scale-95"
+    class="sobi-launcher-btn group box-border flex h-[64px] w-fit flex-row items-center justify-start gap-[12px] rounded-[999px] bg-[#06372A] p-[8px_24px_8px_8px] [box-shadow:0px_16px_40px_#06372A40,_0px_2px_6px_#06372A26] transition-transform duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#5FD4AE] active:scale-[0.98]"
   >
-    <Sobi size={80} id="sobi-mascot" />
+    <!-- Avatar circle with mascot + online dot -->
+    <span class="relative box-border flex h-[48px] w-[48px] shrink-0 items-center justify-center overflow-hidden rounded-[999px] bg-[#EEFBF5]">
+      <Sobi size={48} id="sobi-mascot" />
+      <span
+        class="absolute left-[35px] top-[35px] box-border h-[13px] w-[13px] rounded-full bg-[#5FD4AE] [outline:2.5px_solid_#06372A] [z-index:2]"
+        aria-hidden="true"
+      ></span>
+    </span>
+
+    <!-- Text -->
+    <span class="flex flex-col items-start">
+      <span class="text-[16px] font-bold leading-normal text-white [white-space:nowrap]">Tanya Sobi</span>
+      <span class="text-[12px] font-medium leading-normal text-[#5FD4AE] [white-space:nowrap]">Asisten 24 jam &middot; balas instan</span>
+    </span>
   </button>
 </div>
 
@@ -31,7 +44,14 @@ import Sobi from './Sobi.astro';
   const bubble = document.getElementById('sobi-bubble');
   if (bubble) {
     window.__sobiUpdateBubble = (text: string) => {
-      bubble.textContent = text;
+      // Idle message duplicates the pill subtitle, so hide the bubble at idle.
+      if (!text || text === 'Siap membantu!') {
+        bubble.hidden = true;
+        bubble.textContent = '';
+      } else {
+        bubble.textContent = text;
+        bubble.hidden = false;
+      }
     };
   }
 
