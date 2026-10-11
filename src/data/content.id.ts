@@ -60,11 +60,12 @@ export interface NavContent {
 export const nav: NavContent = {
   brand: "Sahabat Warga",
   links: [
-    { label: "Fitur", href: "#fitur" },
-    { label: "Untuk Pengurus", href: "#untuk-pengurus" },
-    { label: "Untuk Warga", href: "#untuk-warga" },
-    { label: "Harga", href: "#harga" },
-    { label: "FAQ", href: "#faq" },
+    { label: "Fitur", href: "/#fitur" },
+    { label: "Untuk Pengurus", href: "/#untuk-pengurus" },
+    { label: "Untuk Warga", href: "/#untuk-warga" },
+    { label: "Harga", href: "/#harga" },
+    { label: "Blog", href: "/blog" },
+    { label: "FAQ", href: "/#faq" },
   ],
   primaryCta: { label: "Buat Komunitas" },
 };
@@ -482,11 +483,12 @@ export const footer: FooterContent = {
     {
       heading: "Navigasi",
       links: [
-        { label: "Fitur", href: "#fitur" },
-        { label: "Untuk Pengurus", href: "#untuk-pengurus" },
-        { label: "Untuk Warga", href: "#untuk-warga" },
-        { label: "Harga", href: "#harga" },
-        { label: "FAQ", href: "#faq" },
+        { label: "Fitur", href: "/#fitur" },
+        { label: "Untuk Pengurus", href: "/#untuk-pengurus" },
+        { label: "Untuk Warga", href: "/#untuk-warga" },
+        { label: "Harga", href: "/#harga" },
+        { label: "Blog", href: "/blog" },
+        { label: "FAQ", href: "/#faq" },
       ],
     },
   ],

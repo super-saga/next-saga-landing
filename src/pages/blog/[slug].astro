@@ -1,0 +1,108 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/sections/Nav.astro';
+import Footer from '../../components/sections/Footer.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { getSinglePost, getPosts, formatTanggal, readingTime } from '../../lib/ghost';
+
+const { slug } = Astro.params;
+const post = slug ? await getSinglePost(slug) : null;
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
+
+const date = formatTanggal(post.published_at);
+const minsRead = readingTime(post);
+const author = post.authors?.[0];
+const tags = post.tags ?? [];
+
+// A few related posts (exclude the current one).
+const related = (await getPosts('all')).filter((p) => p.slug !== post.slug).slice(0, 3);
+
+const metaDesc = post.excerpt || post.meta_description || `Artikel Sahabat Warga: ${post.title}`;
+---
+
+<Base title={`${post.title}, Sahabat Warga`} description={metaDesc}>
+  <Nav />
+  <main>
+    <article class="bg-surface">
+      <div class="mx-auto max-w-[760px] px-4 sm:px-6 py-12 lg:py-[80px]">
+
+        <!-- Back link -->
+        <a href="/blog" class="u-press inline-flex items-center gap-1.5 mb-8 font-sans text-[14px] font-semibold text-text-brand no-underline">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" aria-hidden="true">
+            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Semua artikel
+        </a>
+
+        <!-- Header -->
+        <header class="flex flex-col gap-5">
+          <div class="flex flex-wrap items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.6px] text-text-brand">
+            {tags[0]?.name && <span>{tags[0].name}</span>}
+            {date && <span class="text-text-tertiary">&middot;</span>}
+            {date && <span class="normal-case tracking-normal font-medium text-text-tertiary">{date}</span>}
+            {minsRead && <span class="text-text-tertiary">&middot;</span>}
+            {minsRead && <span class="normal-case tracking-normal font-medium text-text-tertiary">{minsRead}</span>}
+          </div>
+          <h1 class="font-sans text-[30px] lg:text-[44px] font-extrabold leading-tight tracking-[-1px] text-ink-900">
+            {post.title}
+          </h1>
+          {author && (
+            <div class="flex items-center gap-3 pt-1">
+              {author.profile_image ? (
+                <img src={author.profile_image} alt={author.name} class="h-10 w-10 rounded-full object-cover" loading="lazy" />
+              ) : (
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-mint-50 font-sans text-sm font-bold text-text-brand">
+                  {author.name?.charAt(0) ?? 'S'}
+                </div>
+              )}
+              <span class="font-sans text-[15px] font-semibold text-text-primary">{author.name}</span>
+            </div>
+          )}
+        </header>
+
+        <!-- Cover -->
+        {post.feature_image && (
+          <img
+            src={post.feature_image}
+            alt={post.title}
+            class="mt-8 w-full rounded-[24px] object-cover"
+            loading="eager"
+            decoding="async"
+          />
+        )}
+
+        <!-- Body (Ghost HTML, owned content) -->
+        <div class="prose mt-10" set:html={post.html} />
+
+        <!-- Tags -->
+        {tags.length > 0 && (
+          <div class="mt-12 flex flex-wrap gap-2 border-t border-border pt-8">
+            {tags.map((t) => (
+              <span class="rounded-full bg-surface-muted px-3 py-1.5 font-sans text-[13px] font-medium text-text-secondary">
+                #{t.name}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
+
+    <!-- Related posts -->
+    {related.length > 0 && (
+      <section class="bg-bg border-t border-border">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[120px] py-16">
+          <h2 class="font-sans text-[22px] lg:text-[28px] font-bold tracking-[-0.4px] text-ink-900 mb-8">
+            Artikel lainnya
+          </h2>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {related.map((p) => <PostCard post={p} />)}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</Base>

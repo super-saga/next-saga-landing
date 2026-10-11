@@ -1,0 +1,99 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/sections/Nav.astro';
+import Footer from '../../components/sections/Footer.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { getPosts, formatTanggal } from '../../lib/ghost';
+
+const posts = await getPosts('all');
+const featured = posts[0];
+const rest = posts.slice(1);
+---
+
+<Base
+  title="Artikel & Tips, Sahabat Warga"
+  description="Panduan praktis seputar iuran digital, keuangan RT/RW, keamanan lingkungan, dan membangun komunitas yang lebih tertib."
+>
+  <Nav />
+  <main>
+    <section class="bg-bg">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[120px] py-16 lg:py-[96px]">
+
+        <!-- Page header -->
+        <div class="flex flex-col gap-[16px] max-w-[720px] mb-12 lg:mb-16">
+          <p class="text-[13px] font-bold tracking-[1.2px] uppercase text-text-brand">ARTIKEL</p>
+          <h1 class="font-sans text-[32px] lg:text-[48px] font-extrabold leading-tight tracking-[-1px] text-ink-900">
+            Tips & cerita kelola lingkungan
+          </h1>
+          <p class="font-sans text-[16px] lg:text-[18px] leading-[29px] text-text-secondary">
+            Panduan praktis seputar iuran, keuangan RT/RW, keamanan, dan membangun komunitas yang lebih tertib.
+          </p>
+        </div>
+
+        {posts.length === 0 && (
+          <div class="rounded-[20px] border border-border bg-surface p-10 text-center">
+            <p class="font-sans text-[16px] text-text-secondary">
+              Belum ada artikel untuk saat ini. Nantikan tulisan kami berikutnya.
+            </p>
+          </div>
+        )}
+
+        {featured && (
+          <a
+            href={`/blog/${featured.slug}`}
+            class="group u-hover-lift mb-12 grid grid-cols-1 overflow-hidden rounded-[24px] border border-border bg-surface no-underline lg:grid-cols-2"
+          >
+            <div class="aspect-[16/10] w-full overflow-hidden bg-surface-muted lg:aspect-auto lg:h-full">
+              {featured.feature_image ? (
+                <img
+                  src={featured.feature_image}
+                  alt={featured.title}
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="eager"
+                  decoding="async"
+                />
+              ) : (
+                <div class="flex h-full min-h-[240px] w-full items-center justify-center bg-mint-50">
+                  <span class="font-sans text-sm font-semibold text-text-brand">Sahabat Warga</span>
+                </div>
+              )}
+            </div>
+            <div class="flex flex-col justify-center gap-4 p-7 lg:p-12">
+              <div class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.6px] text-text-brand">
+                {featured.tags?.[0]?.name && <span>{featured.tags[0].name}</span>}
+                {featured.published_at && <span class="text-text-tertiary">&middot;</span>}
+                {featured.published_at && (
+                  <span class="normal-case tracking-normal font-medium text-text-tertiary">
+                    {formatTanggal(featured.published_at)}
+                  </span>
+                )}
+              </div>
+              <h2 class="font-sans text-[24px] lg:text-[32px] font-bold leading-tight tracking-[-0.5px] text-text-primary">
+                {featured.title}
+              </h2>
+              {featured.excerpt && (
+                <p class="font-sans text-[16px] leading-[26px] text-text-secondary line-clamp-3">
+                  {featured.excerpt}
+                </p>
+              )}
+              <span class="mt-1 inline-flex items-center gap-1.5 text-[15px] font-semibold text-text-brand">
+                Baca selengkapnya
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="u-chevron h-4 w-4" aria-hidden="true">
+                  <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </a>
+        )}
+
+        {rest.length > 0 && (
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {rest.map((post) => <PostCard post={post} />)}
+          </div>
+        )}
+
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>

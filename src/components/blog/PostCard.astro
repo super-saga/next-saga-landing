@@ -1,0 +1,59 @@
+---
+import type { GhostPost } from '../../lib/ghost';
+import { formatTanggal } from '../../lib/ghost';
+
+interface Props {
+  post: GhostPost;
+}
+
+const { post } = Astro.props;
+const href = `/blog/${post.slug}`;
+const tag = post.tags?.[0]?.name;
+const cover = post.feature_image;
+const date = formatTanggal(post.published_at);
+---
+
+<a
+  href={href}
+  class="group u-hover-lift flex flex-col overflow-hidden rounded-[20px] bg-surface border border-border no-underline"
+>
+  <!-- Cover -->
+  <div class="aspect-[16/10] w-full overflow-hidden bg-surface-muted">
+    {cover ? (
+      <img
+        src={cover}
+        alt={post.title}
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="flex h-full w-full items-center justify-center bg-mint-50">
+        <span class="font-sans text-sm font-semibold text-text-brand">Sahabat Warga</span>
+      </div>
+    )}
+  </div>
+
+  <!-- Body -->
+  <div class="flex flex-1 flex-col gap-3 p-5 lg:p-6">
+    <div class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.6px] text-text-brand">
+      {tag && <span>{tag}</span>}
+      {tag && date && <span class="text-text-tertiary">&middot;</span>}
+      {date && <span class="normal-case tracking-normal font-medium text-text-tertiary">{date}</span>}
+    </div>
+    <h3 class="font-sans text-[18px] lg:text-[20px] font-bold leading-snug tracking-[-0.3px] text-text-primary">
+      {post.title}
+    </h3>
+    {post.excerpt && (
+      <p class="font-sans text-[15px] leading-[22px] text-text-secondary line-clamp-3">
+        {post.excerpt}
+      </p>
+    )}
+    <span class="mt-auto inline-flex items-center gap-1.5 pt-2 text-[14px] font-semibold text-text-brand">
+      Baca selengkapnya
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="u-chevron h-4 w-4" aria-hidden="true">
+        <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</a>
