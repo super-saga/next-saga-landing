@@ -73,12 +73,12 @@ const SSE_HEADERS: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// STUB mode — canned Bahasa Indonesia demo reply
+// STUB mode — canned Bahasa Indonesia reply (used until the agent endpoint is wired)
 // ---------------------------------------------------------------------------
 
 const CANNED_REPLY =
-  'Hai! Saya Sobi versi demo. Untuk sekarang saya belum terhubung ke layanan penuh, ' +
-  'tapi saya akan segera siap membantu Anda soal iuran, pengumuman, dan keamanan lingkungan.';
+  'Hai! Saya Sobi, asisten Sahabat Warga. Saya bisa bantu jelaskan soal iuran, ' +
+  'pembayaran, pengumuman, dan keamanan lingkungan. Ada yang bisa saya bantu?';
 
 function buildStubStream(): ReadableStream<Uint8Array> {
   const tokens = CANNED_REPLY.split(' ');

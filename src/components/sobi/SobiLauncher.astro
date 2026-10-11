@@ -2,7 +2,7 @@
 import Sobi from './Sobi.astro';
 ---
 
-<div class="sobi-launcher-root fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
+<div id="sobi-launcher-root" class="sobi-launcher-root fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2" data-chat-open="false">
   <!-- Speech bubble (only shown for active states; hidden at idle so the pill stands alone) -->
   <div
     id="sobi-bubble"
@@ -13,11 +13,12 @@ import Sobi from './Sobi.astro';
   >
   </div>
 
-  <!-- Launcher pill (matches pen.dev: dark-green pill, mint avatar, title + subtitle) -->
+  <!-- Launcher pill (shown when chat is CLOSED) -->
   <button
     type="button"
     id="sobi-launcher-btn"
     aria-label="Buka chat dengan Sobi"
+    aria-expanded="false"
     class="sobi-launcher-btn group box-border flex h-[64px] w-fit flex-row items-center justify-start gap-[12px] rounded-[999px] bg-[#06372A] p-[8px_24px_8px_8px] [box-shadow:0px_16px_40px_#06372A40,_0px_2px_6px_#06372A26] transition-transform duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#5FD4AE] active:scale-[0.98]"
   >
     <!-- Avatar circle with mascot + online dot -->
@@ -35,10 +36,35 @@ import Sobi from './Sobi.astro';
       <span class="text-[12px] font-medium leading-normal text-[#5FD4AE] [white-space:nowrap]">Asisten 24 jam &middot; balas instan</span>
     </span>
   </button>
+
+  <!-- Close FAB (shown when chat is OPEN) -->
+  <button
+    type="button"
+    id="sobi-close-fab"
+    aria-label="Tutup chat dengan Sobi"
+    class="sobi-close-fab box-border hidden h-[56px] w-[56px] items-center justify-center rounded-full bg-[#06372A] text-white [box-shadow:0px_16px_40px_#06372A40,_0px_2px_6px_#06372A26] transition-transform duration-200 hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#5FD4AE] active:scale-[0.97]"
+  >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" aria-hidden="true">
+      <path d="M7 7L17 17M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
 </div>
+
+<style>
+  /* Toggle pill <-> close FAB based on chat open state */
+  #sobi-launcher-root[data-chat-open="true"] .sobi-launcher-btn { display: none; }
+  #sobi-launcher-root[data-chat-open="true"] .sobi-close-fab { display: flex; }
+  #sobi-launcher-root[data-chat-open="false"] .sobi-close-fab { display: none; }
+</style>
 
 <script>
   import type { SobiState } from './sobi.ts';
+
+  declare global {
+    interface Window {
+      __sobiSetLauncherOpen?: (open: boolean) => void;
+    }
+  }
 
   // Register speech bubble updater so sobi.ts can update DOM.
   const bubble = document.getElementById('sobi-bubble');
@@ -79,11 +105,29 @@ import Sobi from './Sobi.astro';
     window.addEventListener('load', () => setTimeout(tryGreet, 300), { once: true });
   }
 
-  // Launcher button click: open chat (Task 11 wires window.openSobiChat).
+  // Launcher pill click: open chat.
   const btn = document.getElementById('sobi-launcher-btn');
   if (btn) {
     btn.addEventListener('click', () => {
       window.openSobiChat?.();
     });
   }
+
+  // Close FAB click: close chat.
+  const closeFab = document.getElementById('sobi-close-fab');
+  if (closeFab) {
+    closeFab.addEventListener('click', () => {
+      window.closeSobiChat?.();
+    });
+  }
+
+  // Toggle launcher appearance when the chat opens/closes.
+  // SobiChat calls window.__sobiSetLauncherOpen(true|false) from openPanel/closePanel.
+  const root = document.getElementById('sobi-launcher-root');
+  window.__sobiSetLauncherOpen = (open: boolean) => {
+    if (!root) return;
+    root.setAttribute('data-chat-open', open ? 'true' : 'false');
+    btn?.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open && bubble) bubble.hidden = true;
+  };
 </script>

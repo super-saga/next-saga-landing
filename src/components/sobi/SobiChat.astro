@@ -76,10 +76,6 @@ const popularQuestions = [
         <div class="flex shrink-0 items-center rounded-[6px] px-[6px] py-[2px]" style="background:rgba(201,245,228,0.15);">
           <span class="whitespace-nowrap text-[10px] font-bold tracking-[0.4px] text-[#C9F5E4]">AI</span>
         </div>
-        <!-- Demo badge (subtle) -->
-        <div class="flex shrink-0 items-center rounded-[6px] px-[6px] py-[2px]" style="background:rgba(255,255,255,0.08);" aria-label="Versi demo">
-          <span class="whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.4px] text-[#5FD4AE]/70">demo</span>
-        </div>
       </div>
       <span id="sobi-header-status" class="whitespace-nowrap text-[12px] font-medium leading-normal text-[#5FD4AE]">
         Asisten Sahabat Warga &middot; Online
@@ -406,6 +402,9 @@ const popularQuestions = [
     panel.style.display = 'flex';
     panel.removeAttribute('aria-hidden');
 
+    // Toggle the launcher into its "close" state.
+    window.__sobiSetLauncherOpen?.(true);
+
     // Focus to textarea.
     requestAnimationFrame(() => input?.focus());
 
@@ -423,6 +422,9 @@ const popularQuestions = [
     isOpen = false;
     panel.style.display = 'none';
     panel.setAttribute('aria-hidden', 'true');
+
+    // Restore the launcher pill.
+    window.__sobiSetLauncherOpen?.(false);
 
     // Return focus to launcher button.
     const launcher = document.getElementById('sobi-launcher-btn');
