@@ -2,98 +2,393 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/sections/Nav.astro';
 import Footer from '../../components/sections/Footer.astro';
-import PostCard from '../../components/blog/PostCard.astro';
-import { getPosts, formatTanggal } from '../../lib/ghost';
+import Sobi from '../../components/sobi/Sobi.astro';
+import { getPosts, formatTanggal, readingTime } from '../../lib/ghost';
+
+export const prerender = false;
 
 const posts = await getPosts('all');
 const featured = posts[0];
 const rest = posts.slice(1);
+
+// Collect unique tag names across all posts for category chips
+const allTagNames: string[] = [];
+for (const p of posts) {
+  for (const t of p.tags ?? []) {
+    if (t.name && !allTagNames.includes(t.name)) {
+      allTagNames.push(t.name);
+    }
+  }
+}
+
+// The canonical chip order from the design; only show if at least one post has that tag
+const chipOrder = [
+  'Panduan Pengurus',
+  'Keuangan & Iuran',
+  'Keamanan',
+  'Cerita Komunitas',
+  'Ekonomi Warga',
+  'Pembaruan Produk',
+];
+const activeChips = chipOrder.filter((name) => allTagNames.includes(name));
+// If there are extra tags not in the canonical list, append them too
+const extraChips = allTagNames.filter((n) => !chipOrder.includes(n));
+const chips = [...activeChips, ...extraChips];
 ---
 
 <Base
-  title="Artikel & Tips, Sahabat Warga"
-  description="Panduan praktis seputar iuran digital, keuangan RT/RW, keamanan lingkungan, dan membangun komunitas yang lebih tertib."
+  title="Blog Sahabat Warga - Cerita dan panduan untuk lingkungan"
+  description="Tips mengelola iuran, keamanan, dan kegiatan warga dari para pengurus RT/RW dan tim Sahabat Warga."
 >
   <Nav />
-  <main>
-    <section class="bg-bg">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[120px] py-16 lg:py-[96px]">
 
-        <!-- Page header -->
-        <div class="flex flex-col gap-[16px] max-w-[720px] mb-12 lg:mb-16">
-          <p class="text-[13px] font-bold tracking-[1.2px] uppercase text-text-brand">ARTIKEL</p>
-          <h1 class="font-sans text-[32px] lg:text-[48px] font-extrabold leading-tight tracking-[-1px] text-ink-900">
-            Tips & cerita kelola lingkungan
+  {/* ─── Page Header ─────────────────────────────────────────────────── */}
+  <header class="bg-surface border-b border-border">
+    <div class="px-4 sm:px-6 lg:px-[120px] pt-[88px] pb-[48px] flex flex-col gap-[40px]">
+
+      {/* Top row: title group + search */}
+      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 lg:gap-[80px]">
+        <div class="flex flex-col gap-[16px] lg:w-[720px]">
+          <p class="text-[13px] font-bold tracking-[1.2px] text-text-brand uppercase">
+            BLOG SAHABAT WARGA
+          </p>
+          <h1 class="text-[36px] lg:text-[56px] leading-[1.1] lg:leading-[62px] font-extrabold tracking-[-1px] lg:tracking-[-1.6px] text-ink-900">
+            Cerita dan panduan untuk lingkungan yang lebih rapi.
           </h1>
-          <p class="font-sans text-[16px] lg:text-[18px] leading-[29px] text-text-secondary">
-            Panduan praktis seputar iuran, keuangan RT/RW, keamanan, dan membangun komunitas yang lebih tertib.
+          <p class="text-[16px] lg:text-[18px] leading-[29px] text-text-secondary font-normal">
+            Tips mengelola iuran, keamanan, dan kegiatan warga dari para pengurus RT/RW dan tim
+            Sahabat Warga.
           </p>
         </div>
 
-        {posts.length === 0 && (
-          <div class="rounded-[20px] border border-border bg-surface p-10 text-center">
-            <p class="font-sans text-[16px] text-text-secondary">
-              Belum ada artikel untuk saat ini. Nantikan tulisan kami berikutnya.
-            </p>
-          </div>
-        )}
+        {/* Search bar */}
+        <div class="flex-shrink-0 lg:w-[360px]">
+          <label class="flex flex-row gap-[10px] px-[20px] h-[52px] items-center bg-bg outline outline-1 outline-border rounded-full w-full">
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] shrink-0" aria-hidden="true">
+              <path d="M5.56445 8.8833q-1.39795 0-2.37207-0.9707-0.9707-0.9707-0.9707-2.37207 0-1.39795 0.9707-2.36866 0.97412-0.97412 2.37207-0.97412 1.39795 0 2.36866 0.97412 0.97412 0.9707 0.97412 2.36866 0 0.6084-0.21534 1.1792-0.21533 0.56738-0.56396 0.9707l3.44531 3.44531q0.08203 0.08203 0.08545 0.20166 0.00684 0.11963-0.08545 0.21192-0.09229 0.09229-0.20849 0.09228-0.11279 0-0.20508-0.09228l-3.44531-3.44532q-0.4375 0.37256-1.00831 0.57764-0.56738 0.20166-1.1416 0.20166z m0-0.58105q1.16211 0 1.9585-0.79981 0.7998-0.7998 0.7998-1.96191 0-1.15869-0.7998-1.9585-0.79639-0.7998-1.9585-0.7998-1.16211 0-1.96191 0.7998-0.79639 0.7998-0.79639 1.9585 0 1.16211 0.79639 1.96191 0.7998 0.7998 1.96191 0.79981z" fill="#98A29E"/>
+            </svg>
+            <span class="text-[15px] text-text-tertiary font-normal">Cari artikel&hellip;</span>
+          </label>
+        </div>
+      </div>
 
-        {featured && (
+      {/* Category chips */}
+      {chips.length > 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row flex-wrap gap-[8px]">
+          {/* "Semua" chip - active state */}
           <a
-            href={`/blog/${featured.slug}`}
-            class="group u-hover-lift mb-12 grid grid-cols-1 overflow-hidden rounded-[24px] border border-border bg-surface no-underline lg:grid-cols-2"
+            href="/blog"
+            class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap"
           >
-            <div class="aspect-[16/10] w-full overflow-hidden bg-surface-muted lg:aspect-auto lg:h-full">
-              {featured.feature_image ? (
+            Semua
+          </a>
+          {chips.map((name) => (
+            <a
+              href={`/blog/tag/${name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'dan')}`}
+              class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors"
+            >
+              {name}
+            </a>
+          ))}
+        </div>
+      )}
+      {chips.length === 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row gap-[8px]">
+          <span class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap">
+            Semua
+          </span>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {/* ─── Articles section ─────────────────────────────────────────────── */}
+  <main>
+    <div class="px-4 sm:px-6 lg:px-[120px] py-[56px] lg:pb-[96px] flex flex-col gap-[72px]">
+
+      {/* Empty state */}
+      {posts.length === 0 && (
+        <div class="rounded-[20px] border border-border bg-surface p-10 text-center">
+          <p class="text-[16px] text-text-secondary">
+            Belum ada artikel untuk saat ini. Nantikan tulisan kami berikutnya.
+          </p>
+        </div>
+      )}
+
+      {/* ── Featured article ── */}
+      {featured && (
+        <a
+          href={`/blog/${featured.slug}`}
+          class="group flex flex-col lg:flex-row gap-[56px] items-center no-underline"
+        >
+          {/* Cover */}
+          <div class="relative w-full lg:w-[680px] lg:shrink-0 h-[280px] lg:h-[440px] rounded-[28px] overflow-hidden bg-surface-muted">
+            {featured.feature_image ? (
+              <img
+                src={featured.feature_image}
+                alt={featured.title}
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="eager"
+                decoding="async"
+              />
+            ) : (
+              <div class="flex h-full w-full items-center justify-center bg-mint-50">
+                <span class="text-sm font-semibold text-text-brand">Sahabat Warga</span>
+              </div>
+            )}
+            {/* "Artikel pilihan" badge */}
+            <div class="absolute top-[20px] left-[20px] flex flex-row items-center gap-[6px] px-[12px] py-[6px] bg-surface rounded-full">
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[14px] h-[14px] shrink-0" aria-hidden="true">
+                <path d="M5.16113 9.81299l1.83887-1.10742 1.83887 1.12451-0.48194-2.10205 1.6167-1.39795-2.12939-0.19141-0.84424-1.98242-0.84424 1.96875-2.12939 0.18799 1.6167 1.41504-0.48194 2.08496z m1.83887-0.42041l-2.11914 1.27832q-0.09229 0.04785-0.17432 0.0376-0.07861-0.01025-0.15039-0.05469-0.0752-0.04443-0.11621-0.12988-0.0376-0.08887-0.00683-0.18799l0.56396-2.396-1.86279-1.6167q-0.07861-0.06494-0.10596-0.15381-0.02393-0.08887 0.01025-0.17089 0.0376-0.08203 0.09571-0.13331 0.06152-0.05127 0.16748-0.06835l2.45752-0.21534 0.96045-2.26953q0.0376-0.09912 0.11279-0.14013 0.0752-0.04443 0.16748-0.04444 0.09229 0 0.16748 0.04444 0.0752 0.04102 0.11279 0.14013l0.96045 2.26953 2.45752 0.21534q0.10596 0.01709 0.16406 0.06835 0.06152 0.05127 0.09913 0.13331 0.03418 0.08203 0.00683 0.17089-0.02393 0.08887-0.10254 0.15381l-1.86279 1.6167 0.56396 2.396q0.03076 0.09912-0.01025 0.18799-0.0376 0.08545-0.11279 0.12988-0.07178 0.04443-0.15381 0.05469-0.07861 0.01025-0.1709-0.0376l-2.11914-1.27832z" fill="#E8A317"/>
+              </svg>
+              <span class="text-[12px] font-bold text-ink-900 whitespace-nowrap">Artikel pilihan</span>
+            </div>
+          </div>
+
+          {/* Text */}
+          <div class="flex-1 flex flex-col gap-[20px]">
+            {/* Meta */}
+            <div class="flex flex-row items-center gap-[8px]">
+              {featured.tags?.[0]?.name && (
+                <span class="text-[12px] font-bold tracking-[1px] text-text-brand uppercase">
+                  {featured.tags[0].name}
+                </span>
+              )}
+              <span class="w-[3px] h-[3px] rounded-full bg-text-tertiary shrink-0"></span>
+              <span class="text-[12px] font-medium text-text-tertiary">
+                {readingTime(featured) || '5 menit baca'}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h2 class="text-[28px] lg:text-[38px] leading-[34px] lg:leading-[45px] font-extrabold tracking-[-0.6px] lg:tracking-[-1px] text-ink-900">
+              {featured.title}
+            </h2>
+
+            {/* Excerpt */}
+            {featured.excerpt && (
+              <p class="text-[16px] lg:text-[17px] leading-[26px] lg:leading-[27px] text-text-secondary font-normal">
+                {featured.excerpt}
+              </p>
+            )}
+
+            {/* Author */}
+            <div class="flex flex-row items-center gap-[12px] pt-[8px]">
+              {featured.authors?.[0]?.profile_image ? (
                 <img
-                  src={featured.feature_image}
-                  alt={featured.title}
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="eager"
+                  src={featured.authors[0].profile_image}
+                  alt={featured.authors[0].name ?? ''}
+                  class="w-[44px] h-[44px] rounded-full object-cover shrink-0"
+                  loading="lazy"
                   decoding="async"
                 />
               ) : (
-                <div class="flex h-full min-h-[240px] w-full items-center justify-center bg-mint-50">
-                  <span class="font-sans text-sm font-semibold text-text-brand">Sahabat Warga</span>
+                <div class="w-[44px] h-[44px] rounded-full bg-mint-50 flex items-center justify-center shrink-0">
+                  <img src="/brand/icon-tp-sm.png" alt="" class="w-[28px] h-[28px] object-contain" aria-hidden="true" />
                 </div>
               )}
-            </div>
-            <div class="flex flex-col justify-center gap-4 p-7 lg:p-12">
-              <div class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.6px] text-text-brand">
-                {featured.tags?.[0]?.name && <span>{featured.tags[0].name}</span>}
-                {featured.published_at && <span class="text-text-tertiary">&middot;</span>}
-                {featured.published_at && (
-                  <span class="normal-case tracking-normal font-medium text-text-tertiary">
-                    {formatTanggal(featured.published_at)}
-                  </span>
-                )}
+              <div class="flex flex-col gap-[2px]">
+                <span class="text-[15px] font-bold text-ink-900 whitespace-nowrap">
+                  {featured.authors?.[0]?.name ?? 'Tim Sahabat Warga'}
+                </span>
+                <span class="text-[13px] text-text-secondary font-normal">
+                  {featured.tags?.[0]?.name ? `Tim ${featured.tags[0].name}` : 'Tim Sahabat Warga'} &middot; {formatTanggal(featured.published_at)}
+                </span>
               </div>
-              <h2 class="font-sans text-[24px] lg:text-[32px] font-bold leading-tight tracking-[-0.5px] text-text-primary">
-                {featured.title}
-              </h2>
-              {featured.excerpt && (
-                <p class="font-sans text-[16px] leading-[26px] text-text-secondary line-clamp-3">
-                  {featured.excerpt}
-                </p>
-              )}
-              <span class="mt-1 inline-flex items-center gap-1.5 text-[15px] font-semibold text-text-brand">
-                Baca selengkapnya
-                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="u-chevron h-4 w-4" aria-hidden="true">
-                  <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
             </div>
-          </a>
-        )}
 
-        {rest.length > 0 && (
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {rest.map((post) => <PostCard post={post} />)}
+            {/* Read link */}
+            <div class="flex flex-row items-center gap-[6px] pt-[8px]">
+              <span class="text-[15px] font-bold text-text-brand">Baca artikel</span>
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+                <path d="M9.96338 7.29053l-6.75391 0q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l6.75391 0-3.17188-3.17187q-0.08545-0.08545-0.09228-0.20166-0.00342-0.11621 0.0957-0.21192 0.0957-0.0957 0.20508-0.0957 0.10938-0.00342 0.20508 0.0957l3.54785 3.54785q0.0752 0.0752 0.10596 0.15381 0.03418 0.07861 0.03418 0.17432 0 0.0957-0.03418 0.17432-0.03076 0.07861-0.10596 0.1538l-3.54785 3.54786q-0.08203 0.08203-0.19824 0.08886-0.11621 0.00684-0.21192-0.08886-0.09912-0.0957-0.09912-0.20508 0-0.11279 0.09912-0.2085l3.16846-3.17187z" fill="#08745A"/>
+              </svg>
+            </div>
           </div>
-        )}
+        </a>
+      )}
 
+      {/* ── Latest header ── */}
+      {rest.length > 0 && (
+        <div class="border-t border-border pt-[40px] flex flex-row justify-between items-end">
+          <h2 class="text-[28px] font-extrabold tracking-[-0.6px] text-ink-900 whitespace-nowrap">
+            Artikel terbaru
+          </h2>
+          <div class="flex flex-row items-center gap-[6px]">
+            <span class="text-[14px] font-semibold text-text-secondary whitespace-nowrap">Urutkan: Terbaru</span>
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+              <path d="M7 8.3877q-0.0957 0-0.17432-0.03077-0.07861-0.03076-0.1538-0.10595l-2.56006-2.56006q-0.08203-0.08203-0.08887-0.20166-0.00684-0.11963 0.08887-0.21192 0.09229-0.09229 0.20507-0.09228 0.11279 0 0.20508 0.09228l2.47803 2.47803 2.47803-2.47803q0.08203-0.08203 0.19824-0.08545 0.11963-0.00684 0.21191 0.08545 0.0957 0.09229 0.09571 0.20508 0 0.11279-0.09571 0.2085l-2.56005 2.56006q-0.0752 0.0752-0.15381 0.10595-0.07861 0.03076-0.17432 0.03077z" fill="#6B7672"/>
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* ── Post grid ── */}
+      {rest.length > 0 && (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] -mt-[24px]">
+          {rest.map((post) => {
+            const tag = post.tags?.[0]?.name;
+            const cover = post.feature_image;
+            const rt = readingTime(post);
+            const author = post.authors?.[0];
+            return (
+              <a
+                href={`/blog/${post.slug}`}
+                class="group flex flex-col gap-[16px] no-underline"
+              >
+                {/* Cover */}
+                <div class="w-full h-[232px] rounded-[20px] overflow-hidden bg-surface-muted shrink-0">
+                  {cover ? (
+                    <img
+                      src={cover}
+                      alt={post.title}
+                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="flex h-full w-full items-center justify-center bg-mint-50">
+                      <span class="text-sm font-semibold text-text-brand">Sahabat Warga</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Meta */}
+                <div class="flex flex-row items-center gap-[8px]">
+                  {tag && (
+                    <span class="text-[12px] font-bold tracking-[1px] text-text-brand uppercase">
+                      {tag}
+                    </span>
+                  )}
+                  {rt && (
+                    <>
+                      <span class="w-[3px] h-[3px] rounded-full bg-text-tertiary shrink-0"></span>
+                      <span class="text-[12px] font-medium text-text-tertiary">{rt}</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Title */}
+                <h3 class="text-[21px] leading-[27px] font-bold tracking-[-0.3px] text-ink-900">
+                  {post.title}
+                </h3>
+
+                {/* Excerpt */}
+                {post.excerpt && (
+                  <p class="text-[15px] leading-[24px] text-text-secondary font-normal line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                )}
+
+                {/* Author */}
+                <div class="flex flex-row items-center gap-[10px] pt-[4px]">
+                  {author?.profile_image ? (
+                    <img
+                      src={author.profile_image}
+                      alt={author.name ?? ''}
+                      class="w-[28px] h-[28px] rounded-full object-cover shrink-0"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="w-[28px] h-[28px] rounded-full bg-mint-50 flex items-center justify-center shrink-0">
+                      <img src="/brand/icon-tp-sm.png" alt="" class="w-[18px] h-[18px] object-contain" aria-hidden="true" />
+                    </div>
+                  )}
+                  <span class="text-[13px] font-semibold text-ink-900 whitespace-nowrap">
+                    {author?.name ?? 'Tim Sahabat Warga'}
+                  </span>
+                  <span class="text-[13px] font-normal text-text-tertiary whitespace-nowrap">
+                    &middot; {formatTanggal(post.published_at)}
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Pagination (render only when there are posts; static current-page state) ── */}
+      {posts.length > 0 && (
+        <div class="flex flex-row justify-center items-center gap-[8px] pt-[8px]">
+          {/* Prev */}
+          <span
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
+            aria-disabled="true"
+            aria-label="Halaman sebelumnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M5.896 7l2.47802 2.47803q0.08203 0.08203 0.08545 0.20166 0.00684 0.11621-0.08545 0.20849-0.0957 0.0957-0.20849 0.09571-0.11279 0-0.20508-0.09571l-2.56006-2.56006q-0.0752-0.0752-0.10596-0.1538-0.03076-0.07861-0.03076-0.17432 0-0.0957 0.03076-0.17432 0.03076-0.07861 0.10596-0.15381l2.56006-2.56005q0.08203-0.08203 0.19824-0.08887 0.11963-0.00684 0.21533 0.08887 0.09229 0.09229 0.09229 0.20507 0 0.11279-0.09229 0.20508l-2.47802 2.47803z" fill="#2A3733"/>
+            </svg>
+          </span>
+
+          {/* Current page */}
+          <span class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-ink-900 text-[14px] font-bold text-surface" aria-current="page">
+            1
+          </span>
+
+          {/* Next */}
+          <span
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
+            aria-disabled="true"
+            aria-label="Halaman berikutnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
+            </svg>
+          </span>
+        </div>
+      )}
+    </div>
+
+    {/* ── Newsletter band ── */}
+    <div class="px-4 sm:px-6 lg:px-[120px] pb-[112px]">
+      <div class="flex flex-col lg:flex-row gap-[48px] p-[48px] lg:p-[48px_64px_48px_48px] bg-emerald-900 rounded-[32px] items-center overflow-hidden">
+
+        {/* Mascot */}
+        <div class="shrink-0">
+          <Sobi size={168} />
+        </div>
+
+        {/* Text */}
+        <div class="flex-1 flex flex-col gap-[10px]">
+          <h2 class="text-[28px] lg:text-[32px] leading-[34px] lg:leading-[38px] font-extrabold tracking-[-0.6px] lg:tracking-[-0.8px] text-surface">
+            Dapat tips pengurus tiap dua minggu.
+          </h2>
+          <p class="text-[15px] lg:text-[16px] leading-[26px] text-accent font-normal">
+            Panduan praktis, cerita komunitas, dan pembaruan fitur. Langsung ke email, tanpa spam.
+          </p>
+        </div>
+
+        {/* Form */}
+        <div class="w-full lg:w-[420px] shrink-0 flex flex-col gap-[10px]">
+          <form
+            class="w-full h-[56px] flex flex-row gap-[8px] pl-[22px] pr-[6px] py-[6px] items-center bg-surface rounded-full"
+            action="mailto:hello@saga.co.id"
+            method="get"
+            enctype="text/plain"
+          >
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Email Anda"
+              class="flex-1 bg-transparent outline-none text-[15px] text-ink-900 placeholder:text-text-tertiary font-normal"
+            />
+            <button
+              type="submit"
+              class="shrink-0 h-full px-[22px] bg-primary rounded-full text-[15px] font-bold text-surface whitespace-nowrap hover:opacity-90 transition-opacity"
+            >
+              Berlangganan
+            </button>
+          </form>
+          <p class="text-[12px] font-medium text-[#5FD4AE] whitespace-nowrap">
+            Bisa berhenti berlangganan kapan saja.
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
+
   <Footer />
 </Base>
