@@ -8,19 +8,15 @@ import { nav } from '../../data/content.id';
     class="hidden lg:flex flex-row items-center justify-between h-[79.5px] px-[120px]"
     aria-label="Navigasi utama"
   >
-    {/* Logo: mark + wordmark */}
-    <a href="/" class="flex flex-row items-center gap-[10px] no-underline shrink-0 u-press">
+    {/* Logo lockup (sahabat warga) */}
+    <a href="/" class="flex flex-row items-center no-underline shrink-0 u-press" aria-label={nav.brand}>
       <img
-        src="/brand/icon-tp-sm.png"
-        alt=""
-        aria-hidden="true"
-        width="36"
-        height="36"
-        class="w-[36px] h-[36px] shrink-0"
+        src="/brand/logo.webp"
+        alt={nav.brand}
+        width="155"
+        height="40"
+        class="h-9 w-auto object-contain"
       />
-      <span class="text-[20px] leading-normal font-extrabold tracking-[-0.6px] text-text-primary whitespace-nowrap font-sans">
-        {nav.brand.toLowerCase()}
-      </span>
     </a>
 
     {/* Right: links + CTA */}
@@ -53,19 +49,15 @@ import { nav } from '../../data/content.id';
   {/* Mobile nav */}
   <nav class="lg:hidden" aria-label="Navigasi utama">
     <div class="flex items-center justify-between h-16 px-4 sm:px-6">
-      {/* Logo */}
-      <a href="/" class="flex flex-row items-center gap-[10px] no-underline shrink-0 u-press">
+      {/* Logo lockup */}
+      <a href="/" class="flex flex-row items-center no-underline shrink-0 u-press" aria-label={nav.brand}>
         <img
-          src="/brand/icon-tp-sm.png"
-          alt=""
-          aria-hidden="true"
-          width="32"
-          height="32"
-          class="w-8 h-8 shrink-0"
+          src="/brand/logo.webp"
+          alt={nav.brand}
+          width="140"
+          height="36"
+          class="h-8 w-auto object-contain"
         />
-        <span class="text-[18px] leading-normal font-extrabold tracking-[-0.5px] text-text-primary whitespace-nowrap font-sans">
-          {nav.brand.toLowerCase()}
-        </span>
       </a>
 
       {/* Hamburger */}
