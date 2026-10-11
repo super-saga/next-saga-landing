@@ -63,12 +63,18 @@ const chips = [...activeChips, ...extraChips];
 
         {/* Search bar */}
         <div class="flex-shrink-0 lg:w-[360px]">
-          <label class="flex flex-row gap-[10px] px-[20px] h-[52px] items-center bg-bg outline outline-1 outline-border rounded-full w-full">
+          <form method="GET" action="/blog/search" class="flex flex-row gap-[10px] px-[20px] h-[52px] items-center bg-bg outline outline-1 outline-border rounded-full w-full">
             <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] shrink-0" aria-hidden="true">
               <path d="M5.56445 8.8833q-1.39795 0-2.37207-0.9707-0.9707-0.9707-0.9707-2.37207 0-1.39795 0.9707-2.36866 0.97412-0.97412 2.37207-0.97412 1.39795 0 2.36866 0.97412 0.97412 0.9707 0.97412 2.36866 0 0.6084-0.21534 1.1792-0.21533 0.56738-0.56396 0.9707l3.44531 3.44531q0.08203 0.08203 0.08545 0.20166 0.00684 0.11963-0.08545 0.21192-0.09229 0.09229-0.20849 0.09228-0.11279 0-0.20508-0.09228l-3.44531-3.44532q-0.4375 0.37256-1.00831 0.57764-0.56738 0.20166-1.1416 0.20166z m0-0.58105q1.16211 0 1.9585-0.79981 0.7998-0.7998 0.7998-1.96191 0-1.15869-0.7998-1.9585-0.79639-0.7998-1.9585-0.7998-1.16211 0-1.96191 0.7998-0.79639 0.7998-0.79639 1.9585 0 1.16211 0.79639 1.96191 0.7998 0.7998 1.96191 0.79981z" fill="#98A29E"/>
             </svg>
-            <span class="text-[15px] text-text-tertiary font-normal">Cari artikel&hellip;</span>
-          </label>
+            <input
+              type="text"
+              name="q"
+              placeholder="Cari artikel..."
+              class="flex-1 bg-transparent outline-none text-[15px] text-text-primary placeholder:text-text-tertiary font-normal"
+              aria-label="Cari artikel"
+            />
+          </form>
         </div>
       </div>
 

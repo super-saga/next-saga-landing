@@ -1,0 +1,506 @@
+---
+export const prerender = false;
+
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/sections/Nav.astro';
+import Footer from '../../components/sections/Footer.astro';
+import Sobi from '../../components/sobi/Sobi.astro';
+import { getPosts, formatTanggal, readingTime } from '../../lib/ghost';
+import type { GhostPost } from '../../lib/ghost';
+
+const rawQ = Astro.url.searchParams.get('q') ?? '';
+const q = rawQ.trim();
+const ql = q.toLowerCase();
+
+const allPosts = await getPosts('all');
+
+// Filter: match title, excerpt, or any tag name (case-insensitive)
+const results: GhostPost[] = q
+  ? allPosts.filter((p) => {
+      if (p.title?.toLowerCase().includes(ql)) return true;
+      if (p.excerpt?.toLowerCase().includes(ql)) return true;
+      if (p.tags?.some((t) => t.name?.toLowerCase().includes(ql))) return true;
+      return false;
+    })
+  : allPosts;
+
+const hasResults = results.length > 0;
+
+// Sidebar: latest 4 posts as "most read" stand-in
+const mostRead = allPosts.slice(0, 4);
+
+// Recommended: up to 3 posts for empty state
+const recommended = allPosts.slice(0, 3);
+
+// Category counts from results
+type CategoryCount = { name: string; count: number };
+const categoryMap = new Map<string, number>();
+for (const p of results) {
+  const tag = p.tags?.[0]?.name;
+  if (tag) categoryMap.set(tag, (categoryMap.get(tag) ?? 0) + 1);
+}
+const categories: CategoryCount[] = [{ name: 'Semua', count: results.length }];
+for (const [name, count] of categoryMap) {
+  categories.push({ name, count });
+}
+
+const popularChips = ['laporan kas', 'QRIS', 'undangan tamu', 'pencairan dana', 'polling warga'];
+const popularTopics = ['#Iuran', '#Laporan kas', '#QRIS', '#Keamanan', '#Pengurus RT', '#UMKM', '#Polling', '#Pencairan dana'];
+const suggestionChips = ['iuran', 'laporan kas', 'tagihan'];
+
+// SVG paths (reused from ref)
+const SVG_SEARCH = `M5.56445 8.8833q-1.39795 0-2.37207-0.9707-0.9707-0.9707-0.9707-2.37207 0-1.39795 0.9707-2.36866 0.97412-0.97412 2.37207-0.97412 1.39795 0 2.36866 0.97412 0.97412 0.9707 0.97412 2.36866 0 0.6084-0.21534 1.1792-0.21533 0.56738-0.56396 0.9707l3.44531 3.44531q0.08203 0.08203 0.08545 0.20166 0.00684 0.11963-0.08545 0.21192-0.09229 0.09229-0.20849 0.09228-0.11279 0-0.20508-0.09228l-3.44531-3.44532q-0.4375 0.37256-1.00831 0.57764-0.56738 0.20166-1.1416 0.20166z m0-0.58105q1.16211 0 1.9585-0.79981 0.7998-0.7998 0.7998-1.96191 0-1.15869-0.7998-1.9585-0.79639-0.7998-1.9585-0.7998-1.16211 0-1.96191 0.7998-0.79639 0.7998-0.79639 1.9585 0 1.16211 0.79639 1.96191 0.7998 0.7998 1.96191 0.79981z`;
+const SVG_CHEVRON_RIGHT = `M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z`;
+const SVG_CHEVRON_DOWN = `M7 8.3877q-0.0957 0-0.17432-0.03077-0.07861-0.03076-0.1538-0.10595l-2.56006-2.56006q-0.08203-0.08203-0.08887-0.20166-0.00684-0.11963 0.08887-0.21192 0.09229-0.09229 0.20507-0.09228 0.11279 0 0.20508 0.09228l2.47803 2.47803 2.47803-2.47803q0.08203-0.08203 0.19824-0.08545 0.11963-0.00684 0.21191 0.08545 0.0957 0.09229 0.09571 0.20508 0 0.11279-0.09571 0.2085l-2.56005 2.56006q-0.0752 0.0752-0.15381 0.10595-0.07861 0.03076-0.17432 0.03077z`;
+const SVG_ARROW_FORWARD = `M9.96338 7.29053l-6.75391 0q-0.12646 0-0.21191-0.08203-0.08203-0.08545-0.08203-0.2085 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.21191-0.08545l6.75391 0-3.17188-3.17187q-0.08545-0.08545-0.09228-0.20166-0.00342-0.11621 0.0957-0.21192 0.0957-0.0957 0.20508-0.0957 0.10938-0.00342 0.20508 0.0957l3.54785 3.54785q0.0752 0.0752 0.10596 0.15381 0.03418 0.07861 0.03418 0.17432 0 0.0957-0.03418 0.17432-0.03076 0.07861-0.10596 0.1538l-3.54785 3.54786q-0.08203 0.08203-0.19824 0.08886-0.11621 0.00684-0.21192-0.08886-0.09912-0.0957-0.09912-0.20508 0-0.11279 0.09912-0.2085l3.16846-3.17187z`;
+const SVG_CHAT = `M3.54443 9.91553l-0.99463 0.99463q-0.21875 0.22217-0.50927 0.10254-0.29053-0.11963-0.29053-0.43409l0-7.88525q0-0.40332 0.27002-0.67334 0.27002-0.27002 0.67334-0.27002l8.61328 0q0.40332 0 0.67334 0.27002 0.27002 0.27002 0.27002 0.67334l0 6.28223q0 0.3999-0.27002 0.66992-0.27002 0.27002-0.67334 0.27002l-7.76221 0z m-0.24951-0.58106l8.01172 0q0.13672 0 0.24609-0.11279 0.11279-0.11279 0.1128-0.24609l0-6.28223q0-0.13672-0.1128-0.24609-0.10938-0.11279-0.24609-0.1128l-8.61328 0q-0.13672 0-0.24951 0.1128-0.10938 0.10938-0.10938 0.24609l0 7.59814 0.96045-0.95703z m-0.96045 0l0-6.64111q0-0.13672 0-0.24609 0-0.11279 0-0.1128 0 0 0 0.1128 0 0.10938 0 0.24609l0 6.28223q0 0.1333 0 0.24609 0 0.11279 0 0.11279z`;
+const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0.08545-0.08203-0.20849 0-0.12305 0.08203-0.20508 0.08545-0.08545 0.2085-0.08545l4.99365 0q0.12305 0 0.20508 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12646-0.08545 0.20849-0.08203 0.08203-0.20508 0.08203l-4.99365 0z m0-2.79248q-0.12305 0-0.2085-0.08203-0.08203-0.08545-0.08203-0.20849 0-0.12646 0.08203-0.2085 0.08545-0.08203 0.2085-0.08203l2.02002 0q0.12305 0 0.20507 0.08545 0.08545 0.08203 0.08545 0.20508 0 0.12305-0.08545 0.20849-0.08203 0.08203-0.20507 0.08203l-2.02002 0z m0-2.79248q-0.12305 0-0.2085-0.08203-0.08203-0.08545-0.08203-0.20849 0-0.12646 0.08203-0.2085 0.08545-0.08545 0.2085-0.08545l2.02002 0q0.12305 0 0.20507 0.08545 0.08545 0.08203 0.08545 0.2085 0 0.12305-0.08545 0.20849-0.08203 0.08203-0.20507 0.08203l-2.02002 0z m6.08056 3.86914q-0.98096 0-1.6748-0.67675-0.69043-0.68018-0.69043-1.66114 0-0.98096 0.69043-1.65771 0.69385-0.68018 1.67822-0.68018 0.98438 0 1.67481 0.68018 0.69043 0.67676 0.69043 1.65088 0 0.38965-0.12989 0.7622-0.12988 0.36914-0.37939 0.67334l2.06445 2.03028q0.09229 0.07861 0.09229 0.19824 0 0.11963-0.09229 0.21533-0.07861 0.08203-0.20166 0.08203-0.11963 0-0.21191-0.08203l-2.06104-2.03027q-0.31787 0.23584-0.69043 0.36572-0.36914 0.12988-0.75879 0.12988z m0-0.58105q0.74512 0 1.26465-0.50928 0.51953-0.5127 0.51953-1.24756 0-0.73486-0.51953-1.24414-0.51953-0.5127-1.26465-0.51269-0.7417 0-1.26464 0.51269-0.51953 0.50928-0.51954 1.24414 0 0.73486 0.51954 1.24756 0.52295 0.50928 1.26464 0.50928z`;
+---
+
+<Base
+  title={q ? `Pencarian: ${q} - Blog Sahabat Warga` : 'Cari Artikel - Blog Sahabat Warga'}
+  description={q
+    ? `${results.length} artikel ditemukan untuk "${q}" di Blog Sahabat Warga.`
+    : 'Cari artikel tentang pengelolaan RT/RW, iuran, keamanan, dan kegiatan warga.'}
+>
+  <Nav />
+
+  {/* ─── Search Header ──────────────────────────────────────────────────── */}
+  <header class="bg-white border-b border-[#E3E7E5]">
+    <div class="px-4 sm:px-6 lg:px-[120px] pt-[40px] pb-[48px] flex flex-col gap-[28px]">
+
+      {/* Breadcrumb */}
+      <nav class="flex flex-row items-center gap-[8px]" aria-label="Breadcrumb">
+        <a
+          href="/blog"
+          class="text-[14px] font-semibold text-[#6B7672] no-underline hover:text-[#2A3733] transition-colors whitespace-nowrap"
+        >
+          Blog
+        </a>
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[16px] h-[16px] shrink-0" aria-hidden="true">
+          <path d={SVG_CHEVRON_RIGHT} fill="#98A29E" />
+        </svg>
+        <span class="text-[14px] font-semibold text-[#0F1A17] whitespace-nowrap">Pencarian</span>
+      </nav>
+
+      {/* Search Field */}
+      <form method="GET" action="/blog/search" class="flex flex-row gap-[14px] px-[8px] pl-[26px] h-[68px] items-center bg-white outline outline-2 outline-[#0E9F76] -outline-offset-[1px] rounded-full w-full lg:w-[880px]">
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[24px] h-[24px] shrink-0" aria-hidden="true">
+          <path d={SVG_SEARCH} fill="#08745A" />
+        </svg>
+        <input
+          type="text"
+          name="q"
+          value={q}
+          placeholder="Cari artikel..."
+          id="search-input"
+          autocomplete="off"
+          class="flex-1 bg-transparent outline-none text-[20px] font-semibold text-[#0F1A17] placeholder:text-[#98A29E] min-w-0"
+          aria-label="Kata kunci pencarian"
+        />
+        {q && (
+          <a
+            href="/blog/search"
+            class="w-[36px] h-[36px] shrink-0 flex items-center justify-center bg-[#EEF1EF] rounded-full hover:bg-[#E3E7E5] transition-colors"
+            aria-label="Hapus pencarian"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" aria-hidden="true">
+              <path d="M7 7.41357l-3.05908 3.05909q-0.08203 0.08203-0.20166 0.08886-0.11963 0.00342-0.21192-0.08886-0.09229-0.09229-0.09228-0.20508 0-0.11279 0.09228-0.2085l3.05909-3.05908-3.05909-3.05908q-0.08203-0.08203-0.08886-0.20166-0.00342-0.11963 0.08886-0.21192 0.09229-0.09229 0.20508-0.09228 0.11279 0 0.2085 0.09228l3.05908 3.05909 3.05908-3.05909q0.08203-0.08203 0.20166-0.08545 0.11963-0.00684 0.21192 0.08545 0.09228 0.09229 0.09228 0.20508 0 0.11279-0.09228 0.2085l-3.05909 3.05908 3.05909 3.05908q0.08203 0.08203 0.08544 0.20166 0.00684 0.11963-0.08544 0.21192-0.09229 0.09228-0.20508 0.09228-0.11279 0-0.2085-0.09228l-3.05908-3.05909z" fill="#6B7672" />
+            </svg>
+          </a>
+        )}
+        <button
+          type="submit"
+          class="h-[52px] px-[28px] shrink-0 bg-[#0E9F76] rounded-full text-[16px] font-bold text-white whitespace-nowrap hover:opacity-90 transition-opacity"
+        >
+          Cari
+        </button>
+      </form>
+
+      {/* Popular search chips */}
+      <div class="flex flex-row flex-wrap items-center gap-[8px]">
+        <span class="text-[14px] font-semibold text-[#98A29E] whitespace-nowrap">Populer:</span>
+        {popularChips.map((chip) => (
+          <a
+            href={`/blog/search?q=${encodeURIComponent(chip)}`}
+            class="inline-flex h-[34px] items-center px-[14px] bg-[#F6F7F6] rounded-full text-[13px] font-semibold text-[#2A3733] whitespace-nowrap hover:bg-[#EEF1EF] transition-colors no-underline"
+          >
+            {chip}
+          </a>
+        ))}
+      </div>
+    </div>
+  </header>
+
+  {/* ─── Main Content ────────────────────────────────────────────────────── */}
+  <main>
+    {hasResults ? (
+      /* ── RESULTS STATE ── */
+      <div class="px-4 sm:px-6 lg:px-[120px] py-[48px] pb-[104px] flex flex-col lg:flex-row gap-[64px] items-start">
+
+        {/* Results column */}
+        <div class="flex-1 min-w-0 flex flex-col gap-[24px]">
+
+          {/* Results header */}
+          <div class="flex flex-col gap-[20px]">
+
+            {/* Count row */}
+            <div class="flex flex-row justify-between items-end gap-4">
+              <div class="flex flex-col gap-[4px]">
+                <h1 class="text-[28px] font-extrabold tracking-[-0.6px] text-[#0F1A17] leading-normal">
+                  {results.length} artikel untuk &ldquo;{q}&rdquo;
+                </h1>
+                <p class="text-[14px] font-normal text-[#6B7672]">Diurutkan dari yang paling relevan</p>
+              </div>
+              <div class="flex flex-row items-center gap-[6px] h-[40px] px-[12px] pl-[16px] bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] rounded-full shrink-0">
+                <span class="text-[14px] font-semibold text-[#2A3733] whitespace-nowrap">Paling relevan</span>
+                <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+                  <path d={SVG_CHEVRON_DOWN} fill="#2A3733" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Category filter chips */}
+            <div class="flex flex-row flex-wrap gap-[8px]">
+              {categories.map((cat, i) => (
+                <button
+                  type="button"
+                  class:list={[
+                    'inline-flex h-[38px] items-center gap-[8px] pl-[16px] pr-[8px] rounded-full text-[14px] font-semibold whitespace-nowrap',
+                    i === 0
+                      ? 'bg-[#0F1A17] text-white'
+                      : 'bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] text-[#2A3733] hover:bg-[#F6F7F6] transition-colors',
+                  ]}
+                  aria-pressed={i === 0}
+                >
+                  {cat.name}
+                  <span
+                    class:list={[
+                      'inline-flex h-[22px] items-center px-[8px] rounded-full text-[12px] font-bold',
+                      i === 0 ? 'bg-white/15 text-white' : 'bg-[#EEF1EF] text-[#6B7672]',
+                    ]}
+                  >
+                    {cat.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Results list */}
+          <div class="border-t border-[#E3E7E5]">
+            {results.map((post) => {
+              const tag = post.tags?.[0]?.name;
+              const rt = readingTime(post);
+              const date = formatTanggal(post.published_at);
+              const cover = post.feature_image;
+              return (
+                <a
+                  href={`/blog/${post.slug}`}
+                  class="flex flex-row gap-[28px] py-[28px] border-b border-[#E3E7E5] items-center no-underline group"
+                >
+                  {/* Thumbnail */}
+                  <div class="w-[232px] h-[156px] shrink-0 rounded-[16px] overflow-hidden bg-[#EEF1EF]">
+                    {cover ? (
+                      <img
+                        src={cover}
+                        alt={post.title ?? ''}
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div class="flex w-full h-full items-center justify-center bg-[#EEFBF5]">
+                        <span class="text-sm font-semibold text-[#08745A]">Sahabat Warga</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Text */}
+                  <div class="flex-1 min-w-0 flex flex-col gap-[10px]">
+                    {/* Meta */}
+                    <div class="flex flex-row items-center gap-[8px]">
+                      {tag && (
+                        <span class="text-[12px] font-bold tracking-[1px] text-[#08745A] uppercase whitespace-nowrap">
+                          {tag}
+                        </span>
+                      )}
+                      {(tag && (rt || date)) && (
+                        <span class="w-[3px] h-[3px] rounded-full bg-[#98A29E] shrink-0"></span>
+                      )}
+                      {(rt || date) && (
+                        <span class="text-[12px] font-medium text-[#98A29E] whitespace-nowrap">
+                          {rt}{rt && date ? ' · ' : ''}{date}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Title */}
+                    <h2 class="text-[22px] leading-[29px] font-bold tracking-[-0.3px] text-[#0F1A17]">
+                      {post.title}
+                    </h2>
+
+                    {/* Excerpt snippet */}
+                    {post.excerpt && (
+                      <p class="text-[15px] leading-[24px] text-[#6B7672] font-normal line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                    )}
+
+                    {/* Match indicator */}
+                    <div class="flex flex-row items-center gap-[6px]">
+                      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[16px] h-[16px] shrink-0" aria-hidden="true">
+                        <path d={SVG_MANAGE_SEARCH} fill="#98A29E" />
+                      </svg>
+                      <span class="text-[12px] font-medium text-[#98A29E] whitespace-nowrap">
+                        {post.title?.toLowerCase().includes(ql) ? 'Cocok di judul dan isi' : 'Cocok di isi'}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Load more / count info */}
+          {results.length > 5 && (
+            <div class="flex flex-col items-center gap-[12px] pt-[16px]">
+              <p class="text-[13px] font-medium text-[#98A29E] whitespace-nowrap">
+                Menampilkan semua {results.length} artikel
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <aside class="w-full lg:w-[340px] shrink-0 flex flex-col gap-[40px] lg:sticky lg:top-[24px]">
+
+          {/* Tanya Sobi card */}
+          <div class="w-full flex flex-col gap-[14px] p-[24px] bg-[#06372A] rounded-[24px] overflow-hidden">
+            <div class="flex flex-row items-center gap-[14px]">
+              <div class="shrink-0">
+                <Sobi size={72} />
+              </div>
+              <h2 class="flex-1 text-[19px] leading-[24px] font-extrabold tracking-[-0.3px] text-white">
+                Belum ketemu jawabannya?
+              </h2>
+            </div>
+            <p class="text-[14px] leading-[22px] font-normal text-[#C9F5E4]">
+              Tanyakan langsung ke Sobi. Ia merangkum jawaban dari artikel dan panduan Sahabat Warga.
+            </p>
+            <div class="flex flex-row items-center gap-[8px] p-[12px_14px] bg-white/[0.08] rounded-[14px]">
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[16px] h-[16px] shrink-0" aria-hidden="true">
+                <path d={SVG_CHAT} fill="#5FD4AE" />
+              </svg>
+              <span class="flex-1 text-[13px] leading-[18px] font-medium text-white">
+                &ldquo;Bagaimana cara menagih tunggakan iuran?&rdquo;
+              </span>
+            </div>
+            <button
+              type="button"
+              id="sobi-btn-sidebar"
+              class="w-full h-[46px] flex flex-row items-center justify-center gap-[8px] bg-[#0E9F76] rounded-full text-[15px] font-bold text-white hover:opacity-90 transition-opacity cursor-pointer"
+              aria-label="Tanya Sobi, asisten AI Sahabat Warga"
+            >
+              Tanya Sobi
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+                <path d={SVG_ARROW_FORWARD} fill="white" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Topik Populer */}
+          <div class="flex flex-col gap-[14px]">
+            <span class="text-[12px] font-bold tracking-[1px] text-[#98A29E] uppercase">TOPIK POPULER</span>
+            <div class="flex flex-row flex-wrap gap-[8px]">
+              {popularTopics.map((topic) => (
+                <a
+                  href={`/blog/search?q=${encodeURIComponent(topic.replace(/^#/, ''))}`}
+                  class="inline-flex items-center px-[14px] py-[6px] bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] rounded-full text-[13px] font-semibold text-[#2A3733] whitespace-nowrap hover:bg-[#F6F7F6] transition-colors no-underline"
+                >
+                  {topic}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Paling Banyak Dibaca */}
+          <div class="flex flex-col gap-[4px]">
+            <span class="text-[12px] font-bold tracking-[1px] text-[#98A29E] uppercase mb-[10px]">PALING BANYAK DIBACA</span>
+            {mostRead.map((post, idx) => {
+              const rt = readingTime(post);
+              return (
+                <a
+                  href={`/blog/${post.slug}`}
+                  class="flex flex-row items-start gap-[16px] py-[14px] border-b border-[#E3E7E5] last:border-b-0 no-underline group"
+                >
+                  <span class="text-[24px] font-extrabold tracking-[-0.5px] text-[#5FD4AE] shrink-0 leading-none pt-[2px]">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <div class="flex-1 flex flex-col gap-[4px]">
+                    <span class="text-[15px] leading-[20px] font-bold text-[#0F1A17] group-hover:text-[#08745A] transition-colors">
+                      {post.title}
+                    </span>
+                    {rt && (
+                      <span class="text-[12px] font-medium text-[#98A29E]">{rt}</span>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </aside>
+      </div>
+    ) : (
+      /* ── EMPTY STATE ── */
+      <div class="px-4 sm:px-6 lg:px-[120px] py-[72px] pb-[112px] flex flex-col items-center gap-[72px]">
+
+        {/* Empty state block */}
+        <div class="w-full max-w-[640px] flex flex-col items-center gap-[16px] text-center">
+          <Sobi size={180} />
+          <h1 class="text-[30px] leading-[38px] font-extrabold tracking-[-0.6px] text-[#0F1A17]">
+            Belum ada artikel untuk &ldquo;{q}&rdquo;
+          </h1>
+          <p class="text-[17px] leading-[27px] font-normal text-[#6B7672]">
+            Coba kata kunci yang lebih umum, periksa ejaan, atau tanyakan langsung ke Sobi.
+          </p>
+
+          {/* Suggestion chips */}
+          <div class="flex flex-row flex-wrap items-center justify-center gap-[8px] pt-[8px]">
+            <span class="text-[14px] font-semibold text-[#98A29E] whitespace-nowrap">Coba:</span>
+            {suggestionChips.map((chip) => (
+              <a
+                href={`/blog/search?q=${encodeURIComponent(chip)}`}
+                class="inline-flex h-[34px] items-center px-[14px] bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] rounded-full text-[13px] font-semibold text-[#2A3733] whitespace-nowrap hover:bg-[#F6F7F6] transition-colors no-underline"
+              >
+                {chip}
+              </a>
+            ))}
+          </div>
+
+          {/* Action buttons */}
+          <div class="flex flex-row flex-wrap items-center justify-center gap-[12px] pt-[16px]">
+            <button
+              type="button"
+              id="sobi-btn-empty"
+              class="inline-flex h-[48px] items-center gap-[8px] px-[22px] bg-[#0E9F76] rounded-full text-[15px] font-bold text-white whitespace-nowrap hover:opacity-90 transition-opacity cursor-pointer"
+              aria-label="Tanya Sobi"
+            >
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+                <path d={SVG_CHAT} fill="white" />
+              </svg>
+              Tanya Sobi
+            </button>
+            <a
+              href="/blog"
+              class="inline-flex h-[48px] items-center px-[22px] bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] rounded-full text-[15px] font-bold text-[#2A3733] whitespace-nowrap hover:bg-[#F6F7F6] transition-colors no-underline"
+            >
+              Lihat semua artikel
+            </a>
+          </div>
+        </div>
+
+        {/* Recommended section */}
+        {recommended.length > 0 && (
+          <div class="w-full border-t border-[#E3E7E5] pt-[56px] flex flex-col gap-[32px]">
+            <h2 class="text-[28px] font-extrabold tracking-[-0.6px] text-[#0F1A17] whitespace-nowrap">
+              Mungkin Anda tertarik
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+              {recommended.map((post) => {
+                const tag = post.tags?.[0]?.name;
+                const rt = readingTime(post);
+                const cover = post.feature_image;
+                const author = post.authors?.[0];
+                return (
+                  <a
+                    href={`/blog/${post.slug}`}
+                    class="flex flex-col gap-[16px] no-underline group"
+                  >
+                    <div class="w-full h-[232px] rounded-[20px] overflow-hidden bg-[#EEF1EF] shrink-0">
+                      {cover ? (
+                        <img
+                          src={cover}
+                          alt={post.title ?? ''}
+                          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div class="flex w-full h-full items-center justify-center bg-[#EEFBF5]">
+                          <span class="text-sm font-semibold text-[#08745A]">Sahabat Warga</span>
+                        </div>
+                      )}
+                    </div>
+                    <div class="flex flex-row items-center gap-[8px]">
+                      {tag && (
+                        <span class="text-[12px] font-bold tracking-[1px] text-[#08745A] uppercase whitespace-nowrap">
+                          {tag}
+                        </span>
+                      )}
+                      {tag && rt && <span class="w-[3px] h-[3px] rounded-full bg-[#98A29E] shrink-0"></span>}
+                      {rt && <span class="text-[12px] font-medium text-[#98A29E] whitespace-nowrap">{rt}</span>}
+                    </div>
+                    <h3 class="text-[21px] leading-[27px] font-bold tracking-[-0.3px] text-[#0F1A17]">
+                      {post.title}
+                    </h3>
+                    {post.excerpt && (
+                      <p class="text-[15px] leading-[24px] font-normal text-[#6B7672] line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <div class="flex flex-row items-center gap-[10px] pt-[4px]">
+                      {author?.profile_image ? (
+                        <img
+                          src={author.profile_image}
+                          alt={author.name ?? ''}
+                          class="w-[28px] h-[28px] rounded-full object-cover shrink-0"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div class="w-[28px] h-[28px] rounded-full bg-[#EEFBF5] flex items-center justify-center shrink-0">
+                          <img src="/brand/icon-tp-sm.png" alt="" class="w-[18px] h-[18px] object-contain" aria-hidden="true" />
+                        </div>
+                      )}
+                      <span class="text-[13px] font-semibold text-[#0F1A17] whitespace-nowrap">
+                        {author?.name ?? 'Tim Sahabat Warga'}
+                      </span>
+                      <span class="text-[13px] font-normal text-[#98A29E] whitespace-nowrap">
+                        &middot; {formatTanggal(post.published_at)}
+                      </span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // Wire "Tanya Sobi" buttons to open the Sobi chat
+  function wireSobiButtons() {
+    const btns = document.querySelectorAll<HTMLButtonElement>('#sobi-btn-sidebar, #sobi-btn-empty');
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (typeof window.openSobiChat === 'function') {
+          window.openSobiChat();
+        } else {
+          // Fallback: dispatch the same event the launcher uses
+          window.dispatchEvent(new CustomEvent('sobi:open'));
+        }
+      });
+    });
+  }
+  if (document.readyState !== 'loading') {
+    wireSobiButtons();
+  } else {
+    document.addEventListener('DOMContentLoaded', wireSobiButtons);
+  }
+</script>
