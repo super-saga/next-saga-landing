@@ -55,7 +55,7 @@ const icons = [
       <!-- Vertical track -->
       <div
         id="warga-track"
-        class="warga-track flex-1 min-w-0 flex flex-col gap-4 overflow-y-auto overscroll-y-contain h-[420px] lg:h-[440px]"
+        class="warga-track flex-1 min-w-0 flex flex-col gap-4 overflow-y-auto overscroll-y-contain h-[320px] sm:h-[420px] lg:h-[440px]"
         style="scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;"
       >
         {warga.features.map((feat, i) => (
@@ -64,15 +64,15 @@ const icons = [
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 1} dari 5: ${feat.title}`}
-            class="warga-slide flex-none w-full h-[420px] lg:h-[440px] flex flex-row rounded-[20px] overflow-hidden bg-white [box-shadow:0_2px_12px_0_rgba(0,0,0,0.07)]"
+            class="warga-slide flex-none w-full h-[320px] sm:h-[420px] lg:h-[440px] flex flex-row rounded-[20px] overflow-hidden bg-white [box-shadow:0_2px_12px_0_rgba(0,0,0,0.07)]"
             style="scroll-snap-align: start;"
           >
-            <!-- Phone visual area: mint bg, image crops at bottom -->
-            <div class="bg-[#EEFBF5] flex justify-center items-start pt-8 overflow-hidden w-[150px] sm:w-[220px] lg:w-[340px] shrink-0">
+            <!-- Phone visual area: mint bg; phone is taller than the card so it crops at the bottom (screen reads big, like pen.dev) -->
+            <div class="bg-[#EEFBF5] flex justify-center items-start pt-6 lg:pt-9 overflow-hidden w-[150px] sm:w-[290px] lg:w-[390px] shrink-0">
               <img
                 src={wargaScreens[i]}
                 alt={`Layar ${feat.title} di aplikasi Sahabat Warga`}
-                class="block h-auto w-[130px] sm:w-[180px] lg:w-[230px] shrink-0"
+                class="block h-auto w-[140px] sm:w-[260px] lg:w-[330px] shrink-0"
                 loading="lazy"
                 decoding="async"
               />
