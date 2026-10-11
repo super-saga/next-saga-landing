@@ -50,13 +50,13 @@ const featureIcons = [groupsSvg, campaignSvg, eventSvg, shieldSvg, monitoringSvg
       <!-- Flagship Card: Iuran Digital & Laporan Transparan -->
       <Reveal delay={60}>
         <article
-          class="w-full lg:w-[680px] shrink-0 flex flex-col gap-[36px] p-[48px] bg-[#EEFBF5] rounded-[24px]"
+          class="w-full lg:w-[680px] shrink-0 flex flex-col gap-[36px] p-[48px] bg-[#EEFBF5] rounded-[24px] u-hover-lift"
           aria-labelledby="pengurus-flagship-title"
         >
           <!-- Icon + Text -->
           <div class="flex flex-col gap-[20px]">
             <!-- Icon Tile -->
-            <div class="w-[56px] h-[56px] shrink-0 flex items-center justify-center bg-[#0E9F76] rounded-[16px]">
+            <div class="w-[56px] h-[56px] shrink-0 flex items-center justify-center bg-[#0E9F76] rounded-[16px] u-icon-pop">
               <Fragment set:html={walletSvg} />
             </div>
 
@@ -77,13 +77,13 @@ const featureIcons = [groupsSvg, campaignSvg, eventSvg, shieldSvg, monitoringSvg
               src="/screens/dashboard-pengurus.png"
               alt="Dashboard iuran dan laporan keuangan"
               width={256}
-              class="rounded-[33px] shadow-[0px_24px_60px_#0F1A1726] object-cover"
+              class="rounded-[33px] shadow-[0px_24px_60px_#0F1A1726] object-cover u-tilt"
             />
             <PhoneMockup
               src="/screens/laporan.png"
               alt="Laporan keuangan komunitas"
               width={256}
-              class="rounded-[33px] shadow-[0px_24px_60px_#0F1A1726] object-cover"
+              class="rounded-[33px] shadow-[0px_24px_60px_#0F1A1726] object-cover u-tilt"
             />
           </div>
         </article>
@@ -93,9 +93,9 @@ const featureIcons = [groupsSvg, campaignSvg, eventSvg, shieldSvg, monitoringSvg
       <Reveal delay={120}>
         <ul class="flex-1 flex flex-col" role="list">
           {pengurus.features.map((feat, i) => (
-            <li class="flex flex-row gap-[20px] py-[24px] items-start border-b border-[#E3E7E5] last:border-b-0">
+            <li class="flex flex-row gap-[20px] py-[24px] items-start border-b border-[#E3E7E5] last:border-b-0 group u-interactive">
               <!-- Icon Tile -->
-              <div class="w-[48px] h-[48px] shrink-0 flex items-center justify-center bg-[#EEFBF5] rounded-[14px]">
+              <div class="w-[48px] h-[48px] shrink-0 flex items-center justify-center bg-[#EEFBF5] rounded-[14px] u-icon-pop">
                 <Fragment set:html={featureIcons[i] ?? featureIcons[0]} />
               </div>
               <!-- Text -->

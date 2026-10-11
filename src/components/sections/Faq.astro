@@ -78,13 +78,13 @@ import { WA_URL } from '../../config';
     <div class="flex-1 flex flex-col border-t border-[#E3E7E5] w-full">
       {faq.items.map((item) => (
         <details class="group flex flex-col border-b border-[#E3E7E5]">
-          <summary class="flex flex-row gap-[24px] justify-between items-start py-[28px] cursor-pointer">
+          <summary class="flex flex-row gap-[24px] justify-between items-start py-[28px] cursor-pointer u-interactive">
             <span class="text-[18px] lg:text-[20px] lg:leading-[28px] font-semibold text-[#0F1A17] font-sans text-left flex-1">
               {item.q}
             </span>
             {/* Chevron icon — rotates 180° when open via CSS on details[open] */}
             <svg
-              class="faq-chevron w-[24px] h-[24px] shrink-0 mt-[2px]"
+              class="faq-chevron u-chevron w-[24px] h-[24px] shrink-0 mt-[2px]"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
