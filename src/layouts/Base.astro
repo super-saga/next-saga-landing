@@ -4,6 +4,7 @@ import { SITE } from '../config';
 import SobiLauncher from '../components/sobi/SobiLauncher.astro';
 import SobiChat from '../components/sobi/SobiChat.astro';
 import WaitlistDialog from '../components/waitlist/WaitlistDialog.astro';
+import SubscribeDialog from '../components/blog/SubscribeDialog.astro';
 
 interface Props {
   title: string;
@@ -72,6 +73,7 @@ const jsonLd = {
     <slot />
 
     <WaitlistDialog />
+    <SubscribeDialog />
     <SobiChat />
     <SobiLauncher />
 

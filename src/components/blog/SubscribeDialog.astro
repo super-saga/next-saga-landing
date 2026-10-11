@@ -1,0 +1,276 @@
+---
+/**
+ * SubscribeDialog.astro
+ *
+ * Globally-mounted accessible newsletter subscribe modal.
+ * Opened via window.openSubscribe(prefillEmail?) or any [data-open="subscribe"] click.
+ * Submits to /api/subscribe which hits the Ghost members magic-link endpoint.
+ */
+---
+
+<div
+  id="subscribe-dialog"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="subscribe-title"
+  aria-hidden="true"
+  hidden
+  class="sub-overlay"
+>
+  <div id="subscribe-backdrop" class="sub-backdrop" aria-hidden="true"></div>
+
+  <div class="sub-panel" role="document">
+    <button id="subscribe-close" type="button" aria-label="Tutup dialog" class="sub-close-btn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M4 4L16 16M16 4L4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <!-- Form view -->
+    <div id="subscribe-form-view">
+      <h2 id="subscribe-title" class="sub-title">Berlangganan tips pengurus</h2>
+      <p class="sub-subtitle">
+        Panduan praktis, cerita komunitas, dan pembaruan fitur. Langsung ke email, tanpa spam.
+      </p>
+
+      <form id="subscribe-form" novalidate>
+        <!-- Honeypot -->
+        <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+          <label for="sub-website">Website</label>
+          <input id="sub-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="sub-field">
+          <label for="sub-name" class="sub-label">Nama <span class="sub-opt">(opsional)</span></label>
+          <input id="sub-name" name="name" type="text" autocomplete="name" placeholder="Nama Anda" class="sub-input" />
+        </div>
+
+        <div class="sub-field">
+          <label for="sub-email" class="sub-label">Email</label>
+          <input
+            id="sub-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="email@contoh.com"
+            aria-describedby="sub-email-error"
+            class="sub-input"
+          />
+          <p id="sub-email-error" class="sub-error" role="alert" hidden></p>
+        </div>
+
+        <p id="subscribe-error" class="sub-error" role="alert" hidden></p>
+
+        <button type="submit" id="subscribe-submit" class="sub-submit">Berlangganan</button>
+        <p class="sub-fineprint">Bisa berhenti berlangganan kapan saja.</p>
+      </form>
+    </div>
+
+    <!-- Success view -->
+    <div id="subscribe-success" class="sub-success" hidden>
+      <div class="sub-success-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h2 class="sub-title">Berhasil berlangganan!</h2>
+      <p class="sub-subtitle" id="subscribe-success-body">
+        Kami sudah mengirim email konfirmasi. Klik tautannya untuk menyelesaikan langganan.
+      </p>
+      <button type="button" id="subscribe-done" class="sub-submit">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sub-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .sub-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(15, 26, 23, 0.6); backdrop-filter: blur(2px);
+  }
+  .sub-panel {
+    position: relative; z-index: 1; background: #ffffff;
+    border-radius: 1.25rem; padding: 2rem 1.5rem; width: 100%; max-width: 28rem;
+    max-height: calc(100dvh - 2rem); overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(15, 26, 23, 0.25);
+  }
+  @media (min-width: 640px) { .sub-panel { padding: 2.5rem 2rem; } }
+
+  .sub-close-btn {
+    position: absolute; top: 1rem; right: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    border: none; background: transparent; color: #6B7672; cursor: pointer; transition: background .15s;
+  }
+  .sub-close-btn:hover { background: #EEF1EF; }
+  .sub-close-btn:focus-visible { outline: 3px solid #46607E; outline-offset: 2px; }
+
+  .sub-title {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1.375rem; font-weight: 700; color: #0F1A17; margin: 0 0 0.375rem; padding-right: 2.5rem;
+  }
+  .sub-subtitle {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9rem; color: #6B7672; margin: 0 0 1.5rem; line-height: 1.5;
+  }
+  .sub-field { margin-bottom: 1rem; }
+  .sub-label { display: block; font-family: var(--font-sans, sans-serif); font-size: 0.85rem; font-weight: 600; color: #0F1A17; margin-bottom: 0.375rem; }
+  .sub-opt { font-weight: 400; color: #98A29E; }
+  .sub-input {
+    width: 100%; box-sizing: border-box; min-height: 2.75rem;
+    padding: 0.625rem 0.875rem; border: 1px solid #E3E7E5; border-radius: 0.75rem;
+    font-family: var(--font-sans, sans-serif); font-size: 0.95rem; color: #0F1A17; background: #fff;
+  }
+  .sub-input::placeholder { color: #98A29E; }
+  .sub-input:focus-visible { outline: 3px solid #0E9F76; outline-offset: 1px; border-color: #0E9F76; }
+  .sub-input[aria-invalid="true"] { border-color: #E5484D; }
+
+  .sub-error { font-family: var(--font-sans, sans-serif); font-size: 0.8rem; color: #E5484D; margin: 0.375rem 0 0; }
+  #subscribe-error { margin-top: 0.75rem; }
+
+  .sub-submit {
+    width: 100%; min-height: 2.875rem; margin-top: 0.5rem;
+    background: #0E9F76; color: #fff; border: none; border-radius: 999px;
+    font-family: var(--font-sans, sans-serif); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity .15s;
+  }
+  .sub-submit:hover { opacity: 0.9; }
+  .sub-submit:disabled { opacity: 0.6; cursor: default; }
+  .sub-submit:focus-visible { outline: 3px solid #46607E; outline-offset: 2px; }
+
+  .sub-fineprint { font-family: var(--font-sans, sans-serif); font-size: 0.75rem; color: #98A29E; text-align: center; margin: 0.75rem 0 0; }
+
+  .sub-success { text-align: center; padding: 1rem 0; }
+  .sub-success-icon {
+    width: 3.5rem; height: 3.5rem; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: #EEFBF5; color: #0E9F76;
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('subscribe-dialog');
+  const backdrop = document.getElementById('subscribe-backdrop');
+  const closeBtn = document.getElementById('subscribe-close');
+  const doneBtn = document.getElementById('subscribe-done');
+  const form = document.getElementById('subscribe-form') as HTMLFormElement | null;
+  const formView = document.getElementById('subscribe-form-view');
+  const successView = document.getElementById('subscribe-success');
+  const successBody = document.getElementById('subscribe-success-body');
+  const emailInput = document.getElementById('sub-email') as HTMLInputElement | null;
+  const emailError = document.getElementById('sub-email-error');
+  const formError = document.getElementById('subscribe-error');
+  const submitBtn = document.getElementById('subscribe-submit') as HTMLButtonElement | null;
+
+  let lastFocused: HTMLElement | null = null;
+
+  const FOCUSABLE =
+    'a[href]:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), ' +
+    'input:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])';
+
+  function openSubscribe(prefillEmail?: string) {
+    if (!dialog) return;
+    if (!dialog.hasAttribute('hidden')) return; // already open
+    lastFocused = document.activeElement as HTMLElement;
+    // reset to form view
+    formView?.removeAttribute('hidden');
+    successView?.setAttribute('hidden', '');
+    form?.reset();
+    clearErrors();
+    if (prefillEmail && emailInput) emailInput.value = prefillEmail;
+    dialog.hidden = false;
+    dialog.removeAttribute('aria-hidden');
+    document.addEventListener('keydown', onKeydown);
+    requestAnimationFrame(() => {
+      (prefillEmail ? document.getElementById('sub-name') : emailInput)?.focus();
+    });
+  }
+
+  function closeSubscribe() {
+    if (!dialog) return;
+    dialog.hidden = true;
+    dialog.setAttribute('aria-hidden', 'true');
+    document.removeEventListener('keydown', onKeydown);
+    lastFocused?.focus();
+  }
+
+  function onKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') { closeSubscribe(); return; }
+    if (e.key === 'Tab') {
+      const items = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE);
+      if (!items || items.length === 0) return;
+      const list = Array.from(items).filter((el) => el.offsetParent !== null);
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function clearErrors() {
+    emailError?.setAttribute('hidden', '');
+    if (emailError) emailError.textContent = '';
+    formError?.setAttribute('hidden', '');
+    if (formError) formError.textContent = '';
+    emailInput?.removeAttribute('aria-invalid');
+  }
+
+  function showEmailError(msg: string) {
+    if (emailError) { emailError.textContent = msg; emailError.removeAttribute('hidden'); }
+    emailInput?.setAttribute('aria-invalid', 'true');
+    emailInput?.focus();
+  }
+
+  const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+    const data = new FormData(form);
+    if ((data.get('website') as string || '').trim() !== '') { closeSubscribe(); return; } // bot
+    const email = (data.get('email') as string || '').trim();
+    const name = (data.get('name') as string || '').trim();
+    if (!emailOk(email)) { showEmailError('Masukkan alamat email yang valid.'); return; }
+
+    submitBtn && (submitBtn.disabled = true, submitBtn.textContent = 'Mengirim...');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name }),
+      });
+      const out = await res.json().catch(() => ({ ok: false }));
+      if (res.ok && out.ok) {
+        if (successBody) successBody.textContent =
+          `Kami sudah mengirim email konfirmasi ke ${email}. Klik tautannya untuk menyelesaikan langganan.`;
+        formView?.setAttribute('hidden', '');
+        successView?.removeAttribute('hidden');
+      } else {
+        if (formError) { formError.textContent = out.error || 'Gagal berlangganan. Coba lagi nanti.'; formError.removeAttribute('hidden'); }
+      }
+    } catch {
+      if (formError) { formError.textContent = 'Gagal terhubung. Coba lagi nanti.'; formError.removeAttribute('hidden'); }
+    } finally {
+      submitBtn && (submitBtn.disabled = false, submitBtn.textContent = 'Berlangganan');
+    }
+  });
+
+  backdrop?.addEventListener('click', closeSubscribe);
+  closeBtn?.addEventListener('click', closeSubscribe);
+  doneBtn?.addEventListener('click', closeSubscribe);
+
+  // Global open API + [data-open="subscribe"] delegation.
+  (window as unknown as { openSubscribe?: (e?: string) => void }).openSubscribe = openSubscribe;
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement)?.closest('[data-open="subscribe"]');
+    if (trigger) {
+      e.preventDefault();
+      const prefill = (trigger as HTMLElement).getAttribute('data-email') || undefined;
+      openSubscribe(prefill);
+    }
+  });
+</script>

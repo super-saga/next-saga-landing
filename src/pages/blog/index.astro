@@ -366,24 +366,22 @@ const chips = [...activeChips, ...extraChips];
           </p>
         </div>
 
-        {/* Form */}
+        {/* Form (opens the subscribe dialog, prefilling the typed email) */}
         <div class="w-full lg:w-[420px] shrink-0 flex flex-col gap-[10px]">
           <form
+            id="newsletter-band-form"
             class="w-full h-[56px] flex flex-row gap-[8px] pl-[22px] pr-[6px] py-[6px] items-center bg-surface rounded-full"
-            action="mailto:hello@saga.co.id"
-            method="get"
-            enctype="text/plain"
           >
             <input
+              id="newsletter-band-email"
               type="email"
               name="email"
-              required
               placeholder="Email Anda"
               class="flex-1 bg-transparent outline-none text-[15px] text-ink-900 placeholder:text-text-tertiary font-normal"
             />
             <button
               type="submit"
-              class="shrink-0 h-full px-[22px] bg-primary rounded-full text-[15px] font-bold text-surface whitespace-nowrap hover:opacity-90 transition-opacity"
+              class="u-press shrink-0 h-full px-[22px] bg-primary rounded-full text-[15px] font-bold text-surface whitespace-nowrap"
             >
               Berlangganan
             </button>
@@ -392,6 +390,17 @@ const chips = [...activeChips, ...extraChips];
             Bisa berhenti berlangganan kapan saja.
           </p>
         </div>
+        <script is:inline>
+          (function () {
+            var f = document.getElementById('newsletter-band-form');
+            if (!f) return;
+            f.addEventListener('submit', function (e) {
+              e.preventDefault();
+              var email = document.getElementById('newsletter-band-email');
+              window.openSubscribe && window.openSubscribe(email && email.value ? email.value.trim() : undefined);
+            });
+          })();
+        </script>
       </div>
     </div>
   </main>
