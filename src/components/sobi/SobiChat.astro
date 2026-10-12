@@ -111,6 +111,81 @@ const popularQuestions = [
     </button>
   </header>
 
+  <!-- Lead gate (shown until the visitor identifies themselves) -->
+  <div
+    id="sobi-gate-panel"
+    class="hidden w-full flex-1 flex-col gap-[16px] overflow-y-auto bg-[#F6F7F6] p-[20px]"
+  >
+    <div class="flex w-full shrink-0 flex-col items-center gap-[4px] pt-2">
+      <Sobi size={72} />
+      <p class="text-[16px] font-bold leading-normal text-[#0F1A17]">Kenalan dulu, yuk</p>
+      <p class="max-w-[280px] text-center text-[13px] font-medium leading-[19px] text-[#6B7672]">
+        Isi data singkat supaya Sobi bisa bantu lebih tepat, dan tim kami bisa menindaklanjuti bila perlu.
+      </p>
+    </div>
+
+    <form id="sobi-gate-form" class="flex w-full flex-col gap-[12px]" novalidate>
+      <!-- Honeypot -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+        <label for="sobi-gate-website">Website</label>
+        <input id="sobi-gate-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="flex flex-col gap-[6px]">
+        <label for="sobi-gate-nama" class="text-[13px] font-semibold text-[#0F1A17]">Nama</label>
+        <input
+          id="sobi-gate-nama"
+          name="nama"
+          type="text"
+          required
+          autocomplete="name"
+          placeholder="Nama Anda"
+          class="h-[46px] rounded-[12px] border border-[#E3E7E5] bg-white px-[14px] text-[15px] text-[#0F1A17] placeholder-[#98A29E] focus:border-[#0E9F76] focus:outline-none focus:ring-2 focus:ring-[#0E9F76]/30"
+        />
+      </div>
+
+      <div class="flex flex-col gap-[6px]">
+        <label for="sobi-gate-wa" class="text-[13px] font-semibold text-[#0F1A17]">Nomor WhatsApp</label>
+        <input
+          id="sobi-gate-wa"
+          name="whatsapp"
+          type="tel"
+          inputmode="tel"
+          required
+          autocomplete="tel"
+          placeholder="08xxxxxxxxxx"
+          class="h-[46px] rounded-[12px] border border-[#E3E7E5] bg-white px-[14px] text-[15px] text-[#0F1A17] placeholder-[#98A29E] focus:border-[#0E9F76] focus:outline-none focus:ring-2 focus:ring-[#0E9F76]/30"
+        />
+      </div>
+
+      <div class="flex flex-col gap-[6px]">
+        <label for="sobi-gate-peran" class="text-[13px] font-semibold text-[#0F1A17]">Anda seorang <span class="font-normal text-[#98A29E]">(opsional)</span></label>
+        <select
+          id="sobi-gate-peran"
+          name="peran"
+          class="h-[46px] rounded-[12px] border border-[#E3E7E5] bg-white px-[14px] text-[15px] text-[#0F1A17] focus:border-[#0E9F76] focus:outline-none focus:ring-2 focus:ring-[#0E9F76]/30"
+        >
+          <option value="">Pilih peran</option>
+          <option value="Pengurus">Pengurus (RT/RW)</option>
+          <option value="Warga">Warga</option>
+        </select>
+      </div>
+
+      <p id="sobi-gate-error" class="hidden text-[13px] font-medium text-[#E5484D]" role="alert"></p>
+
+      <button
+        type="submit"
+        id="sobi-gate-submit"
+        class="mt-1 h-[48px] rounded-full bg-[#0E9F76] text-[15px] font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0E9F76] disabled:opacity-60"
+      >
+        Mulai chat dengan Sobi
+      </button>
+      <p class="text-center text-[11px] font-normal leading-[16px] text-[#98A29E]">
+        Dengan melanjutkan, Anda setuju dihubungi tim Sahabat Warga.
+      </p>
+    </form>
+  </div>
+
   <!-- Welcome state (shown when no messages) -->
   <div
     id="sobi-welcome-panel"
@@ -277,6 +352,7 @@ const popularQuestions = [
 
   <!-- Footer / Composer -->
   <div
+    id="sobi-composer"
     class="flex w-full shrink-0 flex-col items-center gap-[8px] bg-white px-[16px] py-[12px]"
     style="border-top:1px solid #E3E7E5;"
   >
@@ -351,6 +427,40 @@ const popularQuestions = [
   const welcomePanel = document.getElementById('sobi-welcome-panel') as HTMLDivElement | null;
   const srStatus = document.getElementById('sobi-sr-status') as HTMLParagraphElement | null;
   const headerStatus = document.getElementById('sobi-header-status') as HTMLSpanElement | null;
+  const gatePanel = document.getElementById('sobi-gate-panel') as HTMLDivElement | null;
+  const gateForm = document.getElementById('sobi-gate-form') as HTMLFormElement | null;
+  const gateError = document.getElementById('sobi-gate-error') as HTMLParagraphElement | null;
+  const gateSubmit = document.getElementById('sobi-gate-submit') as HTMLButtonElement | null;
+  const composer = document.getElementById('sobi-composer') as HTMLDivElement | null;
+
+  // ---------------------------------------------------------------------------
+  // Session gate (lead form -> signed token required by /api/sobi/chat)
+  // ---------------------------------------------------------------------------
+
+  const SESSION_KEY = 'sobi_session_token';
+  const getToken = (): string | null => {
+    try { return localStorage.getItem(SESSION_KEY); } catch { return null; }
+  };
+  const setToken = (t: string): void => { try { localStorage.setItem(SESSION_KEY, t); } catch { /* ignore */ } };
+  const clearToken = (): void => { try { localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ } };
+
+  /** Show the gate (no identity yet) or the chat (identified). */
+  function applyGate(): void {
+    const gated = !getToken();
+    if (gated) {
+      gatePanel?.classList.remove('hidden');
+      gatePanel?.classList.add('flex');
+      welcomePanel?.classList.add('hidden');
+      messageList?.classList.add('hidden');
+      composer?.classList.add('hidden');
+    } else {
+      gatePanel?.classList.add('hidden');
+      gatePanel?.classList.remove('flex');
+      composer?.classList.remove('hidden');
+      // Welcome vs conversation handled by existing hasMessages logic.
+      if (!hasMessages) welcomePanel?.classList.remove('hidden');
+    }
+  }
 
   if (!panel || !closeBtn || !form || !input || !sendBtn || !messageList) {
     console.warn('[SobiChat] Required DOM elements not found');
@@ -405,8 +515,15 @@ const popularQuestions = [
     // Toggle the launcher into its "close" state.
     window.__sobiSetLauncherOpen?.(true);
 
-    // Focus to textarea.
-    requestAnimationFrame(() => input?.focus());
+    // Decide gate vs chat, and focus the right first field.
+    applyGate();
+    const gated = !getToken();
+
+    // Focus to textarea (or gate's name field when gated).
+    requestAnimationFrame(() => {
+      if (gated) document.getElementById('sobi-gate-nama')?.focus();
+      else input?.focus();
+    });
 
     // Drive Sobi mascot.
     window.setSobiState?.('greeting' satisfies SobiState);
@@ -541,11 +658,27 @@ const popularQuestions = [
     let assistantText = '';
 
     try {
+      const token = getToken();
       const res = await fetch('/api/sobi/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ messages: history }),
       });
+
+      // Session expired/invalid -> clear and re-gate.
+      if (res.status === 401) {
+        clearToken();
+        await res.text().catch(() => {});
+        applyGate();
+        if (gateError) {
+          gateError.textContent = 'Sesi berakhir. Isi lagi untuk melanjutkan.';
+          gateError.classList.remove('hidden');
+        }
+        throw new Error('HTTP 401');
+      }
 
       if (!res.ok || !res.body) {
         await res.text().catch(() => {});
@@ -656,6 +789,47 @@ const popularQuestions = [
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape' && isOpen) {
       closePanel();
+    }
+  });
+
+  // Gate form submit -> request a session token, then reveal the chat.
+  const waOk = (v: string) => /^[0-9+()\-\s]{7,20}$/.test(v);
+  gateForm?.addEventListener('submit', async (e: Event) => {
+    e.preventDefault();
+    gateError?.classList.add('hidden');
+    const data = new FormData(gateForm);
+    if ((data.get('website') as string || '').trim() !== '') return; // bot
+    const nama = (data.get('nama') as string || '').trim();
+    const whatsapp = (data.get('whatsapp') as string || '').trim();
+    const peran = (data.get('peran') as string || '').trim();
+
+    const fail = (msg: string) => {
+      if (gateError) { gateError.textContent = msg; gateError.classList.remove('hidden'); }
+    };
+    if (nama.length < 2) return fail('Mohon isi nama Anda.');
+    if (!waOk(whatsapp)) return fail('Masukkan nomor WhatsApp yang valid.');
+
+    if (gateSubmit) { gateSubmit.disabled = true; gateSubmit.textContent = 'Memproses...'; }
+    try {
+      const res = await fetch('/api/sobi/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama, whatsapp, peran }),
+      });
+      const out = await res.json().catch(() => ({ ok: false }));
+      if (res.ok && out.ok && out.token) {
+        setToken(out.token);
+        applyGate();
+        // Greet now that the chat is revealed.
+        window.setSobiState?.('greeting' satisfies SobiState);
+        requestAnimationFrame(() => input?.focus());
+      } else {
+        fail(out.error || 'Gagal memulai sesi. Coba lagi.');
+      }
+    } catch {
+      fail('Gagal terhubung. Coba lagi.');
+    } finally {
+      if (gateSubmit) { gateSubmit.disabled = false; gateSubmit.textContent = 'Mulai chat dengan Sobi'; }
     }
   });
 

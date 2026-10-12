@@ -16,6 +16,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { verifySession, bearerFrom, sessionConfigured } from '../../../lib/sobi-session';
 
 // ---------------------------------------------------------------------------
 // Rate limiting — simple in-memory token bucket keyed by client IP.
@@ -170,6 +171,17 @@ export const POST: APIRoute = async ({ request }) => {
     return jsonError('Content-Type must be application/json', 400);
   }
 
+  // Gate: require a valid signed session token (issued by /api/sobi/session after
+  // the lead form). No token / bad signature / expired -> 401. This blocks
+  // anonymous brute-force of the AI endpoint.
+  if (!sessionConfigured) {
+    return jsonError('Chat belum dikonfigurasi.', 503);
+  }
+  const session = await verifySession(bearerFrom(request.headers.get('authorization')));
+  if (!session) {
+    return jsonError('Sesi tidak valid. Mulai lagi dari formulir.', 401);
+  }
+
   // Cap body size at 32 KB.
   const raw = await request.text();
   if (raw.length > 32_768) {
@@ -195,13 +207,14 @@ export const POST: APIRoute = async ({ request }) => {
     return jsonError('Too many messages', 400);
   }
 
-  // Rate limit by client IP (best-effort; headers may be missing in dev).
+  // Rate limit per identity (session id), falling back to client IP.
   const ip =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     request.headers.get('x-real-ip') ??
     'unknown';
+  const rateKey = `sid:${session.id}`;
 
-  if (isRateLimited(ip)) {
+  if (isRateLimited(rateKey) || isRateLimited(ip)) {
     return new Response(JSON.stringify({ ok: false, error: 'Too many requests' }), {
       status: 429,
       headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
