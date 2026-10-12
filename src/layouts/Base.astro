@@ -21,6 +21,7 @@ const { title, description, canonical, jsonLdExtra } = Astro.props;
 const canonicalUrl =
   canonical ?? new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
 const ogImage = new URL('/og/social-preview.png', Astro.site ?? SITE).toString();
+const ogVideo = new URL('/social/sahabat-warga-demo.mp4', Astro.site ?? SITE).toString();
 const ogImageAlt =
   'Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama';
 
@@ -98,6 +99,11 @@ const jsonLd = {
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:video" content={ogVideo} />
+    <meta property="og:video:secure_url" content={ogVideo} />
+    <meta property="og:video:type" content="video/mp4" />
+    <meta property="og:video:width" content="1280" />
+    <meta property="og:video:height" content="720" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

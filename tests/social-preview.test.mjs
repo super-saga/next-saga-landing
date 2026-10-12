@@ -61,6 +61,11 @@ test('homepage exposes complete cross-platform social metadata', async () => {
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',
     '<meta property="og:image:alt" content="Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama">',
+    '<meta property="og:video" content="https://saga.co.id/social/sahabat-warga-demo.mp4">',
+    '<meta property="og:video:secure_url" content="https://saga.co.id/social/sahabat-warga-demo.mp4">',
+    '<meta property="og:video:type" content="video/mp4">',
+    '<meta property="og:video:width" content="1280">',
+    '<meta property="og:video:height" content="720">',
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta name="twitter:image" content="https://saga.co.id/og/social-preview.png">',
     '<meta name="twitter:image:alt" content="Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama">',
@@ -80,4 +85,14 @@ test('social preview is a 1200 by 630 PNG', async () => {
   assert.deepEqual([...image.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.equal(image.readUInt32BE(16), 1200);
   assert.equal(image.readUInt32BE(20), 630);
+});
+
+test('social video is a web-optimized MP4', async () => {
+  const response = await fetch(`${origin}/social/sahabat-warga-demo.mp4`);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') ?? '', /^video\/mp4(?:;|$)/);
+
+  const video = Buffer.from(await response.arrayBuffer());
+  assert.equal(video.subarray(4, 8).toString('ascii'), 'ftyp');
+  assert.ok(video.length < 12_000_000, `Expected video below 12 MB, received ${video.length} bytes`);
 });
