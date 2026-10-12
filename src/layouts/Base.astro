@@ -5,6 +5,7 @@ import SobiLauncher from '../components/sobi/SobiLauncher.astro';
 import SobiChat from '../components/sobi/SobiChat.astro';
 import WaitlistDialog from '../components/waitlist/WaitlistDialog.astro';
 import SubscribeDialog from '../components/blog/SubscribeDialog.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
 
 interface Props {
   title: string;
@@ -52,11 +53,30 @@ const jsonLd = {
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" type="application/rss+xml" title="Blog Sahabat Warga" href="/blog/rss.xml" />
     {ADSENSE_CLIENT && (
-      <script
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-        crossorigin="anonymous"
-      ></script>
+      <>
+        {/* Consent Mode v2: default to denied until the visitor chooses, so ads
+            stay non-personalized. Must run BEFORE the AdSense script. */}
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          window.gtag = window.gtag || gtag;
+          var __swConsent = null;
+          try { __swConsent = localStorage.getItem('sw_consent'); } catch (e) {}
+          var __swGranted = __swConsent === 'granted';
+          gtag('consent', 'default', {
+            ad_storage: __swGranted ? 'granted' : 'denied',
+            ad_user_data: __swGranted ? 'granted' : 'denied',
+            ad_personalization: __swGranted ? 'granted' : 'denied',
+            analytics_storage: __swGranted ? 'granted' : 'denied',
+            wait_for_update: 500,
+          });
+        </script>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossorigin="anonymous"
+        ></script>
+      </>
     )}
 
     <!-- Favicon (Sahabat Warga brand mark) -->
@@ -90,6 +110,7 @@ const jsonLd = {
     <SubscribeDialog />
     <SobiChat />
     <SobiLauncher />
+    <ConsentBanner />
 
     <script>
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

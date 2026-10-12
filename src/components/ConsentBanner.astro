@@ -1,0 +1,88 @@
+---
+/**
+ * ConsentBanner.astro — cookie / personalized-ads consent (Google Consent Mode v2).
+ *
+ * Shows on first visit when ads are enabled. "Terima" grants ad/analytics storage
+ * (personalized ads); "Tolak" keeps them denied (ads still serve, non-personalized).
+ * The choice is stored in localStorage ('sw_consent') and applied via gtag consent
+ * update. Consent defaults are set in Base.astro before the AdSense script.
+ */
+import { ADSENSE_CLIENT } from '../config';
+
+const enabled = Boolean(ADSENSE_CLIENT);
+---
+
+{enabled && (
+  <div
+    id="consent-banner"
+    role="dialog"
+    aria-label="Persetujuan cookie"
+    aria-live="polite"
+    hidden
+    class="fixed inset-x-0 bottom-0 z-[60] p-3 sm:p-4"
+  >
+    <div class="mx-auto flex max-w-3xl flex-col gap-3 rounded-[16px] border border-border bg-surface p-4 shadow-[0_12px_40px_rgba(15,26,23,0.18)] sm:flex-row sm:items-center sm:gap-4 sm:p-5">
+      <p class="flex-1 text-[13px] leading-[19px] text-text-secondary">
+        Kami menggunakan cookie untuk menjalankan situs, mengukur performa konten, dan menampilkan iklan.
+        Baca <a href="/privasi" class="font-semibold text-text-brand underline">Kebijakan Privasi</a>.
+      </p>
+      <div class="flex shrink-0 gap-2">
+        <button
+          id="consent-reject"
+          type="button"
+          class="u-press h-[42px] rounded-full border border-border bg-surface px-5 text-[14px] font-semibold text-text-primary"
+        >
+          Tolak
+        </button>
+        <button
+          id="consent-accept"
+          type="button"
+          class="u-press h-[42px] rounded-full bg-primary px-5 text-[14px] font-bold text-white"
+        >
+          Terima
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var KEY = 'sw_consent';
+      var banner = document.getElementById('consent-banner');
+      if (!banner) return;
+
+      function stored() {
+        try { return localStorage.getItem(KEY); } catch (e) { return null; }
+      }
+      function save(v) {
+        try { localStorage.setItem(KEY, v); } catch (e) {}
+      }
+      function apply(granted) {
+        if (typeof window.gtag === 'function') {
+          window.gtag('consent', 'update', {
+            ad_storage: granted ? 'granted' : 'denied',
+            ad_user_data: granted ? 'granted' : 'denied',
+            ad_personalization: granted ? 'granted' : 'denied',
+            analytics_storage: granted ? 'granted' : 'denied',
+          });
+        }
+      }
+
+      // Already chosen -> keep hidden, consent defaults already reflect it.
+      if (stored()) return;
+
+      banner.hidden = false;
+
+      document.getElementById('consent-accept')?.addEventListener('click', function () {
+        save('granted');
+        apply(true);
+        banner.hidden = true;
+      });
+      document.getElementById('consent-reject')?.addEventListener('click', function () {
+        save('denied');
+        apply(false);
+        banner.hidden = true;
+      });
+    })();
+  </script>
+)}
