@@ -20,10 +20,9 @@ const { title, description, canonical, jsonLdExtra } = Astro.props;
 
 const canonicalUrl =
   canonical ?? new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
-// Using og.svg as a non-404 placeholder. Pre-publish step: export a 1200x630 PNG/JPG
-// (e.g. via Inkscape CLI or a design tool) and replace this with /og/og.png — some
-// social crawlers (Facebook, LinkedIn) do not render SVG OG images.
-const ogImage = new URL('/og/og.svg', Astro.site ?? SITE).toString();
+const ogImage = new URL('/og/social-preview.png', Astro.site ?? SITE).toString();
+const ogImageAlt =
+  'Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -88,16 +87,24 @@ const jsonLd = {
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sahabat Warga" />
+    <meta property="og:locale" content="id_ID" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

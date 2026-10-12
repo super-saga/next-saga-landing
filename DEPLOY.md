@@ -93,7 +93,7 @@ Build/health:
 
 Content/assets (owner-supplied, replace placeholders):
 - [ ] Real app screenshots in `public/screens/` (currently exported from the design).
-- [ ] OG image: replace `public/og/og.svg` with a 1200x630 **PNG** (`og.png`) and update the `og:image` in `src/layouts/Base.astro` (some social crawlers do not render SVG).
+- [x] Social preview is a 1200x630 PNG at `public/og/social-preview.png`; Open Graph and X/Twitter metadata are set in `src/layouts/Base.astro`.
 - [ ] Legal pages `/privasi` and `/ketentuan` reviewed by counsel (currently labeled "Draf").
 - [ ] Testimonials on the landing are sample data ("CONTOH, ganti sebelum terbit") — replace with real ones or remove.
 - [ ] Confirm the direct-settlement wording in the Trust section with the team.
