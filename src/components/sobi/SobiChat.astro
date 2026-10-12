@@ -14,7 +14,7 @@
  *   - Enter sends; Shift+Enter inserts newline
  */
 
-import { WA_URL } from '../../config.ts';
+import { WA_URL, SOBI_AI_LIVE } from '../../config.ts';
 import Sobi from './Sobi.astro';
 
 // Popular questions
@@ -45,6 +45,7 @@ const popularQuestions = [
   aria-modal="true"
   aria-label="Chat dengan Sobi"
   aria-hidden="true"
+  data-ai-live={SOBI_AI_LIVE ? 'true' : 'false'}
   class="fixed bottom-[84px] right-5 z-50 flex w-[380px] max-w-[calc(100vw-1.25rem)] flex-col rounded-[24px] overflow-hidden bg-white"
   style="display:none; box-shadow:0px 24px 60px #0F1A1733, 0px 2px 8px #0F1A171A; height: min(812px, calc(100dvh - 100px));"
 >
@@ -118,10 +119,21 @@ const popularQuestions = [
   >
     <div class="flex w-full shrink-0 flex-col items-center gap-[4px] pt-2">
       <Sobi size={72} />
-      <p class="text-[16px] font-bold leading-normal text-[#0F1A17]">Kenalan dulu, yuk</p>
-      <p class="max-w-[280px] text-center text-[13px] font-medium leading-[19px] text-[#6B7672]">
-        Isi data singkat supaya Sobi bisa bantu lebih tepat, dan tim kami bisa menindaklanjuti bila perlu.
-      </p>
+      {SOBI_AI_LIVE ? (
+        <>
+          <p class="text-[16px] font-bold leading-normal text-[#0F1A17]">Kenalan dulu, yuk</p>
+          <p class="max-w-[280px] text-center text-[13px] font-medium leading-[19px] text-[#6B7672]">
+            Isi data singkat supaya Sobi bisa bantu lebih tepat, dan tim kami bisa menindaklanjuti bila perlu.
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="text-[16px] font-bold leading-normal text-[#0F1A17]">Sobi segera hadir</p>
+          <p class="max-w-[280px] text-center text-[13px] font-medium leading-[19px] text-[#6B7672]">
+            Asisten AI kami sedang disiapkan. Tinggalkan kontak Anda, tim Sahabat Warga akan menghubungi via WhatsApp.
+          </p>
+        </>
+      )}
     </div>
 
     <form id="sobi-gate-form" class="flex w-full flex-col gap-[12px]" novalidate>
@@ -178,12 +190,32 @@ const popularQuestions = [
         id="sobi-gate-submit"
         class="mt-1 h-[48px] rounded-full bg-[#0E9F76] text-[15px] font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0E9F76] disabled:opacity-60"
       >
-        Mulai chat dengan Sobi
+        {SOBI_AI_LIVE ? 'Mulai chat dengan Sobi' : 'Beri tahu saya saat hadir'}
       </button>
       <p class="text-center text-[11px] font-normal leading-[16px] text-[#98A29E]">
         Dengan melanjutkan, Anda setuju dihubungi tim Sahabat Warga.
       </p>
     </form>
+  </div>
+
+  <!-- "Coming soon" thank-you (shown after the lead form when AI is not live) -->
+  <div
+    id="sobi-thanks-panel"
+    class="hidden w-full flex-1 flex-col items-center justify-center gap-[14px] overflow-y-auto bg-[#F6F7F6] p-[24px] text-center"
+  >
+    <Sobi size={84} />
+    <p class="text-[18px] font-bold leading-snug text-[#0F1A17]">Terima kasih!</p>
+    <p class="max-w-[300px] text-[14px] font-medium leading-[21px] text-[#6B7672]">
+      Kontak Anda sudah kami terima. Tim Sahabat Warga akan menghubungi Anda, dan Sobi akan segera hadir di aplikasi.
+    </p>
+    <a
+      href={WA_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-2 inline-flex h-[46px] items-center justify-center gap-2 rounded-full bg-[#0E9F76] px-6 text-[14px] font-bold text-white transition-opacity hover:opacity-90"
+    >
+      Chat tim via WhatsApp
+    </a>
   </div>
 
   <!-- Welcome state (shown when no messages) -->
@@ -357,18 +389,6 @@ const popularQuestions = [
     style="border-top:1px solid #E3E7E5;"
   >
     <form id="sobi-chat-form" class="flex w-full flex-row items-center gap-[8px]" autocomplete="off" novalidate>
-      <!-- Attach button (visual only - matches design) -->
-      <button
-        type="button"
-        aria-label="Lampiran"
-        class="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-[#EEF1EF] transition-colors hover:bg-[#E3E7E5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F76]"
-      >
-        <!-- plus icon -->
-        <svg width="20" height="20" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M6.901 2.352q-0.096 0.014-0.174 0.051-0.075 0.034-0.154 0.126-0.075 0.089-0.113 0.167-0.034 0.075-0.034 0.328l0 3.401-3.667 0-0.085 0.041q-0.222 0.113-0.301 0.338-0.075 0.222 0.007 0.434 0.058 0.096 0.140 0.181 0.085 0.082 0.167 0.120 0.085 0.034 0.338 0.034l3.401 0 0 3.401q0 0.253 0.034 0.338 0.038 0.082 0.120 0.167 0.085 0.082 0.188 0.133 0.106 0.048 0.232 0.048 0.126 0 0.229-0.048 0.106-0.051 0.188-0.133 0.085-0.085 0.120-0.167 0.038-0.085 0.038-0.338l0-3.401 3.401 0q0.253 0 0.335-0.034 0.085-0.038 0.167-0.120 0.085-0.085 0.133-0.188 0.051-0.106 0.051-0.232 0-0.126-0.041-0.239-0.099-0.195-0.294-0.294l-0.085-0.041-3.667 0 0-3.387q0-0.267-0.027-0.321-0.072-0.198-0.253-0.301-0.181-0.106-0.393-0.065z" fill="#0F1A17"/>
-        </svg>
-      </button>
-
       <!-- Input wrapper -->
       <div
         class="flex flex-1 h-[48px] flex-row items-center gap-[8px] rounded-full bg-white pl-[16px] pr-[6px]"
@@ -432,6 +452,11 @@ const popularQuestions = [
   const gateError = document.getElementById('sobi-gate-error') as HTMLParagraphElement | null;
   const gateSubmit = document.getElementById('sobi-gate-submit') as HTMLButtonElement | null;
   const composer = document.getElementById('sobi-composer') as HTMLDivElement | null;
+  const thanksPanel = document.getElementById('sobi-thanks-panel') as HTMLDivElement | null;
+
+  // Whether the Sobi AI chat is live. When false, the launcher is a lead hook:
+  // the form submits to Slack and shows a "coming soon" thank-you, no chat.
+  const AI_LIVE = panel?.getAttribute('data-ai-live') === 'true';
 
   // ---------------------------------------------------------------------------
   // Session gate (lead form -> signed token required by /api/sobi/chat)
@@ -444,21 +469,30 @@ const popularQuestions = [
   const setToken = (t: string): void => { try { localStorage.setItem(SESSION_KEY, t); } catch { /* ignore */ } };
   const clearToken = (): void => { try { localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ } };
 
-  /** Show the gate (no identity yet) or the chat (identified). */
+  const showOnly = (el: HTMLElement | null): void => {
+    for (const p of [gatePanel, thanksPanel, welcomePanel, messageList]) {
+      if (!p) continue;
+      if (p === el) { p.classList.remove('hidden'); p.classList.add('flex'); }
+      else { p.classList.add('hidden'); p.classList.remove('flex'); }
+    }
+  };
+
+  /** Decide which panel to show based on AI availability + identity. */
   function applyGate(): void {
-    const gated = !getToken();
-    if (gated) {
-      gatePanel?.classList.remove('hidden');
-      gatePanel?.classList.add('flex');
-      welcomePanel?.classList.add('hidden');
-      messageList?.classList.add('hidden');
+    // AI not live: lead-hook mode. No chat composer ever.
+    if (!AI_LIVE) {
       composer?.classList.add('hidden');
+      showOnly(gatePanel);
+      return;
+    }
+    // AI live: gate until a session token exists, then reveal the chat.
+    if (!getToken()) {
+      composer?.classList.add('hidden');
+      showOnly(gatePanel);
     } else {
-      gatePanel?.classList.add('hidden');
-      gatePanel?.classList.remove('flex');
       composer?.classList.remove('hidden');
-      // Welcome vs conversation handled by existing hasMessages logic.
-      if (!hasMessages) welcomePanel?.classList.remove('hidden');
+      if (!hasMessages) showOnly(welcomePanel);
+      else showOnly(messageList);
     }
   }
 
@@ -809,6 +843,7 @@ const popularQuestions = [
     if (nama.length < 2) return fail('Mohon isi nama Anda.');
     if (!waOk(whatsapp)) return fail('Masukkan nomor WhatsApp yang valid.');
 
+    const submitLabel = AI_LIVE ? 'Mulai chat dengan Sobi' : 'Beri tahu saya saat hadir';
     if (gateSubmit) { gateSubmit.disabled = true; gateSubmit.textContent = 'Memproses...'; }
     try {
       const res = await fetch('/api/sobi/session', {
@@ -817,10 +852,22 @@ const popularQuestions = [
         body: JSON.stringify({ nama, whatsapp, peran }),
       });
       const out = await res.json().catch(() => ({ ok: false }));
+
+      // AI not live: lead captured -> show the "coming soon" thank-you.
+      if (!AI_LIVE) {
+        if (res.ok && out.ok) {
+          showOnly(thanksPanel);
+          window.setSobiState?.('success' satisfies SobiState);
+        } else {
+          fail(out.error || 'Gagal mengirim. Coba lagi.');
+        }
+        return;
+      }
+
+      // AI live: need a session token to reveal the chat.
       if (res.ok && out.ok && out.token) {
         setToken(out.token);
         applyGate();
-        // Greet now that the chat is revealed.
         window.setSobiState?.('greeting' satisfies SobiState);
         requestAnimationFrame(() => input?.focus());
       } else {
@@ -829,7 +876,7 @@ const popularQuestions = [
     } catch {
       fail('Gagal terhubung. Coba lagi.');
     } finally {
-      if (gateSubmit) { gateSubmit.disabled = false; gateSubmit.textContent = 'Mulai chat dengan Sobi'; }
+      if (gateSubmit) { gateSubmit.disabled = false; gateSubmit.textContent = submitLabel; }
     }
   });
 

@@ -27,10 +27,6 @@ function randomId(): string {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!sessionConfigured) {
-    // No signing secret in production -> fail closed rather than issue weak tokens.
-    return json({ ok: false, error: 'Layanan chat belum dikonfigurasi.' }, 503);
-  }
   if (!request.headers.get('content-type')?.includes('application/json')) {
     return json({ ok: false, error: 'Format tidak valid.' }, 400);
   }
@@ -72,6 +68,8 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
-  const token = await signSession({ id: randomId(), nama });
+  // Lead captured. Issue a chat token only when signing is configured; while the
+  // AI is off (lead-hook phase) the client just needs ok=true, no token.
+  const token = sessionConfigured ? await signSession({ id: randomId(), nama }) : null;
   return json({ ok: true, token, nama });
 };
