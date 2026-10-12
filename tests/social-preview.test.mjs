@@ -11,8 +11,8 @@ let server;
 before(async () => {
   server = spawn(
     process.execPath,
-    [resolve('node_modules/astro/bin/astro.mjs'), 'dev', '--host', host, '--port', String(port)],
-    { stdio: ['ignore', 'pipe', 'pipe'] },
+    [resolve('node_modules/astro/bin/astro.mjs'), 'dev', '--host', host, '--port', String(port), '--ignore-lock'],
+    { detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
   );
 
   let stderr = '';
@@ -39,7 +39,12 @@ before(async () => {
 });
 
 after(() => {
-  server?.kill('SIGTERM');
+  if (!server?.pid) return;
+  try {
+    process.kill(-server.pid, 'SIGTERM');
+  } catch (error) {
+    if (error.code !== 'ESRCH') throw error;
+  }
 });
 
 test('homepage exposes complete cross-platform social metadata', async () => {
