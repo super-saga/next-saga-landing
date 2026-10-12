@@ -13,7 +13,7 @@ All are **server-side** (never shipped to the browser) except where noted.
 | Variable | Value | Purpose |
 |---|---|---|
 | `GHOST_API_URL` | `https://saga.co.id/blog` | Ghost Content API origin (reads posts). |
-| `GHOST_CONTENT_API_KEY` | `affc0ee04cdc688dcfd5662747` | Ghost Content API key. |
+| `GHOST_CONTENT_API_KEY` | *(from Ghost Admin → Integrations)* | Ghost Content API key. |
 | `GHOST_SITE_URL` | `https://saga.co.id/blog` | Ghost members/portal origin for `/api/subscribe`. Defaults to `GHOST_API_URL` if unset. |
 | `SLACK_WEBHOOK_URL` | *(your Slack incoming webhook)* | Waitlist + Sobi leads (`/api/waitlist`, `/api/sobi/session`). Must start with `https://hooks.slack.com/`. |
 | `SOBI_SESSION_SECRET` | *(strong random, e.g. `openssl rand -hex 32`)* | **Required.** Signs the Sobi chat lead-gate token. If unset in prod, the chat fails closed (503). |
