@@ -1,0 +1,215 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Nav from '../../../components/sections/Nav.astro';
+import Footer from '../../../components/sections/Footer.astro';
+import PostCard from '../../../components/blog/PostCard.astro';
+import { getPosts, tagUrl, pageUrl, BLOG_PAGE_SIZE } from '../../../lib/ghost';
+
+export const prerender = false;
+
+const { page: pageParam } = Astro.params;
+
+// Parse and validate page number; page 1 lives at /blog/
+const page = parseInt(pageParam ?? '', 10);
+if (!Number.isFinite(page) || page < 2) {
+  return Astro.redirect('/blog');
+}
+
+const allPosts = await getPosts('all');
+
+const totalPages = Math.ceil(allPosts.length / BLOG_PAGE_SIZE);
+if (page > totalPages || allPosts.length === 0) {
+  return Astro.redirect('/blog');
+}
+
+const start = (page - 1) * BLOG_PAGE_SIZE;
+const pagePosts = allPosts.slice(start, start + BLOG_PAGE_SIZE);
+
+// Build category chips from all posts (same logic as index.astro)
+const allTagNames: string[] = [];
+for (const p of allPosts) {
+  for (const t of p.tags ?? []) {
+    if (t.name && !allTagNames.includes(t.name)) {
+      allTagNames.push(t.name);
+    }
+  }
+}
+
+const chipOrder = [
+  'Panduan Pengurus',
+  'Keuangan & Iuran',
+  'Keamanan',
+  'Cerita Komunitas',
+  'Ekonomi Warga',
+  'Pembaruan Produk',
+];
+const activeChips = chipOrder.filter((name) => allTagNames.includes(name));
+const extraChips = allTagNames.filter((n) => !chipOrder.includes(n));
+const chips = [...activeChips, ...extraChips];
+
+const hasPrev = page > 1;
+const hasNext = page < totalPages;
+const prevUrl = hasPrev ? pageUrl(page - 1) : null;
+const nextUrl = hasNext ? pageUrl(page + 1) : null;
+
+const canonical = new URL(pageUrl(page), Astro.site).toString();
+---
+
+<Base
+  title={`Artikel (Halaman ${page}) - Blog Sahabat Warga`}
+  description={`Tips mengelola iuran, keamanan, dan kegiatan warga dari para pengurus RT/RW dan tim Sahabat Warga. Halaman ${page}.`}
+  canonical={canonical}
+>
+  <Nav />
+
+  {/* ─── Page Header ─────────────────────────────────────────────────── */}
+  <header class="bg-surface border-b border-border">
+    <div class="px-4 sm:px-6 lg:px-[120px] pt-[88px] pb-[48px] flex flex-col gap-[40px]">
+
+      {/* Top row: title group + search */}
+      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 lg:gap-[80px]">
+        <div class="flex flex-col gap-[16px] lg:w-[720px]">
+          <p class="text-[13px] font-bold tracking-[1.2px] text-text-brand uppercase">
+            BLOG SAHABAT WARGA
+          </p>
+          <h1 class="text-[36px] lg:text-[56px] leading-[1.1] lg:leading-[62px] font-extrabold tracking-[-1px] lg:tracking-[-1.6px] text-ink-900">
+            Cerita dan panduan untuk lingkungan yang lebih rapi.
+          </h1>
+          <p class="text-[16px] lg:text-[18px] leading-[29px] text-text-secondary font-normal">
+            Tips mengelola iuran, keamanan, dan kegiatan warga dari para pengurus RT/RW dan tim
+            Sahabat Warga.
+          </p>
+        </div>
+
+        {/* Search bar */}
+        <div class="flex-shrink-0 lg:w-[360px]">
+          <form method="GET" action="/blog/search" class="flex flex-row gap-[10px] px-[20px] h-[52px] items-center bg-bg outline outline-1 outline-border rounded-full w-full">
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] shrink-0" aria-hidden="true">
+              <path d="M5.56445 8.8833q-1.39795 0-2.37207-0.9707-0.9707-0.9707-0.9707-2.37207 0-1.39795 0.9707-2.36866 0.97412-0.97412 2.37207-0.97412 1.39795 0 2.36866 0.97412 0.97412 0.9707 0.97412 2.36866 0 0.6084-0.21534 1.1792-0.21533 0.56738-0.56396 0.9707l3.44531 3.44531q0.08203 0.08203 0.08545 0.20166 0.00684 0.11963-0.08545 0.21192-0.09229 0.09229-0.20849 0.09228-0.11279 0-0.20508-0.09228l-3.44531-3.44532q-0.4375 0.37256-1.00831 0.57764-0.56738 0.20166-1.1416 0.20166z m0-0.58105q1.16211 0 1.9585-0.79981 0.7998-0.7998 0.7998-1.96191 0-1.15869-0.7998-1.9585-0.79639-0.7998-1.9585-0.7998-1.16211 0-1.96191 0.7998-0.79639 0.7998-0.79639 1.9585 0 1.16211 0.79639 1.96191 0.7998 0.7998 1.96191 0.79981z" fill="#98A29E"/>
+            </svg>
+            <input
+              type="text"
+              name="q"
+              placeholder="Cari artikel..."
+              class="flex-1 bg-transparent outline-none text-[15px] text-text-primary placeholder:text-text-tertiary font-normal"
+              aria-label="Cari artikel"
+            />
+          </form>
+        </div>
+      </div>
+
+      {/* Category chips - all inactive on pagination pages */}
+      {chips.length > 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row flex-wrap gap-[8px]">
+          <a
+            href="/blog/"
+            class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap"
+            aria-current="page"
+          >
+            Semua
+          </a>
+          {chips.map((name) => {
+            const chipSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'dan');
+            return (
+              <a
+                href={tagUrl(chipSlug)}
+                class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors"
+              >
+                {name}
+              </a>
+            );
+          })}
+        </div>
+      )}
+      {chips.length === 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row gap-[8px]">
+          <span class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap">
+            Semua
+          </span>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {/* ─── Articles section ─────────────────────────────────────────────── */}
+  <main>
+    <div class="px-4 sm:px-6 lg:px-[120px] py-[56px] lg:pb-[96px] flex flex-col gap-[72px]">
+
+      {/* Section header */}
+      <div class="border-t border-border pt-[40px] flex flex-row justify-between items-end">
+        <h2 class="text-[28px] font-extrabold tracking-[-0.6px] text-ink-900 whitespace-nowrap">
+          Artikel terbaru
+        </h2>
+        <div class="flex flex-row items-center gap-[6px]">
+          <span class="text-[14px] font-semibold text-text-secondary whitespace-nowrap">Urutkan: Terbaru</span>
+          <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] shrink-0" aria-hidden="true">
+            <path d="M7 8.3877q-0.0957 0-0.17432-0.03077-0.07861-0.03076-0.1538-0.10595l-2.56006-2.56006q-0.08203-0.08203-0.08887-0.20166-0.00684-0.11963 0.08887-0.21192 0.09229-0.09229 0.20507-0.09228 0.11279 0 0.20508 0.09228l2.47803 2.47803 2.47803-2.47803q0.08203-0.08203 0.19824-0.08545 0.11963-0.00684 0.21191 0.08545 0.0957 0.09229 0.09571 0.20508 0 0.11279-0.09571 0.2085l-2.56005 2.56006q-0.0752 0.0752-0.15381 0.10595-0.07861 0.03076-0.17432 0.03077z" fill="#6B7672"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* Post grid */}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] -mt-[24px]">
+        {pagePosts.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+
+      {/* Prev/Next pager */}
+      <div class="flex flex-row justify-center items-center gap-[8px] pt-[8px]">
+        {/* Prev */}
+        {hasPrev ? (
+          <a
+            href={prevUrl!}
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border hover:bg-bg transition-colors"
+            aria-label="Halaman sebelumnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M5.896 7l2.47802 2.47803q0.08203 0.08203 0.08545 0.20166 0.00684 0.11621-0.08545 0.20849-0.0957 0.0957-0.20849 0.09571-0.11279 0-0.20508-0.09571l-2.56006-2.56006q-0.0752-0.0752-0.10596-0.1538-0.03076-0.07861-0.03076-0.17432 0-0.0957 0.03076-0.17432 0.03076-0.07861 0.10596-0.15381l2.56006-2.56005q0.08203-0.08203 0.19824-0.08887 0.11963-0.00684 0.21533 0.08887 0.09229 0.09229 0.09229 0.20507 0 0.11279-0.09229 0.20508l-2.47802 2.47803z" fill="#2A3733"/>
+            </svg>
+          </a>
+        ) : (
+          <span
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
+            aria-disabled="true"
+            aria-label="Halaman sebelumnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M5.896 7l2.47802 2.47803q0.08203 0.08203 0.08545 0.20166 0.00684 0.11621-0.08545 0.20849-0.0957 0.0957-0.20849 0.09571-0.11279 0-0.20508-0.09571l-2.56006-2.56006q-0.0752-0.0752-0.10596-0.1538-0.03076-0.07861-0.03076-0.17432 0-0.0957 0.03076-0.17432 0.03076-0.07861 0.10596-0.15381l2.56006-2.56005q0.08203-0.08203 0.19824-0.08887 0.11963-0.00684 0.21533 0.08887 0.09229 0.09229 0.09229 0.20507 0 0.11279-0.09229 0.20508l-2.47802 2.47803z" fill="#2A3733"/>
+            </svg>
+          </span>
+        )}
+
+        {/* Current page indicator */}
+        <span class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-ink-900 text-[14px] font-bold text-surface" aria-current="page">
+          {page}
+        </span>
+
+        {/* Next */}
+        {hasNext ? (
+          <a
+            href={nextUrl!}
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border hover:bg-bg transition-colors"
+            aria-label="Halaman berikutnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
+            </svg>
+          </a>
+        ) : (
+          <span
+            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
+            aria-disabled="true"
+            aria-label="Halaman berikutnya"
+          >
+            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+              <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
+            </svg>
+          </span>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/sections/Nav.astro';
 import Footer from '../../components/sections/Footer.astro';
 import Sobi from '../../components/sobi/Sobi.astro';
-import { getPosts, formatTanggal, readingTime } from '../../lib/ghost';
+import { getPosts, formatTanggal, readingTime, postUrl } from '../../lib/ghost';
 import type { GhostPost } from '../../lib/ghost';
 
 const rawQ = Astro.url.searchParams.get('q') ?? '';
@@ -72,7 +72,7 @@ const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0
       {/* Breadcrumb */}
       <nav class="flex flex-row items-center gap-[8px]" aria-label="Breadcrumb">
         <a
-          href="/blog"
+          href="/blog/"
           class="text-[14px] font-semibold text-[#6B7672] no-underline hover:text-[#2A3733] transition-colors whitespace-nowrap"
         >
           Blog
@@ -196,7 +196,7 @@ const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0
               const cover = post.feature_image;
               return (
                 <a
-                  href={`/blog/${post.slug}`}
+                  href={postUrl(post.slug)}
                   class="flex flex-row gap-[28px] py-[28px] border-b border-[#E3E7E5] items-center no-underline group"
                 >
                   {/* Thumbnail */}
@@ -331,7 +331,7 @@ const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0
               const rt = readingTime(post);
               return (
                 <a
-                  href={`/blog/${post.slug}`}
+                  href={postUrl(post.slug)}
                   class="flex flex-row items-start gap-[16px] py-[14px] border-b border-[#E3E7E5] last:border-b-0 no-underline group"
                 >
                   <span class="text-[24px] font-extrabold tracking-[-0.5px] text-[#5FD4AE] shrink-0 leading-none pt-[2px]">
@@ -392,7 +392,7 @@ const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0
               Tanya Sobi
             </button>
             <a
-              href="/blog"
+              href="/blog/"
               class="inline-flex h-[48px] items-center px-[22px] bg-white outline outline-1 outline-[#E3E7E5] -outline-offset-[0.5px] rounded-full text-[15px] font-bold text-[#2A3733] whitespace-nowrap hover:bg-[#F6F7F6] transition-colors no-underline"
             >
               Lihat semua artikel
@@ -414,7 +414,7 @@ const SVG_MANAGE_SEARCH = `M2.04053 10.47607q-0.12305 0-0.2085-0.08203-0.08203-0
                 const author = post.authors?.[0];
                 return (
                   <a
-                    href={`/blog/${post.slug}`}
+                    href={postUrl(post.slug)}
                     class="flex flex-col gap-[16px] no-underline group"
                   >
                     <div class="w-full h-[232px] rounded-[20px] overflow-hidden bg-[#EEF1EF] shrink-0">

@@ -3,42 +3,33 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/sections/Nav.astro';
 import Footer from '../../components/sections/Footer.astro';
 import Sobi from '../../components/sobi/Sobi.astro';
-import { getPosts, formatTanggal, readingTime } from '../../lib/ghost';
+import { getPosts, formatTanggal, readingTime, tagUrl, pageUrl, postUrl, BLOG_PAGE_SIZE } from '../../lib/ghost';
 
 export const prerender = false;
 
 const posts = await getPosts('all');
 const featured = posts[0];
-const rest = posts.slice(1);
+// Page 1 = featured + the first page of the grid; the rest paginate at /blog/page/N/.
+const rest = posts.slice(1, BLOG_PAGE_SIZE);
+const hasMore = posts.length > BLOG_PAGE_SIZE;
 
-// Collect unique tag names across all posts for category chips
-const allTagNames: string[] = [];
+// Unique tags (slug + name) across all posts, for category chips that link to
+// the real Ghost tag archives (/blog/tag/<slug>/).
+const chipMap = new Map<string, string>();
 for (const p of posts) {
   for (const t of p.tags ?? []) {
-    if (t.name && !allTagNames.includes(t.name)) {
-      allTagNames.push(t.name);
-    }
+    if (t.slug && t.name && !chipMap.has(t.slug)) chipMap.set(t.slug, t.name);
   }
 }
+const chips = [...chipMap.entries()].map(([slug, name]) => ({ slug, name }));
 
-// The canonical chip order from the design; only show if at least one post has that tag
-const chipOrder = [
-  'Panduan Pengurus',
-  'Keuangan & Iuran',
-  'Keamanan',
-  'Cerita Komunitas',
-  'Ekonomi Warga',
-  'Pembaruan Produk',
-];
-const activeChips = chipOrder.filter((name) => allTagNames.includes(name));
-// If there are extra tags not in the canonical list, append them too
-const extraChips = allTagNames.filter((n) => !chipOrder.includes(n));
-const chips = [...activeChips, ...extraChips];
+const canonical = new URL('/blog/', Astro.site ?? 'https://saga.co.id').toString();
 ---
 
 <Base
   title="Blog Sahabat Warga - Cerita dan panduan untuk lingkungan"
   description="Tips mengelola iuran, keamanan, dan kegiatan warga dari para pengurus RT/RW dan tim Sahabat Warga."
+  canonical={canonical}
 >
   <Nav />
 
@@ -83,17 +74,17 @@ const chips = [...activeChips, ...extraChips];
         <div class="border-t border-border pt-[24px] flex flex-row flex-wrap gap-[8px]">
           {/* "Semua" chip - active state */}
           <a
-            href="/blog"
+            href="/blog/"
             class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap"
           >
             Semua
           </a>
-          {chips.map((name) => (
+          {chips.map((chip) => (
             <a
-              href={`/blog/tag/${name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'dan')}`}
+              href={tagUrl(chip.slug)}
               class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors"
             >
-              {name}
+              {chip.name}
             </a>
           ))}
         </div>
@@ -124,7 +115,7 @@ const chips = [...activeChips, ...extraChips];
       {/* ── Featured article ── */}
       {featured && (
         <a
-          href={`/blog/${featured.slug}`}
+          href={postUrl(featured.slug)}
           class="group flex flex-col lg:flex-row gap-[56px] items-center no-underline"
         >
           {/* Cover */}
@@ -239,7 +230,7 @@ const chips = [...activeChips, ...extraChips];
             const author = post.authors?.[0];
             return (
               <a
-                href={`/blog/${post.slug}`}
+                href={postUrl(post.slug)}
                 class="group flex flex-col gap-[16px] no-underline"
               >
                 {/* Cover */}
@@ -334,15 +325,27 @@ const chips = [...activeChips, ...extraChips];
           </span>
 
           {/* Next */}
-          <span
-            class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
-            aria-disabled="true"
-            aria-label="Halaman berikutnya"
-          >
-            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
-              <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
-            </svg>
-          </span>
+          {hasMore ? (
+            <a
+              href={pageUrl(2)}
+              class="u-press w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border text-ink-900"
+              aria-label="Halaman berikutnya"
+            >
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+                <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
+              </svg>
+            </a>
+          ) : (
+            <span
+              class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-surface outline outline-1 outline-border opacity-40 cursor-not-allowed"
+              aria-disabled="true"
+              aria-label="Halaman berikutnya"
+            >
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" aria-hidden="true">
+                <path d="M7.75537 7l-2.47803-2.47803q-0.08203-0.08203-0.08886-0.19824-0.00342-0.11963 0.08886-0.21191 0.09229-0.0957 0.20508-0.09571 0.11279 0 0.2085 0.09571l2.56006 2.56005q0.0752 0.0752 0.10595 0.15381 0.03076 0.07861 0.03077 0.17432 0 0.0957-0.03077 0.17432-0.03076 0.07861-0.10595 0.1538l-2.56006 2.56006q-0.08203 0.08203-0.20166 0.08887-0.11963 0.00684-0.21192-0.08887-0.09229-0.09229-0.09228-0.20507 0-0.11279 0.09228-0.20508l2.47803-2.47803z" fill="#2A3733"/>
+              </svg>
+            </span>
+          )}
         </div>
       )}
     </div>

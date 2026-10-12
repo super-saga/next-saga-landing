@@ -1,0 +1,145 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Nav from '../../../components/sections/Nav.astro';
+import Footer from '../../../components/sections/Footer.astro';
+import PostCard from '../../../components/blog/PostCard.astro';
+import { getPosts, getPostsByTag, getTag, tagUrl } from '../../../lib/ghost';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/blog');
+}
+
+// Fetch in parallel
+const [tag, posts, allPosts] = await Promise.all([
+  getTag(slug),
+  getPostsByTag(slug),
+  getPosts('all'),
+]);
+
+if (!posts || posts.length === 0) {
+  return Astro.redirect('/blog');
+}
+
+const tagName = tag?.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const tagDescription = tag?.description ?? `Artikel tentang ${tagName} dari tim Sahabat Warga.`;
+
+// Build category chips from all posts (same logic as index.astro)
+const allTagNames: string[] = [];
+for (const p of allPosts) {
+  for (const t of p.tags ?? []) {
+    if (t.name && !allTagNames.includes(t.name)) {
+      allTagNames.push(t.name);
+    }
+  }
+}
+
+const chipOrder = [
+  'Panduan Pengurus',
+  'Keuangan & Iuran',
+  'Keamanan',
+  'Cerita Komunitas',
+  'Ekonomi Warga',
+  'Pembaruan Produk',
+];
+const activeChips = chipOrder.filter((name) => allTagNames.includes(name));
+const extraChips = allTagNames.filter((n) => !chipOrder.includes(n));
+const chips = [...activeChips, ...extraChips];
+
+// Canonical URL with trailing slash
+const canonical = new URL(tagUrl(slug), Astro.site).toString();
+---
+
+<Base
+  title={`${tagName} - Blog Sahabat Warga`}
+  description={tagDescription}
+  canonical={canonical}
+>
+  <Nav />
+
+  {/* ─── Page Header ─────────────────────────────────────────────────── */}
+  <header class="bg-surface border-b border-border">
+    <div class="px-4 sm:px-6 lg:px-[120px] pt-[88px] pb-[48px] flex flex-col gap-[40px]">
+
+      {/* Top row: title group */}
+      <div class="flex flex-col gap-[16px] lg:w-[720px]">
+        <p class="text-[13px] font-bold tracking-[1.2px] text-text-brand uppercase">
+          TOPIK
+        </p>
+        <h1 class="text-[36px] lg:text-[56px] leading-[1.1] lg:leading-[62px] font-extrabold tracking-[-1px] lg:tracking-[-1.6px] text-ink-900">
+          {tagName}
+        </h1>
+        {tagDescription && (
+          <p class="text-[16px] lg:text-[18px] leading-[29px] text-text-secondary font-normal">
+            {tagDescription}
+          </p>
+        )}
+      </div>
+
+      {/* Category chips */}
+      {chips.length > 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row flex-wrap gap-[8px]">
+          {/* "Semua" chip - inactive on tag pages */}
+          <a
+            href="/blog/"
+            class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors"
+          >
+            Semua
+          </a>
+          {chips.map((name) => {
+            const chipSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'dan');
+            const isActive = chipSlug === slug;
+            return (
+              <a
+                href={tagUrl(chipSlug)}
+                class={
+                  isActive
+                    ? 'inline-flex h-[40px] items-center px-[18px] rounded-full bg-ink-900 text-[14px] font-semibold text-surface whitespace-nowrap'
+                    : 'inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors'
+                }
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {name}
+              </a>
+            );
+          })}
+        </div>
+      )}
+      {chips.length === 0 && (
+        <div class="border-t border-border pt-[24px] flex flex-row gap-[8px]">
+          <a
+            href="/blog/"
+            class="inline-flex h-[40px] items-center px-[18px] rounded-full bg-surface outline outline-1 outline-border text-[14px] font-semibold text-ink-700 whitespace-nowrap hover:bg-bg transition-colors"
+          >
+            Semua
+          </a>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {/* ─── Articles section ─────────────────────────────────────────────── */}
+  <main>
+    <div class="px-4 sm:px-6 lg:px-[120px] py-[56px] lg:pb-[96px] flex flex-col gap-[48px]">
+
+      {/* Section header */}
+      <div class="border-b border-border pb-[24px] flex flex-row justify-between items-end">
+        <h2 class="text-[28px] font-extrabold tracking-[-0.6px] text-ink-900">
+          {posts.length} artikel
+        </h2>
+      </div>
+
+      {/* Post grid */}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

@@ -30,6 +30,13 @@ export const ghost = configured
 
 export type GhostPost = PostOrPage;
 
+// ── URL helpers: mirror Ghost's public pattern (trailing slash) so existing
+// indexed URLs keep resolving and canonicals match. ──────────────────────────
+export const postUrl = (slug?: string) => `/blog/${slug ?? ''}/`;
+export const tagUrl = (slug?: string) => `/blog/tag/${slug ?? ''}/`;
+export const pageUrl = (n: number) => (n <= 1 ? '/blog/' : `/blog/page/${n}/`);
+export const BLOG_PAGE_SIZE = 12;
+
 /** Latest posts for the landing teaser / blog index. */
 export async function getPosts(limit: number | 'all' = 'all'): Promise<GhostPost[]> {
   if (!ghost) return [];
@@ -40,6 +47,43 @@ export async function getPosts(limit: number | 'all' = 'all'): Promise<GhostPost
     } as Params);
   } catch (error) {
     console.error('Ghost API Error (getPosts):', error);
+    return [];
+  }
+}
+
+/** Posts filtered by tag slug, for /blog/tag/[slug]/. */
+export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
+  if (!ghost) return [];
+  try {
+    return await ghost.posts.browse({
+      limit: 'all',
+      include: ['tags', 'authors'],
+      filter: `tag:${tagSlug}`,
+    } as Params);
+  } catch (error) {
+    console.error('Ghost API Error (getPostsByTag):', error);
+    return [];
+  }
+}
+
+/** A single tag by slug (for tag archive headers). */
+export async function getTag(tagSlug: string) {
+  if (!ghost) return null;
+  try {
+    return await ghost.tags.read({ slug: tagSlug });
+  } catch (error) {
+    console.error('Ghost API Error (getTag):', error);
+    return null;
+  }
+}
+
+/** All public tags that have at least one post (for sitemap). */
+export async function getTags() {
+  if (!ghost) return [];
+  try {
+    return await ghost.tags.browse({ limit: 'all', filter: 'visibility:public' } as Params);
+  } catch (error) {
+    console.error('Ghost API Error (getTags):', error);
     return [];
   }
 }

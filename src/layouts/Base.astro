@@ -9,11 +9,16 @@ import SubscribeDialog from '../components/blog/SubscribeDialog.astro';
 interface Props {
   title: string;
   description: string;
+  /** Override the canonical URL (e.g. blog pages use the trailing-slash form to match Ghost). */
+  canonical?: string;
+  /** Optional extra JSON-LD (e.g. Article schema on blog posts), injected as-is. */
+  jsonLdExtra?: unknown;
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonical, jsonLdExtra } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
+const canonicalUrl =
+  canonical ?? new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
 // Using og.svg as a non-404 placeholder. Pre-publish step: export a 1200x630 PNG/JPG
 // (e.g. via Inkscape CLI or a design tool) and replace this with /og/og.png — some
 // social crawlers (Facebook, LinkedIn) do not render SVG OG images.
@@ -45,6 +50,7 @@ const jsonLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="Blog Sahabat Warga" href="/blog/rss.xml" />
 
     <!-- Favicon (Sahabat Warga brand mark) -->
     <link rel="icon" type="image/png" href="/brand/icon.png" />
@@ -68,6 +74,7 @@ const jsonLd = {
 
     <!-- JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {jsonLdExtra && <script type="application/ld+json" set:html={JSON.stringify(jsonLdExtra)} />}
   </head>
   <body>
     <slot />

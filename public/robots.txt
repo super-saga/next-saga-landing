@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://saga.co.id/sitemap-index.xml
+Sitemap: https://saga.co.id/blog/sitemap.xml

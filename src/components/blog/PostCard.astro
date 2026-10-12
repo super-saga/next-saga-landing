@@ -1,13 +1,13 @@
 ---
 import type { GhostPost } from '../../lib/ghost';
-import { formatTanggal } from '../../lib/ghost';
+import { formatTanggal, postUrl } from '../../lib/ghost';
 
 interface Props {
   post: GhostPost;
 }
 
 const { post } = Astro.props;
-const href = `/blog/${post.slug}`;
+const href = postUrl(post.slug);
 const tag = post.tags?.[0]?.name;
 const cover = post.feature_image;
 const date = formatTanggal(post.published_at);
