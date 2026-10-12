@@ -25,3 +25,6 @@ pnpm-debug.log*
 .vercel
 
 .wrangler/
+
+# local git worktrees
+.worktrees/
