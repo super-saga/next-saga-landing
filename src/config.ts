@@ -10,3 +10,12 @@ export const UMKM_LIVE = import.meta.env.PUBLIC_UMKM_LIVE !== "false";
 // (still forwarded to Slack) and ends in a "coming soon" thank-you, with no chat
 // composer. Flip on by setting PUBLIC_SOBI_AI_LIVE="true" when the agent is ready.
 export const SOBI_AI_LIVE = import.meta.env.PUBLIC_SOBI_AI_LIVE === "true";
+
+// Google AdSense publisher id, e.g. "ca-pub-1234567890123456". When set, the
+// AdSense script loads and <AdSlot> units render (blog pages only). Leave empty
+// to disable ads everywhere. Set per-env in Vercel after AdSense approval.
+export const ADSENSE_CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT ?? "";
+// Ad unit slot ids from the AdSense dashboard (filled after approval). Each
+// <AdSlot> renders only when both the client and its slot id are set.
+export const ADSENSE_SLOT_ARTICLE = import.meta.env.PUBLIC_ADSENSE_SLOT_ARTICLE ?? "";
+export const ADSENSE_SLOT_BLOG = import.meta.env.PUBLIC_ADSENSE_SLOT_BLOG ?? "";

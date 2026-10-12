@@ -1,0 +1,44 @@
+---
+/**
+ * AdSlot.astro — a single Google AdSense display unit.
+ *
+ * Renders only when ADSENSE_CLIENT is configured. Use on blog pages only
+ * (never on landing/conversion pages). Create the ad unit in the AdSense
+ * dashboard and pass its slot id.
+ *
+ * <AdSlot slot="1234567890" />            // responsive, auto format
+ * <AdSlot slot="1234567890" label="Iklan" />
+ */
+import { ADSENSE_CLIENT } from '../../config';
+
+interface Props {
+  slot: string;
+  /** AdSense format; "auto" is a responsive unit. */
+  format?: string;
+  /** Show a small "Iklan" label above the unit (good practice/clarity). */
+  label?: string;
+  class?: string;
+}
+
+const { slot, format = 'auto', label = 'Iklan', class: className = '' } = Astro.props;
+const enabled = Boolean(ADSENSE_CLIENT && slot);
+---
+
+{enabled && (
+  <aside class:list={['adslot my-8 w-full overflow-hidden text-center', className]} aria-label="Iklan">
+    {label && (
+      <p class="mb-1 text-[11px] font-medium uppercase tracking-[0.6px] text-text-tertiary">{label}</p>
+    )}
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={ADSENSE_CLIENT}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive="true"
+    ></ins>
+    <script is:inline>
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </aside>
+)}

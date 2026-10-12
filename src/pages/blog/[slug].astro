@@ -4,7 +4,9 @@ import Nav from '../../components/sections/Nav.astro';
 import Footer from '../../components/sections/Footer.astro';
 import PostCard from '../../components/blog/PostCard.astro';
 import Sobi from '../../components/sobi/Sobi.astro';
+import AdSlot from '../../components/blog/AdSlot.astro';
 import { getSinglePost, getPosts, formatTanggal, readingTime, postUrl, tagUrl } from '../../lib/ghost';
+import { ADSENSE_SLOT_ARTICLE } from '../../config';
 
 const { slug } = Astro.params;
 const post = slug ? await getSinglePost(slug) : null;
@@ -220,6 +222,9 @@ const articleJsonLd = {
 
         <!-- Ghost article HTML -->
         <div class="prose" set:html={post.html} />
+
+        <!-- In-article ad (renders only when AdSense is configured) -->
+        <AdSlot slot={ADSENSE_SLOT_ARTICLE} />
 
         <!-- CTA Card: "Siap beralih ke iuran digital?" -->
         <div class="w-full flex flex-col sm:flex-row items-start sm:items-center gap-6 px-8 py-7 bg-[#06372A] rounded-[24px]">

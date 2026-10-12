@@ -4,6 +4,8 @@ import Nav from '../../components/sections/Nav.astro';
 import Footer from '../../components/sections/Footer.astro';
 import Sobi from '../../components/sobi/Sobi.astro';
 import { getPosts, formatTanggal, readingTime, tagUrl, pageUrl, postUrl, BLOG_PAGE_SIZE } from '../../lib/ghost';
+import AdSlot from '../../components/blog/AdSlot.astro';
+import { ADSENSE_SLOT_BLOG } from '../../config';
 
 export const prerender = false;
 
@@ -204,6 +206,9 @@ const canonical = new URL('/blog/', Astro.site ?? 'https://saga.co.id').toString
           </div>
         </a>
       )}
+
+      {/* In-feed ad between the featured post and the latest grid */}
+      <AdSlot slot={ADSENSE_SLOT_BLOG} class="my-0" />
 
       {/* ── Latest header ── */}
       {rest.length > 0 && (
