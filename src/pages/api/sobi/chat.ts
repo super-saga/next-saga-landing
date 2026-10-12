@@ -107,6 +107,7 @@ async function buildProxyStream(
   agentUrl: string,
   agentKey: string | undefined,
   messages: ChatMessage[],
+  identity: { id: string; nama: string; ip: string },
 ): Promise<Response | ReadableStream<Uint8Array>> {
   // SECURITY: validate URL — must be https: to prevent SSRF via file://, http://, etc.
   let parsedUrl: URL;
@@ -124,6 +125,12 @@ async function buildProxyStream(
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     Accept: 'text/event-stream',
+    // Forward the verified lead identity so the agent can enforce its own
+    // per-user rate limiting / abuse protection. These come from the signed
+    // session token, so they cannot be spoofed by the client.
+    'X-Sobi-User-Id': identity.id,
+    'X-Sobi-User-Name': encodeURIComponent(identity.nama),
+    'X-Sobi-Client-Ip': identity.ip,
   };
   if (agentKey) {
     headers['Authorization'] = `Bearer ${agentKey}`;
@@ -134,7 +141,7 @@ async function buildProxyStream(
     upstream = await fetch(agentUrl, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, user: { id: identity.id, nama: identity.nama } }),
     });
   } catch (err) {
     console.error('[sobi/chat] upstream fetch error:', err);
@@ -229,7 +236,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (agentUrl) {
     // PROXY mode.
-    const result = await buildProxyStream(agentUrl, agentKey, messages);
+    const result = await buildProxyStream(agentUrl, agentKey, messages, {
+      id: session.id,
+      nama: session.nama,
+      ip,
+    });
     if (result instanceof Response) return result; // error response
     stream = result;
   } else {
