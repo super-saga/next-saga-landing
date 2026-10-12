@@ -15,7 +15,8 @@ All are **server-side** (never shipped to the browser) except where noted.
 | `GHOST_API_URL` | `https://saga.co.id/blog` | Ghost Content API origin (reads posts). |
 | `GHOST_CONTENT_API_KEY` | `affc0ee04cdc688dcfd5662747` | Ghost Content API key. |
 | `GHOST_SITE_URL` | `https://saga.co.id/blog` | Ghost members/portal origin for `/api/subscribe`. Defaults to `GHOST_API_URL` if unset. |
-| `SLACK_WEBHOOK_URL` | *(your Slack incoming webhook)* | Waitlist leads, `/api/waitlist`. Must start with `https://hooks.slack.com/`. |
+| `SLACK_WEBHOOK_URL` | *(your Slack incoming webhook)* | Waitlist + Sobi leads (`/api/waitlist`, `/api/sobi/session`). Must start with `https://hooks.slack.com/`. |
+| `SOBI_SESSION_SECRET` | *(strong random, e.g. `openssl rand -hex 32`)* | **Required.** Signs the Sobi chat lead-gate token. If unset in prod, the chat fails closed (503). |
 | `SOBI_AGENT_URL` | *(optional)* | Real Sobi agent endpoint. If unset, `/api/sobi/chat` streams a canned reply. |
 | `SOBI_AGENT_KEY` | *(optional)* | Bearer token for `SOBI_AGENT_URL`. |
 | `PUBLIC_UMKM_LIVE` | leave unset (defaults live) or `"false"` | Set `"false"` to show UMKM as "Segera hadir". |
