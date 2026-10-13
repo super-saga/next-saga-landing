@@ -29,6 +29,15 @@ const twitterPlayer = new URL('/social/player.html', Astro.site ?? SITE).toStrin
 const ogImageAlt =
   'Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama';
 
+// og:video breaks the link preview on platforms that DON'T render inline video
+// (WhatsApp, Threads, LinkedIn): they try to treat the link as a video and show
+// a broken/empty card instead of falling back to og:image. So we only advertise
+// og:video to crawlers that reliably render it inline (Telegram, Discord). The
+// page is SSR + uncached, so branching on User-Agent is safe. Everyone else gets
+// the clean og:image preview.
+const ua = Astro.request.headers.get('user-agent') ?? '';
+const ogVideoCapable = /TelegramBot|Discordbot|Slackbot-LinkExpanding/i.test(ua);
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -103,11 +112,15 @@ const jsonLd = {
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt} />
-    <meta property="og:video" content={ogVideo} />
-    <meta property="og:video:secure_url" content={ogVideo} />
-    <meta property="og:video:type" content="video/mp4" />
-    <meta property="og:video:width" content="1280" />
-    <meta property="og:video:height" content="720" />
+    {ogVideoCapable && (
+      <>
+        <meta property="og:video" content={ogVideo} />
+        <meta property="og:video:secure_url" content={ogVideo} />
+        <meta property="og:video:type" content="video/mp4" />
+        <meta property="og:video:width" content="1280" />
+        <meta property="og:video:height" content="720" />
+      </>
+    )}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content={playerCard ? 'player' : 'summary_large_image'} />
