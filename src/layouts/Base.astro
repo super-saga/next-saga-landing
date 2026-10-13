@@ -14,14 +14,18 @@ interface Props {
   canonical?: string;
   /** Optional extra JSON-LD (e.g. Article schema on blog posts), injected as-is. */
   jsonLdExtra?: unknown;
+  /** When true, emit a Twitter/X Player Card so the demo video plays inline on X. */
+  playerCard?: boolean;
 }
 
-const { title, description, canonical, jsonLdExtra } = Astro.props;
+const { title, description, canonical, jsonLdExtra, playerCard = false } = Astro.props;
 
 const canonicalUrl =
   canonical ?? new URL(Astro.url.pathname, Astro.site ?? SITE).toString();
 const ogImage = new URL('/og/social-preview.png', Astro.site ?? SITE).toString();
 const ogVideo = new URL('/social/sahabat-warga-demo.mp4', Astro.site ?? SITE).toString();
+// Iframe player for the Twitter/X Player Card (X can't embed a raw mp4).
+const twitterPlayer = new URL('/social/player.html', Astro.site ?? SITE).toString();
 const ogImageAlt =
   'Tampilan aplikasi Sahabat Warga untuk mengelola lingkungan bersama';
 
@@ -106,11 +110,20 @@ const jsonLd = {
     <meta property="og:video:height" content="720" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={playerCard ? 'player' : 'summary_large_image'} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
+    {playerCard && (
+      <>
+        <meta name="twitter:player" content={twitterPlayer} />
+        <meta name="twitter:player:width" content="1280" />
+        <meta name="twitter:player:height" content="720" />
+        <meta name="twitter:player:stream" content={ogVideo} />
+        <meta name="twitter:player:stream:content_type" content="video/mp4" />
+      </>
+    )}
 
     <!-- JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

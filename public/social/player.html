@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sahabat Warga, demo aplikasi</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #0F1A17; }
+      .wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+      video { width: 100%; height: 100%; object-fit: contain; background: #0F1A17; }
+    </style>
+  </head>
+  <body>
+    <!-- Iframe player for the Twitter/X Player Card (X cannot embed a raw mp4). -->
+    <div class="wrap">
+      <video
+        src="/social/sahabat-warga-demo.mp4"
+        poster="/og/social-preview.png"
+        controls
+        playsinline
+        muted
+        autoplay
+        loop
+        preload="metadata"
+      ></video>
+    </div>
+  </body>
+</html>
